@@ -1,0 +1,334 @@
+---
+title: "Introduction to R by SNA"
+author: "by: Anuschka Peelen"
+bibliography: references.bib
+---  
+
+ 
+```{r}
+########################### Title: Introducation to R for SNA Author: J Tolsma version: 30-10-2019
+
+# start with clean workspace
+rm(list = ls())
+
+# install.packages I will need later here
+install.packages("installr")  #you  first install packages
+require(installr)  #then you will need to load them. This package is used to simply update R
+install.packages("foreign")
+require(foreign)  #used to read in spss data files
+install.packages("tidyverse")
+require(tidyverse)
+# update if necessarry. Best to run this command in RGui, not in RStudio.
+updateR()
+
+# define workdirectory, note the double backslashes
+setwd("C:\\SNA-4-Social-Scientists\\")  #change to your own workdirectory
+```
+
+```{r}
+getwd()
+```
+
+ 
+ 
+ 
+```{r}
+# ignore the warnings ?read.spss note that I have saved the data files in a folder called
+# 'addfiles'.
+
+cv08 <- foreign::read.spss("tutorial/Cultural_Changes_2008.sav", use.value.labels = T, to.data.frame = T)
+cv10 <- foreign::read.spss("tutorial/Cultural_Changes_2010.sav", use.value.labels = T, to.data.frame = T)
+
+
+
+
+# normally I think setting use.value.labels=F is more convenient. Thus lets load the data again but
+# now without labels
+cv08_nolab <- foreign::read.spss("tutorial/Cultural_Changes_2008.sav", use.value.labels = F, to.data.frame = T)
+cv10_nolab <- foreign::read.spss("tutorial/Cultural_Changes_2010.sav", use.value.labels = F, to.data.frame = T)
+
+# finally, import the data using haven
+cv08_haven <- haven::read_spss("tutorial/Cultural_Changes_2008.sav")
+cv10_haven <- haven::read_spss("tutorial/Cultural_Changes_2010.sav")
+```
+ 
+ 
+ 
+```{r}
+str(cv08_haven$lftop)
+summary(cv08_haven$lftop)
+attr(cv08_haven$lftop, "labels")
+table(cv08_haven$lftop, useNA = "always")
+```
+
+ 
+```{r}
+cv08$lftop_new <- cv08$lftop
+```
+ 
+ 
+ Here you replace the Onbekend with NA 
+```{r}
+cv08$lftop_new[cv08$lftop_new == "Onbekend"] <- NA
+```
+ 
+```{r}
+table(cv08$lftop_new, useNA = "always")
+```
+ 
+ 
+```{r}
+levels(cv08$var006n)
+table(cv08$var006n, useNA = "always")
+cv08$educn <- as.numeric(cv08$var006n)
+table(cv08$educn, useNA = "always")
+
+
+```
+ 
+```{r}
+# start with an empty variable
+cv08$educ3 <- NA
+# fill category by category
+cv08$educ3[cv08$educn == 2 | cv08$educn == 3] <- 1
+cv08$educ3[cv08$educn > 3 & cv08$educn < 8] <- 2
+cv08$educ3[cv08$educn > 7 & cv08$educn < 11] <- 3
+
+# check
+table(cv08$educ3, useNA = "always")
+```
+ 
+```{r}
+prop.table(table(cv08$educ3, useNA = "always"))
+```
+```{r}
+cv08$educ3 <- as.factor(cv08$educ3)
+table(cv08$educ3, useNA = "always")
+```
+```{r}
+levels(cv08$educ3) <- c("primary", "secondary", "tertiary")
+table(cv08$educ3, useNA = "always")
+```
+```{r}
+?c
+
+```
+```{r}
+install.packages('labelled')
+require(labelled)  #to be able to use the recode function on haven labelled variables
+
+# inspect variable
+str(cv08_haven$var006n)
+```
+```{r}
+attr(cv08_haven$var006n, "labels")
+```
+ 
+ 
+ 
+```{r}
+table(cv08_haven$var006n, useNA = "always")
+```
+ 
+```{r}
+# recode values, all missings as one value
+cv08_haven <- mutate(cv08_haven, educ3 = recode(var006n, `-3` = -9, `-1` = 1, `1` = 1, `2` = 2, `3` = 2,
+    `4` = 2, `5` = 2, `6` = 3, `7` = 3, `8` = 3, `10` = -9), .keep_value_labels = FALSE)
+
+# replace missing values with NA.
+cv08_haven <- mutate(cv08_haven, educ3 = na_if(educ3, -9))
+
+# make educ3 a factor
+cv08_haven <- mutate(cv08_haven, educ3 = factor(educ3, levels = c(1, 2, 3), labels = c("primary", "secondary",
+    "tertiary")))
+```
+ 
+ 
+```{r}
+table(cv08_haven$educ3, useNA = "always")
+```
+ 
+ 
+ 
+ 
+```{r}
+cv08_haven <- cv08_haven %>%
+    mutate(educ3 = recode(var006n, `-3` = -9, `-1` = 1, `1` = 1, `2` = 2, `3` = 2, `4` = 2, `5` = 2,
+        `6` = 3, `7` = 3, `8` = 3, `10` = -9, .keep_value_labels = FALSE), educ3 = na_if(educ3, -9),
+        educ3 = factor(educ3, levels = c(1, 2, 3), labels = c("primary", "secondary", "tertiary")))
+```
+ 
+ 
+```{r}
+summary(cv08$int055)
+summary(cv08$int056)
+summary(cv08$int057)
+```
+ 
+```{r}
+cv08$int055n <- as.numeric(cv08$int055)
+table(cv08$int055n, useNA = "always")
+cv08$int056n <- as.numeric(cv08$int056)
+table(cv08$int056n, useNA = "always")
+cv08$int057n <- as.numeric(cv08$int057)
+table(cv08$int057n, useNA = "always")
+```
+ 
+```{r}
+cv08$int055n[cv08$int055n < 5] <- NA
+cv08$int055n <- cv08$int055n - 4
+cv08$int056n[cv08$int056n < 5] <- NA
+cv08$int056n <- cv08$int056n - 4
+cv08$int057n[cv08$int057n < 5] <- NA
+cv08$int057n <- cv08$int057n - 4
+```
+ 
+```{r}
+testmeans <- rowMeans(cbind(cv08$int055n, cv08$int056n, cv08$int057n), na.rm = T)
+head(testmeans)
+```
+ 
+```{r}
+nmis <- rowSums(is.na(cbind(cv08$int055n, cv08$int056n, cv08$int057n)))
+```
+
+```{r}
+testmeans <- ifelse(nmis < 2, testmeans, NA)
+```
+
+```{r}
+# Step 1: have a look at the vars
+str(cv08_haven$int055)
+attr(cv08_haven$int055, "labels")
+summary(cv08_haven$int055)
+summary(cv08_haven$int056)
+summary(cv08_haven$int057)
+
+table(cv08_haven$int055n, useNA = "always")
+table(cv08_haven$int056, useNA = "always")
+table(cv08_haven$int057, useNA = "always")
+
+# Step 2: define missings and recode
+cv08_haven <- mutate(cv08_haven, int055n = recode(int055, `-6` = -9, `-5` = -9, `-3` = -9, `-2` = -9,
+    `1` = 4, `2` = 3, `3` = 2, `4` = 1), .keep_value_labels = FALSE) %>%
+    mutate(int055n = na_if(int055n, -9)) %>%
+    mutate(int055n = labelled(int055n, c(`Helemaal geen tegenstelling` = 1, `Niet zo groot` = 2, Groot = 3,
+        `Zeer groot` = 4)))
+
+cv08_haven <- mutate(cv08_haven, int056n = recode(int056, `-6` = -9, `-5` = -9, `-3` = -9, `-2` = -9,
+    `1` = 4, `2` = 3, `3` = 2, `4` = 1), .keep_value_labels = FALSE) %>%
+    mutate(int056n = na_if(int056n, -9)) %>%
+    mutate(int056n = labelled(int056n, c(`Helemaal geen tegenstelling` = 1, `Niet zo groot` = 2, Groot = 3,
+        `Zeer groot` = 4)))
+
+cv08_haven <- mutate(cv08_haven, int057n = recode(int057, `-6` = -9, `-5` = -9, `-3` = -9, `-2` = -9,
+    `1` = 4, `2` = 3, `3` = 2, `4` = 1), .keep_value_labels = FALSE) %>%
+    mutate(int057n = na_if(int057n, -9)) %>%
+    mutate(int057n = labelled(int057n, c(`Helemaal geen tegenstelling` = 1, `Niet zo groot` = 2, Groot = 3,
+        `Zeer groot` = 4)))
+
+
+# Step 3: calculate means.  option 1
+cv08_haven <- cv08_haven %>%
+    rowwise() %>%
+    mutate(int_mean = mean(c(int055n, int056n, int057n), na.rm = TRUE))
+
+
+## option 2
+cv08_haven <- cv08_haven %>%
+    mutate(int_mean = rowMeans(cbind(int055n, int056n, int057n), na.rm = TRUE))
+
+# what we really want is a mean but only if there is a maximum of 1 NA in the three variables
+
+cv08_haven <- cv08_haven %>%
+    mutate(int_mean_temp = rowMeans(cbind(int055n, int056n, int057n), na.rm = TRUE), nmis = rowSums(is.na(cbind(int055n,
+        int056n, int057n))), int_mean = ifelse(nmis < 2, int_mean_temp, NA)) %>%
+    select(-int_mean_temp, -nmis)
+```
+
+---
+
+```{r, install remotely, globalsettings, echo=FALSE, warning=FALSE, results='hide', eval=FALSE}
+install.packages("remotes")
+remotes::install_github("rlesur/klippy")
+``` 
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+
+
+
+----
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+# My Lab Journal
+Last compiled on `r format(Sys.time(), '%B, %Y')`  
+
+*Describe lab journal here.*
+<br>
+
+----
+
+##   
+
+Everyone can fork this repository. Use this example to journal your lab work and assignments. 
+
+We, Jochem Tolsma and Bas Hofstra, use this repository for our Social Network Analysis For Social Scientists course [@SNASS]. 
+
+
+:::
+::: {.column width="50%"}
+
+
+
+
+![](images/cover.jpg)
+
+
+:::
+::::::::::::::
+
+
+## How to use
+
+1. Fork the repository for this website and follow instructions on `README` to get started [here](https://github.com/JochemTolsma/labjournal).  
+
+2. Journal your work, by editing the .Rmd-files
+
+3. ...
+
+4. Change everything to make it your own!
+
+
+<br>
+
+Use the top menu to navigate through the journal.
+
+
+----
+
+# References
+
+
+
+
