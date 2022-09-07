@@ -3,14 +3,10 @@ title: "Lab journal"
 author: "by: Anuschka Peelen"
 bibliography: references.bib
 
-```{r}
-2 + 2
-```
-
  
 ---
 
-```{r, install remotely, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+```{r, install remotely, globalsettings, echo=FALSE, warning=FALSE, results='hide', eval=FALSE}
 install.packages("remotes")
 remotes::install_github("rlesur/klippy")
 ``` 
