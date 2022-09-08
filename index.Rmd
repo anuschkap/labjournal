@@ -42,7 +42,7 @@ klippy::klippy(position = c('top', 'right'))
 # My Lab Journal
 Last compiled on `r format(Sys.time(), '%B, %Y')`  
 
-*Describe lab journal here.*
+**
 <br>
 
 ----
@@ -60,7 +60,7 @@ We, Jochem Tolsma and Bas Hofstra, use this repository for our Social Network An
 
 
 
-![](images/cover.jpg)
+![](images/oefen.jpg)
 
 
 :::
@@ -82,6 +82,11 @@ We, Jochem Tolsma and Bas Hofstra, use this repository for our Social Network An
 
 Use the top menu to navigate through the journal.
 
+
+----
+
+## Research question
+Test
 
 ----
 
