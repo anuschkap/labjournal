@@ -246,6 +246,341 @@ cv08_haven <- cv08_haven %>%
     select(-int_mean_temp, -nmis)
 ```
 
+Omdat hier de variabelen achter de komma staan, zijn de kolommen geselecteerd. _sel voor selection
+```{r}
+# step 1: selecting the variables you want to keep. for this tutorial only 6 variables: id, age,
+# sex, educ, health, region (not that R is case sensitive)
+cv08_sel <- cv08[, c("we_id", "lftop", "geslacht", "var006n", "v401", "landd")]
+cv10_sel <- cv10[, c("Sleutel", "var002", "var001", "Vltoplop", "V401", "Landd")]
+```
+
+```{r}
+# step 2: making the variables similar across individual datasets step 2a: making names the same
+names(cv08_sel) <- names(cv10_sel) <- c("id", "age", "sex", "educ", "health", "region")
+
+# step 2b: making levels and labels consistent
+summary(cv08_sel)
+summary(cv10_sel)
+# they look very consistent already. but check carefully.
+```
+
+
+```{r}
+# we don't want id to be a factor but numeric. Note that we don't want the factor level values as
+# numbers but the actual labels as numbers.Daarom eerst als karakter en daarna als numeric, want de factors zijn niet gelijk aan de echte waarden 
+
+# id
+cv08_sel$id <- as.numeric(as.character(cv08_sel$id))
+cv10_sel$id <- as.numeric(as.character(cv10_sel$id))
+
+# age
+cv08_sel$age <- as.numeric(as.character(cv08_sel$age))
+cv10_sel$age <- as.numeric(as.character(cv10_sel$age))
+```
+
+
+```{r}
+# sex men
+levels(cv08_sel$sex)
+levels(cv10_sel$sex)
+table(cv08_sel$sex, useNA = "always")
+table(cv10_sel$sex, useNA = "always")
+```
+
+
+```{r}
+# lets make it a numeric var first
+cv08_sel$sexn <- as.numeric(cv08_sel$sex)
+table(cv08_sel$sexn)
+# recode into dummy. Ik snap dit niet helemaal, hoezo 2 regels nodig? Alleen value 2 moet toch man worden?
+cv08_sel$men <- ifelse(cv08_sel$sexn == 2, 1, 0)
+cv08_sel$men <- ifelse(cv08_sel$sexn == 1, NA, cv08_sel$men)
+```
+
+
+```{r}
+# check
+table(cv08_sel$men, useNA = "always")
+# lets make it a numeric var first
+cv10_sel$sexn <- as.numeric(cv10_sel$sex)
+table(cv10_sel$sexn)
+# recode into dummy
+cv10_sel$men <- ifelse(cv10_sel$sexn == 2, 1, 0)
+# check
+table(cv10_sel$men, useNA = "always")
+
+# educ educ3
+levels(cv08_sel$educ)
+levels(cv10_sel$educ)
+table(cv08_sel$educ, useNA = "always")
+table(cv10_sel$educ, useNA = "always")
+# lets make it a numeric var first
+cv08_sel$educn <- as.numeric(cv08_sel$educ)
+table(cv08_sel$educn)
+# recode into 3cats: 1 primair, 2 secundair, 3 is tertiair
+cv08_sel$educ3 <- NA
+cv08_sel$educ3[cv08_sel$educn == 2 | cv08_sel$educn == 3] <- 1
+cv08_sel$educ3[cv08_sel$educn > 3 & cv08_sel$educn < 8] <- 2
+cv08_sel$educ3[cv08_sel$educn > 7 & cv08_sel$educn < 11] <- 3
+# check
+table(cv08_sel$educ3, useNA = "always")
+prop.table(table(cv08_sel$educ3, useNA = "always"))
+
+# lets make it a numeric var first
+cv10_sel$educn <- as.numeric(cv10_sel$educ)
+table(cv10_sel$educn)
+# recode into 3cats: 1 primair, 2 secundari, 3 is tertiair
+cv10_sel$educ3 <- NA
+cv10_sel$educ3[cv10_sel$educn < 3] <- 1  #correct?
+cv10_sel$educ3[cv10_sel$educn > 2 & cv10_sel$educn < 6] <- 2
+cv10_sel$educ3[cv10_sel$educn == 6] <- 3
+# check
+table(cv10_sel$educ3, useNA = "always")
+prop.table(table(cv10_sel$educ3, useNA = "always"))
+```
+
+```{r}
+# lets add a wave variable
+cv08_sel$wave <- 2008
+cv10_sel$wave <- 2010
+
+# let make a fake ID, we will use this later when we pretend CV is panel data.
+cv08_sel$id2 <- rank(cv08_sel$id)
+cv10_sel$id2 <- rank(cv10_sel$id)
+
+# simply place one dataset under the other thus row bind (rbind) check first if same vars in both
+# datasets. perhaps clean up first.
+
+cv08_sel <- cv08_sel[, c("id", "id2", "age", "men", "educ3", "health", "region", "wave")]
+cv10_sel <- cv10_sel[, c("id", "id2", "age", "men", "educ3", "health", "region", "wave")]
+
+summary(cv08_sel)
+```
+
+```{r}
+cv_tot <- rbind(cv08_sel, cv10_sel)
+```
+
+```{r}
+# lets make a panel dataset in wide format
+cv_tot_panel <- merge(cv08_sel, cv10_sel, all = TRUE, by = "id2")
+head(cv_tot_panel)
+```
+```{r}
+#Tidy
+# step 1: selecting the variables you want to keep. for this tutorial only 6 variables: id, age,
+# sex, educ, health, region (not that R is case sensitive)
+cv08_sel <- cv08_haven %>%
+    select(c("we_id", "lftop", "geslacht", "var006n", "v401", "landd"))
+
+cv10_sel <- cv10_haven %>%
+    select(c("Sleutel", "var002", "var001", "Vltoplop", "V401", "Landd"))
+```
+
+```{r}
+# step 2: making the variables similar across individual datasets step 2a: making names the same
+names(cv08_sel) <- names(cv10_sel) <- c("id", "age", "sex", "educ", "health", "region")
+
+# step 2b: making levels and labels consistent
+str(cv08_sel)
+str(cv10_sel)
+
+# summary(cv08_sel) summary(cv10_sel)
+
+# they look very consistent already. but check carefully.  id is okay
+
+# age: replace 'onbekend'
+cv08_sel <- cv08_sel %>%
+    mutate(age = na_if(age, 99))
+cv10_sel <- cv10_sel %>%
+    mutate(age = na_if(age, 99))
+
+# sex: men
+cv08_sel <- cv08_sel %>%
+    mutate(men = recode(sex, `9` = -9, M = 1, V = 0, .keep_value_labels = FALSE), men = na_if(men, -9),
+        men = labelled(men, c(man = 1, vrouw = 0)))
+cv10_sel <- cv10_sel %>%
+    mutate(men = recode(sex, `2` = 0, .keep_value_labels = FALSE), men = labelled(men, c(man = 1, vrouw = 0)))
+
+# educ educ3
+attr(cv08_sel$educ, "labels")
+attr(cv10_sel$educ, "labels")
+
+cv08_sel <- cv08_sel %>%
+    mutate(educ3 = recode(educ, `-3` = -9, `-1` = 1, `1` = 1, `2` = 2, `3` = 2, `4` = 2, `5` = 2, `6` = 3,
+        `7` = 3, `8` = 3, `10` = -9, .keep_value_labels = FALSE), educ3 = na_if(educ3, -9), educ3 = factor(educ3,
+        levels = c(1, 2, 3), labels = c("primary", "secondary", "tertiary")))
+
+cv10_sel <- cv10_sel %>%
+    mutate(educ3 = recode(educ, `-1` = 1, `1` = 1, `2` = 2, `3` = 2, `4` = 2, `5` = 3, `10` = -9, .keep_value_labels = FALSE),
+        educ3 = na_if(educ3, -9), educ3 = factor(educ3, levels = c(1, 2, 3), labels = c("primary", "secondary",
+            "tertiary")))
+```
+
+```{r}
+# lets add a wave variable
+cv08_sel$wave <- 2008
+cv10_sel$wave <- 2010
+
+# let make a fake ID, we will use this later when we pretend CV is panel data.
+cv08_sel$id2 <- rank(cv08_sel$id)
+cv10_sel$id2 <- rank(cv10_sel$id)
+
+# simply place one dataset under the other thus row bind (rbind) check first if same vars in both
+# datasets. perhaps clean up first.
+
+cv08_sel <- cv08_sel %>%
+    select(c("id", "id2", "age", "men", "educ3", "health", "region", "wave"))
+
+cv10_sel <- cv10_sel %>%
+    select(c("id", "id2", "age", "men", "educ3", "health", "region", "wave"))
+
+cv_tot_tidy <- cv08_sel %>%
+    add_row(cv10_sel)
+```
+
+```{r}
+# lets make a panel dataset in wide format
+cv_tot_panel_tidy <- full_join(cv08_sel, cv10_sel, by = "id2", suffix = c(".2008", ".2010"))
+```
+
+
+```{r}
+# step 1. construct dataset with aggregate info
+age_region <- aggregate(cv_tot$age, by = list(cv_tot$region), FUN = mean)
+head(age_region)
+```
+
+```{r}
+# step 1. construct dataset with aggregate info
+age_region <- aggregate(cv_tot$age, by = list(cv_tot$region), FUN = mean, na.rm = TRUE)
+head(age_region)
+
+# lets correct variable names
+names(age_region) <- c("region", "age_region")
+age_region
+
+# step 2. match to dataset
+cv_total <- merge(cv_tot, age_region, by = "region", all.x = TRUE)
+head(cv_total)
+tail(cv_total)
+```
+
+```{r}
+# step 1. convert the dataset to an aggregate/grouped version using the 'group_by' function from
+# the Dplyr package (part of the tidyverse), which will enable you to perform aggregate-level, or
+# 'by group,' operations.
+age_region <- group_by(cv_tot_tidy, region)
+
+# step 2. use mutate to create and append the mean age by region to the original data frame (don't
+# forget to remove NA values).
+age_region <- mutate(age_region, mean = mean(age, na.rm = TRUE))
+
+# step 3. you can link both commands using the pipe operator %>% to keep your code concise (and
+# readable if you're writing a script).
+cv_total_tidy <- cv_tot_tidy %>%
+    group_by(region) %>%
+    mutate(age_region = mean(age, na.rm = TRUE)) %>%
+    ungroup()  #because group_by() returns a grouped tibble (a tibble specific class with a group attribute), it's good practice to close the pipe-chain with ungroup() to avoid an errors down the line. 
+```
+
+```{r}
+model1 <- lm(as.numeric(health) ~ men + age + as.factor(educ3) + as.factor(region), data = cv_total)
+summary(model1)
+```
+```{r}
+#De eerste 4 waarden zijn ongeldig (en daarom dus -4 bij de numerieke variabele)
+cv_total$health[cv_total$health == "Weigert"] <- NA
+cv_total$healthn <- as.numeric(cv_total$health) - 4
+table(cv_total$health, useNA = "always")
+table(cv_total$healthn, useNA = "always")
+```
+
+```{r}
+# step 1. define all missings
+summary(cv_total)
+```
+
+```{r}
+model2 <- lm(as.numeric(healthn) ~ men + age + as.factor(educ3) + as.factor(region), data = cv_total)
+summary(model2)
+```
+
+```{r}
+cv_total$men2 <- ifelse(is.na(cv_total$men), 2, cv_total$men)
+summary(cv_total$men2)
+
+cv_total$educ3b <- ifelse(is.na(cv_total$educ3), 4, cv_total$educ3)
+summary(cv_total$educ3b)
+
+cv_total$age2 <- ifelse(is.na(cv_total$age), mean(cv_total$age, na.rm = TRUE), cv_total$age)
+# And lets make a dummy that indicates for whom we replaced missing values.
+cv_total$age_mis <- ifelse(is.na(cv_total$age), 1, 0)
+summary(cv_total$age2)
+table(cv_total$age_mis)
+
+# pay attention, now use categorical variable men2
+model3 <- lm(healthn ~ as.factor(men2) + age2 + age_mis + as.factor(educ3b) + as.factor(region), data = cv_total)
+summary(model3)
+```
+
+```{r}
+model1 <- cv_total_tidy %>%
+    mutate(healthn = as.numeric(health), across(c(educ3, region), as.factor)) %>%
+    lm(formula = healthn ~ men + age + educ3 + region) %>%
+    summary()
+# the across function from the Dplyr package is similar to the apply function (if MARGIN = 2) from
+# base R. it performs the same operation on multiple columns (or, if you have groups, for each
+# combination of columns and groups).
+
+# lm is not a 'pipe friendly' function because the data is provided in the second argument, while
+# the pipe operator reads the data from the first unnamed(!) argument that follows the %>%. by
+# naming the first argument, the pipe will take data from the second argument, which is (in this
+# case) the correct data argument.
+
+model1
+```
+
+```{r}
+# step 1. define all missings
+
+cv_total_tidy <- cv_total_tidy %>%
+    mutate(health = na_if(health, -2), healthn = as.numeric(health) - 4)
+```
+
+```{r}
+# with the first mutate argument you avoid repeating as.numeric() for each variable.
+cv_total_tidy2 <- cv_total_tidy %>%
+    mutate(across(everything(), as.numeric), men2 = replace_na(men, 2), educ3b = replace_na(educ3, 4),
+        age2 = replace_na(age, mean(age, na.rm = TRUE)), age_mis = ifelse(is.na(age), 1, 0))
+
+# note: the following two commands are equivalent: mutate(across(everything(), as.numeric))
+# mutate_all(as.numeric) the next two as well: mutate_at(c('men2', 'educ3b', 'region'), as.factor)
+# mutate(across(c(men2, educ3b, region), as.factor))
+
+# pay attention, now use categorical variable men2.
+model3 <- cv_total_tidy2 %>%
+    mutate_at(c("men2", "educ3b", "region"), as.factor) %>%
+    lm(formula = healthn ~ men2 + age2 + age_mis + educ3b + region) %>%
+    summary()
+
+model3
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
 
 ```{r, install remotely, globalsettings, echo=FALSE, warning=FALSE, results='hide', eval=FALSE}
