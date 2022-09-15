@@ -5,15 +5,29 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+<!---Jochem: please use same global settings. Makes your website much more readable---> 
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
 knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
 ```
 
+
+<!---Jochem: you commented line 17-18 below, this is not correct--->
 ```{r}
 #install.packages("igraph")
 
-#require(igraph)
-#g <- make_graph("Zachary")
+require(igraph)
+g <- make_graph("Zachary")
 plot(g)
 ```
 
@@ -55,16 +69,18 @@ V(g)$size = degree(g) *2  #after some trial and error
 plot(g, mode = "undirected")
 ```
 
+<!---Jochem: I changed your directories, you may need to change this back.---> 
 ```{r}
 # load the necessary datasets
 getwd()
-load("~/Documents/labjournal/data/soc_df.RData")
-load("~/Documents/labjournal/data/soc_collabs1.RData")
-load("~/Documents/labjournal/data/soc_collabs2.RData")
+load("./data/soc_df.RData")
+load("./data/soc_collabs1.RData")
+load("./data/soc_collabs2.RData")
 ```
 
-```{r}
-setwd("/Users/anuschka/Documents/labjournal")
+<!---Jochem: setting working directories in code chunks does not work.---> 
+```{r, eval=FALSE}
+#setwd("/Users/anuschka/Documents/labjournal")
 ```
 
 #Network visualization tutorial
@@ -126,7 +142,7 @@ onefivedegree <- rbind(socc, onefivedegree)
 ```
 
 ```{r}
-save(onefivedegree, file = "~/Documents/labjournal/data/soc_onefivedegree.RData")
+save(onefivedegree, file = "./data/soc_onefivedegree.RData")
 ```
 
 ```{r}
