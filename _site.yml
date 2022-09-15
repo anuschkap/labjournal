@@ -17,7 +17,10 @@ navbar:
       - text: "Week 2"
         href: lab2.html
         # here, other .Rmds can be added
-
+    - text: "Report"
+      menu:
+      - text: "Introduction"
+        href: introduction.html 
 
   right:
   - icon: fab fa-github

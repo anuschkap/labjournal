@@ -5,8 +5,6 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-<!---Jochem: please use same global settings. Makes your website much more readable---> 
-
 ```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
 library(knitr)
 
@@ -21,8 +19,8 @@ colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", co
 
 ```
 
+# 2.1 Zachary
 
-<!---Jochem: you commented line 17-18 below, this is not correct--->
 ```{r}
 #install.packages("igraph")
 
@@ -69,7 +67,8 @@ V(g)$size = degree(g) *2  #after some trial and error
 plot(g, mode = "undirected")
 ```
 
-<!---Jochem: I changed your directories, you may need to change this back.---> 
+<!---Jochem: I changed your directories, you may need to change this back.--->
+
 ```{r}
 # load the necessary datasets
 getwd()
@@ -78,12 +77,13 @@ load("./data/soc_collabs1.RData")
 load("./data/soc_collabs2.RData")
 ```
 
-<!---Jochem: setting working directories in code chunks does not work.---> 
+<!---Jochem: setting working directories in code chunks does not work.--->
+
 ```{r, eval=FALSE}
 #setwd("/Users/anuschka/Documents/labjournal")
 ```
 
-#Network visualization tutorial
+# 2.2 Network visualization tutorial
 
 ```{r}
 # get unique collaborators of soc staff first. In the soc_collabs data there are 400 entries. However, some of them are listed twice. You want to take those out. The [,4] means that the fourth column is used to get the unique cases (those are the coauthor ids)
@@ -155,8 +155,6 @@ net1 <- graph_from_edgelist(onefivedegree, directed = TRUE)  # Notice the igraph
 plot(net1)  # pretty ugly!
 ```
 
-Here you make the graph prettier
-
 ```{r}
 plot(net1 ,
      vertex.color = "gold", # nice color for the vertices
@@ -227,7 +225,7 @@ plot(net1,
      edge.arrow.size = 0.1) # arrow size smaller
 ```
 
-#End of tutorial, improve the plot myself
+# 2.3 End of tutorial, improve the plot myself
 
 ```{r}
 #In line with my research topic for this course, I would like to make visible who of the researchers has a homepage (more active online?) and who does not. In soc_df you have the variable homepage. 
@@ -304,23 +302,3 @@ plot(net1,
   
   
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
