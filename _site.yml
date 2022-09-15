@@ -1,6 +1,6 @@
-name: "Example Lab Journal"
+name: "Lab Journal"
 author: 
-  - 'Your Name'
+  - 'Anuschka'
 output_dir: "docs"
 exclude: 
   - "data"
@@ -14,7 +14,8 @@ navbar:
       menu:
       - text: "Page 1"
         href: lab1.html
-        
+      - text: "Week 2"
+        href: lab2.html
         # here, other .Rmds can be added
 
 

@@ -1,0 +1,310 @@
+---
+title: "Networkvisual"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#install.packages("igraph")
+
+#require(igraph)
+g <- make_graph("Zachary")
+plot(g)
+```
+
+```{r}
+gmat <- as_adjacency_matrix(g, type = "both", sparse = FALSE)
+gmat
+```
+
+```{r}
+hist(table(degree(g)), xlab='indegree', main= 'Histogram of indegree')
+```
+
+```{r}
+(34*33)/2
+
+483+483+78
+```
+
+```{r}
+igraph::triad.census(g)
+# I will use sna because it shows the names of the triads as well.
+#sna::triad.census(gmat)
+```
+
+```{r}
+(34*33*32)/3
+
+```
+
+```{r}
+# changing V
+V(g)$size = degree(g, normalized = T) * 60 + 10  #after some trial and error
+plot(g, mode = "undirected")
+```
+
+```{r}
+# changing V
+V(g)$size = degree(g) *2  #after some trial and error
+plot(g, mode = "undirected")
+```
+
+```{r}
+# load the necessary datasets
+getwd()
+load("~/Documents/labjournal/data/soc_df.RData")
+load("~/Documents/labjournal/data/soc_collabs1.RData")
+load("~/Documents/labjournal/data/soc_collabs2.RData")
+```
+
+```{r}
+setwd("/Users/anuschka/Documents/labjournal")
+```
+
+##Network visualization tutorial
+
+```{r}
+# get unique collaborators of soc staff first. In the soc_collabs data there are 400 entries. However, some of them are listed twice. You want to take those out. The [,4] means that the fourth column is used to get the unique cases (those are the coauthor ids)
+sc_unique <- unique(soc_collabs[, 4])  # so 229 unique collaborators for RU staff?
+```
+
+```{r}
+sc_unique <- c(sc_unique, soc_df$gs_id)  # add the soc staff themselves.
+#Here you add the gs_id (google scholar ids) from the dataset soc_df to the newly created data (sc_unique)
+```
+
+```{r}
+sc_unique <- data.frame(sc_unique)
+#Now it is saved as a vector but we want it more neatly in a dataframe. Probably you could combine all the code used above with row bind 
+```
+
+```{r}
+sc_unique$v1 <- 1  # convenient to select on after the merge.
+#Here you create variable v1 with value 1
+```
+
+```{r}
+sc_unique <- unique(sc_unique)
+#Here you again take out duplicate elements
+```
+
+```{r}
+# so this is a very important step, we join the unique soc collaborators to the collaborators of
+# collaborators
+#onefivedegree is the new dataset of the 1.5 degree network. You then join the co-authors of the unique # collaborators together into this onefivedegree
+require(tidyverse)
+onefivedegree <- left_join(collabs_1deep, sc_unique, by = c(coauth_id = "sc_unique"))
+```
+
+```{r}
+# Then, we drop those that are not among sociology collaborators and who don't lsit coauthors
+# regardless
+#is.na means missing (not available). 
+onefivedegree <- onefivedegree[!is.na(onefivedegree$v1), ]
+onefivedegree <- onefivedegree[!is.na(onefivedegree$coauth), ]
+```
+
+```{r}
+# we pick those columns and have an edgelist of soc collaborators and whether they collaborate with
+# those same collaborators the 1.5 degree network. Here you only save the names and the names of their #coauthors (and you change those names so that you see how the relation works). In this edgelist you cant see that much yet (only a tie between dyads(?))
+onefivedegree <- onefivedegree[, c("name", "coauth")]
+names(onefivedegree) <- c("from", "to")
+```
+
+```{r}
+# we get soc collaborators and add those to the data above and end up with a nice edgelist! So you first take out the missings and save the name and coauthors from the soc_collabs file. Then you change those names to from and to as well and then you bind these in the rows of onefivedegree. 
+socc <- soc_collabs[!is.na(soc_collabs$coauth), ]
+socc <- socc[, c("name", "coauth")]
+names(socc) <- c("from", "to")
+onefivedegree <- rbind(socc, onefivedegree)
+```
+
+```{r}
+save(onefivedegree, file = "~/Documents/labjournal/data/soc_onefivedegree.RData")
+```
+
+```{r}
+onefivedegree <- as.matrix(onefivedegree)  # matrix because igraph wants that
+library(igraph)  # Notice that we call igraph here, in anticipation of the viz tutorial.
+net1 <- graph_from_edgelist(onefivedegree, directed = TRUE)  # Notice the igraph function here!
+```
+
+```{r}
+plot(net1)  # pretty ugly!
+```
+
+Here you make the graph prettier
+
+```{r}
+plot(net1 ,
+     vertex.color = "gold", # nice color for the vertices
+     vertex.size = 4,  # we'll make vertices a bit smaller
+     vertex.frame.color = "gray",  # we'll put a gray frame around vertices
+     vertex.label.color = "black",  # not that ugly blue color for the labels (names)
+     vertex.label.family = "Helvetica", # not a fan of times new roman in figures
+     vertex.label.cex = 0.4,  # make the label a bit smaller too
+     vertex.label.dist = 0.5,  # we'll pull the labels a bit away from the vertices
+     edge.curved = 0.2, # curved edges is always a nice touch
+     edge.arrow.size = 0.1) # make arrow size (direction of edge) smaller
+```
+
+```{r}
+#I think that with this piece of code it transforms the data of the vertices that are now stored in net1 (where the graphs are based on) into normal vectors (that what ad_ids does. But im not totally sure what they are right now. Innetwork now has all the names.
+in_network <- data.frame(as_ids(V(net1)))
+names(in_network)[1] <- "name"
+
+#soc_df$total_cites <- soc_df$total_cites.x
+#With the first line of code, it saves names and total cites from the soc_df data into ru_nodes. Then the in_network and ru_nodes are merged based on the name. We can see that cities scores a lot of missings because I believe we only know the cites of the researchers at the RU. All the others score an NA. The final line of code uses an if-statement. If there is a missing on total_cites, those individuals get the E69F00 (then the condition is true), if the condition is false (and people dont have a missing) they get the score 56B4E9. The first code is a kind of orange color and the second a blue one. Thus, you can use this to give different colors to people based on the total cites. 
+ru_nodes <- soc_df[, c("name", "total_cites")]
+in_network <- left_join(in_network, ru_nodes, by = c("name" = "name"))
+in_network$vcol <- ifelse(is.na(in_network$total_cites), "#E69F00", "#56B4E9")
+
+#Now in the plot, the color bases on the newly created variable. 
+plot(net1,
+     vertex.color = in_network$vcol, #THIS WAS WHAT WE DID THE LAST CODEBLOCK FOR!
+     vertex.size = 4,  # we'll make them a bit smaller
+     vertex.frame.color = "gray",  # we'll put a frame around it
+     vertex.label.color = "black",  # not that ugly blue color for the names
+     vertex.label.family = "Helvetica", # not a fan of times in figures
+     vertex.label.cex = 0.4,  # a bit smaller too
+     vertex.label.dist = 0.5,  # we'll pull the labels a bit away from the vertices
+     edge.curved = 0.2,  # curved edges is always a nice tough
+     edge.arrow.size = 0.1) # arrow size smaller
+```
+
+```{r}
+#If there is a missing on total cites, then you dont want a label
+plot(net1,
+     vertex.color = in_network$vcol, 
+     #NOTICE THESE CONDITIONAL STATEMENTS BELOW
+     vertex.label = ifelse(!is.na(in_network$total_cites), in_network$name, NA),
+     vertex.size = 4,  # we'll make them a bit smaller
+     vertex.frame.color = "gray",  # we'll put a frame around it
+     vertex.label.color = "black",  # not that ugly blue color for the names
+     vertex.label.family = "Helvetica", # not a fan of times in figures
+     vertex.label.cex = 0.65,  # a bit smaller too
+     vertex.label.dist = 0.5,  # we'll pull the labels a bit away from the vertices
+     edge.curved = 0.2, # curved edges is always a nice tough
+     edge.arrow.size = 0.1) # arrow size smaller
+```
+
+```{r}
+
+#If there is a missing on total_cites, the size of the vertex increases with log(2) (thus x0.3). But why do you use log and not just *0.3 e.g.? 
+plot(net1,
+     vertex.color = in_network$vcol, 
+     vertex.label = ifelse(!is.na(in_network$total_cites), in_network$name, NA),
+     # SAME HERE, TRY TO SMOOTH THE TOTAL_CITES A BIT WITH LOGSCALE
+     vertex.size = ifelse(!is.na(in_network$total_cites), log(in_network$total_cites), 2),
+     vertex.frame.color = "gray",  # we'll put a frame around it
+     vertex.label.color = "black",  # not that ugly blue color for the names
+     vertex.label.family = "Helvetica", # not a fan of times in figures
+     vertex.label.cex = 0.65,  # a bit smaller too
+     vertex.label.dist = 0.5,  # we'll pull the labels a bit away from the vertices
+     edge.curved = 0.2, # curved edges is always a nice tough
+     edge.arrow.size = 0.1) # arrow size smaller
+```
+
+#End of tutorial, improve the plot myself
+
+```{r}
+#In line with my research topic for this course, I would like to make visible who of the researchers has a homepage (more active online?) and who does not. In soc_df you have the variable homepage. 
+ru_page <- soc_df[, c("name", "homepage")]
+in_network <- left_join(in_network, ru_page, by = c("name" = "name"))
+in_network$vcolp <- ifelse(is.na(in_network$homepage), "#94E58C", "#B88CE5")
+
+#If people have a website, they are purple and if they dont they are green. Furthermore, I still dont want labels for the non-RU researchers. 
+plot(net1,
+     vertex.color = in_network$vcolp, 
+     #NOTICE THESE CONDITIONAL STATEMENTS BELOW
+     vertex.label = ifelse(!is.na(in_network$total_cites), in_network$name, NA),
+     vertex.size = 4,  # we'll make them a bit smaller
+     vertex.frame.color = "gray",  # we'll put a frame around it
+     vertex.label.color = "black",  # not that ugly blue color for the names
+     vertex.label.family = "Helvetica", # not a fan of times in figures
+     vertex.label.cex = 0.65,  # a bit smaller too
+     vertex.label.dist = 0.5,  # we'll pull the labels a bit away from the vertices
+     edge.curved = 0.2, # curved edges is always a nice tough
+     edge.arrow.size = 0.1) # arrow size smaller
+
+#The purple color is not clearly visible because the edges are grey (but I do want to keep the grey color).
+in_network$vcolp <- ifelse(is.na(in_network$homepage), "#94E58C", "#9145DE")
+
+
+```
+
+```{r}
+
+#I want the people with a webpage to appear larger in the plot. However, it's a string variable so first I have to make it numeric
+in_network$vcolps <- ifelse(is.na(in_network$homepage), "1", "2")
+in_network$vpagn <- as.numeric (in_network$vcolps)
+
+#Now the researchers with a webpage have a larger vertex size. 
+plot(net1,
+     vertex.color = in_network$vcolp, 
+     vertex.label = ifelse(!is.na(in_network$total_cites), in_network$name, NA),
+     vertex.size = ifelse(!is.na(in_network$homepage), in_network$vpagn*5, in_network$vpagn*1.5),
+     vertex.frame.color = "gray",  # we'll put a frame around it
+     vertex.label.color = "black",  # not that ugly blue color for the names
+     vertex.label.family = "Helvetica", # not a fan of times in figures
+     vertex.label.cex = 0.65,  # a bit smaller too
+     vertex.label.dist = 0.5,  # we'll pull the labels a bit away from the vertices
+     edge.curved = 0.2, # curved edges is always a nice tough
+     edge.arrow.size = 0.01) # arrow size smaller
+```
+
+```{r}
+#I would like something extra to the plot, namely a different color for men than for women. 
+ru_page <- soc_df[, c("name", "gender")]
+in_network <- left_join(in_network, ru_page, by = c("name" = "name"))
+
+#The table shows that there are 14 men and 13 women, and of course that most people have a missing. Gender information is not coded for the data of the coauthors so i can only do it for these people. 
+table(in_network$gender, useNA="always")
+
+#Im not sure why, but the color codes all of a sudden gave errors (while they worked above). I dont manage to give the missings on gender a different color because i either get the output that the missings have a color and men/women still have a numeric score, or the men are blue, the women magenta but then the missings return to NA. Idk how to combine it all in one code. 
+in_network$gendern <- as.integer(as.factor(in_network$gender))
+in_network$gendercol <-ifelse(is.na(in_network$gendern),"gray", in_network$gendern)
+in_network$gendercol <-ifelse(in_network$gendern==1,"blue","magenta")
+
+#My final plot has a different color for men than for women and the researchers with a homepage have a larger vertex size. 
+plot(net1,
+     vertex.color = in_network$gendercol, 
+     vertex.label = ifelse(!is.na(in_network$total_cites), in_network$name, NA),
+     vertex.size = ifelse(!is.na(in_network$homepage), in_network$vpagn*5, in_network$vpagn*1.5),
+     vertex.frame.color = "gray",  # we'll put a frame around it
+     vertex.label.color = "black",  # not that ugly blue color for the names
+     vertex.label.family = "Helvetica", # not a fan of times in figures
+     vertex.label.cex = 0.65,  # a bit smaller too
+     vertex.label.dist = 0.5,  # we'll pull the labels a bit away from the vertices
+     edge.curved = 0.2, # curved edges is always a nice tough
+     edge.arrow.size = 0.01) # arrow size smaller
+
+  
+  
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
