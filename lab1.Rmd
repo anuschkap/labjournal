@@ -1,6 +1,6 @@
 ---
 title: "Research question"
-#bibliography: references.bib
+bibliography: references.bib
 author: "Anuschka Peelen"
 editor_options: 
   markdown: 
@@ -71,7 +71,7 @@ with SNA as it maps how exactly networks change as a result of internet,
 whereas studies that make no use of SNA are only able to provide
 insights in internet use on the macro level and cohesion on the macro
 level. These research questions are mostly part of the "selection"
-literature within SNA.
+literature within SNA [(@tolsma2010naar)].
 
 (Will move these to references document later)
 
@@ -91,3 +91,5 @@ Planning Literature, 35(4), 408--422.
 ```{r}
 print("Hello Lab Journal")
 ```
+
+# References
