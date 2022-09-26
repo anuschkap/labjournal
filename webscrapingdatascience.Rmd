@@ -134,15 +134,24 @@ data_staff$last_name <-gsub(",.*$", "", data_staff$data_staff1)
 ```
 
 
+```{r}
+data_staff1$lastname <- do.call(paste, c(data_staff1$data_staff1, sep = ", ")) 
+```
 
+```{r}
+#Okay for the sake of time I have to create a dataframe with their names by hand. (h for handcoded). I wont include guest researchers as they may not have Radboud as affiliation and for sociology those are excluded as well.
 
+first_name <- c("tom", "djoerd", "martha", "david", "elena", "arjen", "nico", "theo", "johannes", "tom", "perry", "faegheh", "twan", "harrie", "marieke", "gabriel", "parisa", "yuliya", "gijs", "inge", "jacopo", "ankur", "zaheer", "roel", "franka", "kai", "koen", "mirthe", "luc", "emma", "negin", "hideaki", "chris", "alex", "norman", "simone", "zhuoran","konrad", "marvin", "gido", "bob", "shabaz", "wieske", "yao", "nik", "ivan", "feri", "errol", "zhengyu")
 
+last_name <- c("heskes", "hiemstra", "larson", "van leeuwen", "marchiori", "de vries", "karssemeijer", "van der weide", "textor", "claassen", "groot", "hasibi", "van laarhoven", "oosterhuis", "de vries", "bucur", "naseri", "shapovalova", "van tulder", "wortel", "acquarelli", "ankan", "babar", "bouman", "buytenhuijs", "chen", "dercksen", "van diepen", "evers", "gerritse", "ghasemitaheri", "joko", "kamphuis", "kolmus", "knyazev", "lederer", "liu", "mielke", "oeben", "schoenmacker", "stienen", "sultan", "de swart", "tong", "vaessen", "veul", "wijayanto", "zalmijn", "zhao")
 
+data_staffh <- data.frame(first_name, last_name)
 
-
+```
 
 
 ```{r}
+#This code not necessary now 
 fodd <- function(x) {
   #what is x, x is a vector
  x%%2 != 0 
@@ -203,11 +212,7 @@ soc_df$soc_names <- trimws(soc_df$soc_names, which = c("both"), whitespace = "[ 
 
 ```{r}
 # set affiliation to radboud, comes in handy for querying google scholar
-soc_df$affiliation <- "radboud university"
-```
-
-```{r}
-soc_df
+data_staffh$affiliation <- "radboud university"
 ```
 
 ```{r}
@@ -271,79 +276,81 @@ get_scholar_id_fix <- function (last_name = "", first_name = "", affiliation = N
 ```{r}
 # Look throught get_scholar_id_fix(last_name, first_name, affiliation) 
 # if we can find google scholar profiles of sociology staff!
-soc_df$gs_id <- ""
 
-for (i in 1:nrow(soc_df)) {
+#Turns out 17 people data science do not have a google scholar id. Leaves us with 32 people. 
+data_staffh$gs_id <- ""
+
+for (i in 1:nrow(data_staffh)) {
   print(i)
   time <- runif(1, 0, 1)
   Sys.sleep(time)
   
   tryCatch({
-     soc_df[i,c("gs_id")] <- get_scholar_id_fix(last_name = soc_df[i, c("last_name")], # so search on last_name of staff (third column)
-                                             first_name = soc_df[i, c("first_name")],  # search on first_name of staff (fourth column)
-                                             affiliation = soc_df[i,c("affiliation")]) # search on affiliation of each staff (fifth column)
+     data_staffh[i,c("gs_id")] <- get_scholar_id_fix(last_name = data_staffh[i, c("last_name")], # so search on last_name of staff (third column)
+                                             first_name = data_staffh[i, c("first_name")],  # search on first_name of staff (fourth column)
+                                             affiliation = data_staffh[i,c("affiliation")]) # search on affiliation of each staff (fifth column)
 
     }, error=function(e){cat("ERROR :", conditionMessage(e), "\n")}) # continue on error, but print the error
   }
 
 # remove those without pubs from the df
 # seems we're left with about 34 sociology staff members!
-soc_df <- soc_df[!soc_df$gs_id == "", ]
-soc_df
+data_staffh <- data_staffh[!data_staffh$gs_id == "", ]
+data_staffh
 ```
 
 
 ```{r}
-soc_list_profiles <- list()  # first we create an empty list that we then fill up with the for loop
-soc_list_publications <- list()
+data_list_profiles <- list()  # first we create an empty list that we then fill up with the for loop
+data_list_publications <- list()
 
-for (i in 1:nrow(soc_df)) {
+for (i in 1:nrow(data_staffh)) {
     print(i)
     time <- runif(1, 0, 1)
     Sys.sleep(time)
 
     # note how you call different elements in a list '[[]]', fill in the i-th element
-    soc_list_profiles[[i]] <- get_profile(soc_df[i, c("gs_id")])  # Note how we call row i (remember how to call rows in a DF/Matrix) and then the associated scholar id
-    soc_list_publications[[i]] <- get_publications(soc_df[i, c("gs_id")])
-    soc_list_publications[[i]][, c("gs_id")] <- soc_df[i, c("gs_id")]  # note that we again attach an id
+    data_list_profiles[[i]] <- get_profile(data_staffh[i, c("gs_id")])  # Note how we call row i (remember how to call rows in a DF/Matrix) and then the associated scholar id
+    data_list_publications[[i]] <- get_publications(data_staffh[i, c("gs_id")])
+    data_list_publications[[i]][, c("gs_id")] <- data_staffh[i, c("gs_id")]  # note that we again attach an id
     # so both functions here call the entire profile and pubs for an author, based on google
     # scholar ids
 
 }
 # Notice how fast the data blow up! The 34 RU sociology scholars publish ~3000 papers
-soc_df_publications <- bind_rows(soc_list_publications)
+data_df_publications <- bind_rows(data_list_publications)
 ```
 
 
 
 ```{r}
-soc_profiles_df <- list()
-for (i in 1:length(soc_list_profiles)) {
+data_profiles_df <- list()
+for (i in 1:length(data_list_profiles)) {
     # soc_profiles_df[[i]] <- data.frame(t(unlist(soc_list_profiles[[i]][1:8]))) #some annyoing
     # data handling
-    soc_profiles_df[[i]] <- unlist(soc_list_profiles[[i]][1:8])
-    soc_profiles_df[[i]] <- data.frame(soc_profiles_df[[i]])
-    soc_profiles_df[[i]] <- data.frame(t(soc_profiles_df[[i]]))
+    data_profiles_df[[i]] <- unlist(data_list_profiles[[i]][1:8])
+    data_profiles_df[[i]] <- data.frame(data_profiles_df[[i]])
+    data_profiles_df[[i]] <- data.frame(t(data_profiles_df[[i]]))
 
 }
-soc_profiles_df <- bind_rows(soc_profiles_df)
-soc_df <- left_join(soc_df, soc_profiles_df, by = c(gs_id = "id"))  # merge data with soc_df
-soc_df  # notice all the new information we were able to get from the scholar profiles!
+data_profiles_df <- bind_rows(data_profiles_df)
+data_df <- left_join(data_staffh, data_profiles_df, by = c(gs_id = "id"))  # merge data with soc_df
+data_df  # notice all the new information we were able to get from the scholar profiles!
 ```
 
 ```{r}
 # get citation history of a scholar
-soc_staff_cit <- list()
-for (i in 1:nrow(soc_df)) {
+data_staff_cit <- list()
+for (i in 1:nrow(data_df)) {
 
-    soc_staff_cit[[i]] <- get_citation_history(soc_df[i, c("gs_id")])
+    data_staff_cit[[i]] <- get_citation_history(data_df[i, c("gs_id")])
 
-    if (nrow(soc_staff_cit[[i]]) > 0) {
-        soc_staff_cit[[i]][, c("gs_id")] <- soc_df[i, c("gs_id")]  # again attach the gs_id as third column
+    if (nrow(data_staff_cit[[i]]) > 0) {
+        data_staff_cit[[i]][, c("gs_id")] <- data_df[i, c("gs_id")]  # again attach the gs_id as third column
     }
 }
-soc_staff_cit <- bind_rows(soc_staff_cit)
-colnames(soc_staff_cit)[3] <- "gs_id"
+data_staff_cit <- bind_rows(data_staff_cit)
+colnames(data_staff_cit)[3] <- "gs_id"
 ```
 
 
@@ -398,40 +405,40 @@ fcollabs <- function(gsid, lookforcollabs) {
 # first the soc collaborators note how we already build a function (fcollabs()) for you you need to
 # input a google scholar id and a 1 (if you want to find collabs) or 0 (only extracting names)
 # fcollabs --> you can check it out if you're interested
-soc_collabs <- list()
-for (i in 1:nrow(soc_df)) {
+data_collabs <- list()
+for (i in 1:nrow(data_df)) {
 
     time <- runif(1, 0, 1)
     Sys.sleep(time)
 
-    soc_collabs[[i]] <- fcollabs(soc_df[i, c("gs_id")], 1)
+    data_collabs[[i]] <- fcollabs(data_df[i, c("gs_id")], 1)
 
 }
-soc_collabs <- bind_rows(soc_collabs)  # bind rows, get the unique ones!
-soc_collabs_unique <- unique(soc_collabs[, "coauth_id"])  # so 229 unique collaborators for RU staff?
-soc_collabs_unique <- soc_collabs_unique[!is.na(soc_collabs_unique)]
-save(soc_collabs, file = "addfiles\\soc_df_collabs1.RData")  # you notice this takes a while, so we save the data here.
+data_collabs <- bind_rows(data_collabs)  # bind rows, get the unique ones!
+data_collabs_unique <- unique(data_collabs[, "coauth_id"])  # so 229 unique collaborators for RU staff?
+data_collabs_unique <- data_collabs_unique[!is.na(data_collabs_unique)]
+save(data_collabs, file = "addfiles\\data_df_collabs1.RData")  # you notice this takes a while, so we save the data here.
 ```
 
 
 ```{r}
 # then the names of those collaborators plus THEIR collaborators understand that we don't have
 # names of them yet from the code above?
-collabs_1deep <- list()
-for (i in 1:length(soc_collabs_unique)) {
+collabsdata_1deep <- list()
+for (i in 1:length(data_collabs_unique)) {
 
     time <- runif(1, 0, 3)
     Sys.sleep(time)
 
-    if (!soc_collabs_unique[i] %in% soc_df$gs_id) {
-        collabs_1deep[[i]] <- fcollabs(soc_collabs_unique[i], 1)
+    if (!data_collabs_unique[i] %in% data_df$gs_id) {
+        collabsdata_1deep[[i]] <- fcollabs(data_collabs_unique[i], 1)
 
     }
 }
-collabs_1deep <- bind_rows(collabs_1deep)
-collabs_1deep_unique <- unique(collabs_1deep[, 2])
-collabs_1deep_unique <- collabs_1deep_unique[!is.na(collabs_1deep_unique)]
-save(collabs_1deep, file = "addfiles\\soc_collabs2.RData")  # you notice this takes a while, so we save the data here.
+collabsdata_1deep <- bind_rows(collabsdata_1deep)
+collabsdata_1deep_unique <- unique(collabsdata_1deep[, 2])
+collabsdata_1deep_unique <- collabsdata_1deep_unique[!is.na(collabsdata_1deep_unique)]
+save(collabsdata_1deep, file = "addfiles\\data_collabs2.RData")  # you notice this takes a while, so we save the data here.
 ```
 
 ```{r}
@@ -443,6 +450,99 @@ for (i in c("_ukytQYAAAAJ", "lkVq32sAAAAJ", "p3IwtT4AAAAJ")) {
     soc_collabs <- soc_collabs[!(soc_collabs$gs_id == i), ]
 }
 ```
+
+
+
+# Twitter Part
+
+```{r}
+#Have to work with API so have to register first to get access
+Sys.setenv(BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAKrlhQEAAAAA2FanC26ruzLTXpxNhyzmoiW67dc%3DbKf1jIQ1ocJS3TJQcJDAihczebimKPGjrqsOZSEXAoiGUnK83x")
+
+
+```
+
+```{r}
+#install.packages("httr")
+#install.packages("jsonlite")
+#require(httr)
+#require(jsonlite)
+#require(dplyr)
+
+bearer_token <- Sys.getenv("AAAAAAAAAAAAAAAAAAAAAKrlhQEAAAAA2FanC26ruzLTXpxNhyzmoiW67dc%3DbKf1jIQ1ocJS3TJQcJDAihczebimKPGjrqsOZSEXAoiGUnK83x")
+headers <- c(`Authorization` = sprintf('Bearer %s', bearer_token))
+auth_setup_default()
+```
+
+
+```{r}
+params <- list(`user.fields` = 'description',
+               `expansions` = 'pinned_tweet_id')
+
+handle <- readline('@moforthewin')
+url_handle <-
+  sprintf('https://api.twitter.com/2/users/by?usernames=%s', handle)
+```
+
+
+
+
+```{r}
+
+install.packages ("twitteR")
+library("twitteR")
+
+follower <- getUser("@amoforthewin")
+follower$followerCount
+```
+
+```{r}
+#Test with Elon Musk. 
+elonmusk_df <- search_users("elon musk", n = 10, parse = TRUE, token = NULL, verbose = TRUE)
+elonmusk_df
+
+#Now I want to build a loop to find the user names based on the names. I want to save screen_name & followers_count. Im not sure how to save those outcomes. 
+data_twitter$user_id <- ""
+for (i in 1:length(data_df)) {
+  
+  time <- runif (1,0,3)
+  Sys.sleep(time)
+  print(i)
+  
+  if (data_df$name [i]) {
+    data_twitter <- search_users("i", n=5, parse=TRUE, token=NULL, verbose=TRUE)
+  }
+}
+
+#Try again
+data_twitter$user_id <- ("")
+for (i in 1:length(data_df)) 
+  
+  time <- runif (1,0,3)
+  Sys.sleep(time)
+  print(i)
+  
+  tryCatch({data_twitter[i, c("user_id")] <- search_users(data_df[i, "name"], n=5, parse=TRUE, token=NULL, verbose=TRUE)
+    }, error=function(e){cat("ERROR :", conditionMessage(e), "\n")})
+    
+    
+  
+  if (data_df$name [i]) {
+    data_twitter <- search_users("i", n=5, parse=TRUE, token=NULL, verbose=TRUE)
+  }
+}
+
+```
+
+
+
+
+
+
+
+
+
+
 
 ```{r}
 # get num co-authors of soc staff. If missing --> empty space so dropped
