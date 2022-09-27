@@ -79,22 +79,7 @@ it can reveal precisely how selection in social networks may alter as a
 consequence of social media. This reveals to a deeper extent which
 mechanisms underlie the influence of internet on cohesion.
 
-In the present study, data of scientists webscraped from Google Scholar
-will be used to answer the research question. The study will focus on
-scientists working at the Sociology or Data Science department of
-Radboud University. It will focus on the micro-level, thus the nodes are
-the scientists. The edges between these nodes will be expressed with
-co-authorship (yes/no), so when these authors have published an article
-together they will have a tie. Furthermore, the activity on social media
-will be calculated using the Kardashian Index, which compares the
-Twitter followers with number of citations of academics (Hall, 2014).
-Furthermore, the number of social media platforms an academic is member
-of may also show the degree of activity on social media. Furthermore, I
-will collect data on research interests to investigate the degree of
-homophily, and I will control for age and gender. In the end, these
-variables will be used to analyze how the density and homophily within
-the social networks of academics of the Sociology Department and Data
-Science department have developed over time.
+# References
 
 Aiello, L. M., Barrat, A., Schifanella, R., Cattuto, C., Markines, B., &
 Menczer, F. (2012). Friendship prediction and homophily in social media.

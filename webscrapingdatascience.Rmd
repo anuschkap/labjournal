@@ -127,7 +127,7 @@ data_staff <- data_staff1[c(1:160), , drop=FALSE]
 ```
 
 
-HIER STRAND IK
+
 ```{r}
 data_staff$last_name <-gsub(",.*$", "", data_staff$data_staff1)
 
@@ -498,8 +498,8 @@ follower$followerCount
 
 ```{r}
 #Test with Elon Musk. 
-elonmusk_df <- search_users("elon musk", n = 10, parse = TRUE, token = NULL, verbose = TRUE)
-elonmusk_df
+elonmusksolo_df <- search_users("elon musk", n=1, parse = TRUE, token = NULL, verbose = TRUE) #search_users is the code to find the users. It then saves 10 people with elon musk in their name, 
+elonmusksolo_df
 
 #Now I want to build a loop to find the user names based on the names. I want to save screen_name & followers_count. Im not sure how to save those outcomes. 
 data_twitter$user_id <- ""
@@ -522,15 +522,20 @@ for (i in 1:length(data_df))
   Sys.sleep(time)
   print(i)
   
-  tryCatch({data_twitter[i, c("user_id")] <- search_users(data_df[i, "name"], n=5, parse=TRUE, token=NULL, verbose=TRUE)
+  tryCatch({data_twitter[i, c("user_id")] <- search_users(data_df[i, "name"], n=1, parse=TRUE, token=NULL, verbose=TRUE)
     }, error=function(e){cat("ERROR :", conditionMessage(e), "\n")})
     
-    
+ 
+  #####
+data_twitter <- list()
+for (i in 1:length(data_df)) 
   
-  if (data_df$name [i]) {
-    data_twitter <- search_users("i", n=5, parse=TRUE, token=NULL, verbose=TRUE)
-  }
-}
+  time <- runif (1,0,3)
+  Sys.sleep(time)
+  print(i)
+  
+  tryCatch({data_twitter[i, c("id_str"|"screen_name"| "followerscount")] <- search_users(data_df[i, "name"], n=1, parse=FALSE, token=NULL, verbose=TRUE)
+    }, error=function(e){cat("ERROR :", conditionMessage(e), "\n")})   
 
 ```
 

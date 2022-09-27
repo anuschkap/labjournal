@@ -1,0 +1,90 @@
+---
+title: "Data & Method"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+------------------------------------------------------------------------
+
+# Data
+
+<br>
+
+In the present study, data will be webscraped from the internet to
+answer the research question. The study will focus on scientists working
+at the Sociology department and scientists working at the Data Science
+department of Radboud University. Information on publications,
+co-authorship and citations will be scraped from Google Scholar using
+the Scholar package in R. Social media participation will be expressed
+using the Kardashian Index, which compares the Twitter followers with
+number of citations of academics (Hall, 2014). In order to calculate
+these, the twitteR package in R will be used to extract Twitter user
+information of scholars of the departments. Using the number of
+followers and the citations, the index can be calculated. Data will be
+collected for two different times, and then the evolution of the
+networks of Sociology and Data Science will be compared.
+
+Summarized, it can be expressed as follows:
+
+**Nodes** The scientists of both departments mentioned (thus focusing on
+the micro-level)
+
+**Edges** Co-authorship between these scientists (yes/no)
+
+**Dependent variable** Not exactly sure yet. Density of the network.
+Homophily? But I don't have everyone's research interests.
+
+**Independent variable** Kardashian Index of the scientists. To measure
+the influence effects, a model will be analyzed including the Kardashian
+Index as a dependent variable.
+
+**Control variables** Gender and age.
+
+<br>
+
+# Method
+
+In order to study the networks, the RSiena package will be used. SIENA
+is able to analyze longitudinal data simulating network outcomes based
+on the perspective of the nodes (Ripley, Snijders, Boda, Voros &
+Preciado, 2022) TO WHAT EXTENT DO I EXPLAIN THIS? First, the evaluation
+effects will be studied, which focuses on which ties are present.
+
+<br> 
+
+# References 
+
+Hall, N. (2014). The Kardashian index: A measure of
+discrepant social media profile for scientists. Genome Biology, 15(7),
+424. <https://doi.org/10.1186/s13059-014-0424-0>
+
+Ruth M. Ripley, Tom A.B. Snijders, Zs ́ofia Boda, Andr ́as V ̈or ̈os,
+and Paulina Preciado, 2022. Manual for SIENA version 4.0 (version August
+11, 2022). Oxford: University of Oxford, Department of Statistics;
+Nuffield College.
