@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Anuschka Peelen" />
+
+<meta name="date" content="2022-09-27" />
+
+<title>Webscraping Sociology Staff</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="tweaks.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    My journal
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab1.html">Week 1</a>
+    </li>
+    <li>
+      <a href="lab2.html">Week 2</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Report
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="introduction.html">Introduction</a>
+    </li>
+    <li>
+      <a href="datach.html">Data &amp; Methods</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JochemTolsma/labjournal">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Webscraping Sociology Staff</h1>
+<h4 class="author">Anuschka Peelen</h4>
+<h4 class="date">2022-09-27</h4>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<pre class="r test"><code>#########################################
+# Title:    Webscraping in R
+# Author:   Bas Hofstra
+# Version:  29-07-2021
+#########################################
+
+#start with clean workspace 
+rm(list=ls())
+
+# install.packages(&quot;data.table&quot;) 
+library(data.table) # mainly for faster data handling
+library(tidyverse) # I assume you already installed this one!
+# install.packages(&quot;httr&quot;) # we don&#39;t need this for now
+# require(httr)
+#install.packages(&quot;xml2&quot;)
+require(xml2)
+#install.packages(&quot;rvest&quot;)
+require(rvest)
+#install.packages(&quot;devtools&quot;)
+require(devtools)
+# Note we&#39;re doing something different here. We&#39;re installing a *latest* version directly from GitHub
+# This is because the released version of this packages contains some errors!
+#devtools::install_github(&quot;jkeirstead/scholar&quot;) 
+
+
+require(scholar)
+
+#define workdirectory, note the double *backslashes* if you&#39;re on windows
+# setwd(&quot;/yourpathhere)&quot;</code></pre>
+<pre class="r test"><code># Let&#39;s first get the staff page read_html is a function that simply extracts html webpages and
+# puts them in xml format
+soc_staff &lt;- read_html(&quot;https://www.ru.nl/sociology/research/staff/&quot;)
+
+head(soc_staff)</code></pre>
+<pre class="test2"><code>#&gt; $node
+#&gt; &lt;pointer: 0x600003c05000&gt;
+#&gt; 
+#&gt; $doc
+#&gt; &lt;pointer: 0x600002504160&gt;</code></pre>
+<pre class="r test"><code>class(soc_staff)</code></pre>
+<pre class="test2"><code>#&gt; [1] &quot;xml_document&quot; &quot;xml_node&quot;</code></pre>
+<pre class="r test"><code>soc_staff &lt;- soc_staff %&gt;%
+    rvest::html_nodes(&quot;body&quot;) %&gt;%
+    xml2::xml_find_all(&quot;//td&quot;) %&gt;%
+    rvest::html_text()</code></pre>
+<pre class="r test"><code>fodd &lt;- function(x) {
+  #what is x, x is a vector
+ x%%2 != 0 
+}
+
+nstaf &lt;- length(soc_staff)
+nstaf</code></pre>
+<pre class="test2"><code>#&gt; [1] 102</code></pre>
+<pre class="r test"><code>fodd(1:nstaf)</code></pre>
+<pre class="test2"><code>#&gt;   [1]  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE
+#&gt;  [16] FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE
+#&gt;  [31]  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE
+#&gt;  [46] FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE
+#&gt;  [61]  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE
+#&gt;  [76] FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE
+#&gt;  [91]  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE</code></pre>
+<pre class="r test"><code>soc_names &lt;- soc_staff[fodd(1:nstaf)] 
+head(soc_names)</code></pre>
+<pre class="test2"><code>#&gt; [1] &quot;Staff:&quot;                           &quot;Batenburg, prof. dr. R. (Ronald)&quot;
+#&gt; [3] &quot;Begall, dr. K.H. (Katia)&quot;         &quot;Bekhuis, dr. H. (Hidde)&quot;         
+#&gt; [5] &quot;Berg, dr. L. van den (Lonneke)&quot;   &quot;Blommaert, dr. L. (Lieselotte)&quot;</code></pre>
+<pre class="r test"><code>soc_names</code></pre>
+<pre class="test2"><code>#&gt;  [1] &quot;Staff:&quot;                                                                                                                                                            
+#&gt;  [2] &quot;Batenburg, prof. dr. R. (Ronald)&quot;                                                                                                                                  
+#&gt;  [3] &quot;Begall, dr. K.H. (Katia)&quot;                                                                                                                                          
+#&gt;  [4] &quot;Bekhuis, dr. H. (Hidde)&quot;                                                                                                                                           
+#&gt;  [5] &quot;Berg, dr. L. van den (Lonneke)&quot;                                                                                                                                    
+#&gt;  [6] &quot;Blommaert, dr. L. (Lieselotte)&quot;                                                                                                                                    
+#&gt;  [7] &quot;Eisinga, prof. dr. R.N. (Rob)&quot;                                                                                                                                     
+#&gt;  [8] &quot;Gesthuizen, dr. M.J.W. (Maurice)&quot;                                                                                                                                  
+#&gt;  [9] &quot;Geurts, dr. P.G. (Nella)&quot;                                                                                                                                          
+#&gt; [10] &quot;Glas, dr. S. (Saskia)&quot;                                                                                                                                             
+#&gt; [11] &quot;Hek, dr. M. van (Margriet)&quot;                                                                                                                                        
+#&gt; [12] &quot;Hoekman, dr. R. H. A.(Remco)&quot;                                                                                                                                      
+#&gt; [13] &quot;Hofstra, dr. B. (Bas)&quot;                                                                                                                                             
+#&gt; [14] &quot;Koops, dr. J. (Judith)&quot;                                                                                                                                            
+#&gt; [15] &quot;Kraaykamp, prof. dr. G.L.M. (Gerbert)&quot;                                                                                                                             
+#&gt; [16] &quot;Meuleman, dr. (Roza)&quot;                                                                                                                                              
+#&gt; [17] &quot;Savelkoul, dr. M.J. (Michael)&quot;                                                                                                                                     
+#&gt; [18] &quot;Scheepers, prof. dr. P.L.H. (Peer)&quot;                                                                                                                                
+#&gt; [19] &quot;Spierings, dr. C.H.B.M. (Niels)&quot;                                                                                                                                   
+#&gt; [20] &quot;Tolsma, dr. J. (Jochem)&quot;                                                                                                                                           
+#&gt; [21] &quot;\r\n                                Verbakel, prof. dr. C.M.C. (Ellen)\r\n                                Head of the department\r\n                              &quot;
+#&gt; [22] &quot;Visser, dr. M. (Mark)&quot;                                                                                                                                             
+#&gt; [23] &quot;Wolbers, prof. dr. M.H.J. (Maarten)&quot;                                                                                                                               
+#&gt; [24] &quot;PhD:&quot;                                                                                                                                                              
+#&gt; [25] &quot;Bussemakers, C. (Carlijn) MSc&quot;                                                                                                                                     
+#&gt; [26] &quot;Franken, R. (Rob) MSc&quot;                                                                                                                                             
+#&gt; [27] &quot;Firat, M. (Mustafa) MSc&quot;                                                                                                                                           
+#&gt; [28] &quot;\r\n                                Güneyli, A. (Ayşegül)\r\n                              &quot;                                                                       
+#&gt; [29] &quot;Hendriks, I.P. (Inge) MSc&quot;                                                                                                                                         
+#&gt; [30] &quot;Jeroense, T.M.G. (Thijmen) MSc&quot;                                                                                                                                    
+#&gt; [31] &quot;Kollar, R. (Rachel)&quot;                                                                                                                                               
+#&gt; [32] &quot;Linders, N. (Nik) MSc&quot;                                                                                                                                             
+#&gt; [33] &quot;Loh, S.M. (Renae) MSc&quot;                                                                                                                                             
+#&gt; [34] &quot;Meijeren, M. (Maikel) MSc&quot;                                                                                                                                         
+#&gt; [35] &quot;Mensvoort, C.A. van (Carly) MSc&quot;                                                                                                                                   
+#&gt; [36] &quot;\r\n                                Mulders, A.M. (Anne Maaike) MSc\r\n                              &quot;                                                             
+#&gt; [37] &quot;Müller, K. (Katrin) MSc&quot;                                                                                                                                           
+#&gt; [38] &quot;Raiber, K. (Klara) MSc&quot;                                                                                                                                            
+#&gt; [39] &quot;Ramaekers, M.J.M. (Marlou) MSc&quot;                                                                                                                                    
+#&gt; [40] &quot;Wiertsema, S. (Sara) MSc&quot;                                                                                                                                          
+#&gt; [41] &quot;External PhD:&quot;                                                                                                                                                     
+#&gt; [42] &quot;Betkó, drs. J.G. (János)&quot;                                                                                                                                          
+#&gt; [43] &quot;Middendorp J. (Jansje) van MSc&quot;                                                                                                                                    
+#&gt; [44] &quot;Vis, E. (Elize) MSc&quot;                                                                                                                                               
+#&gt; [45] &quot;Weber, T. (Tijmen) MSc&quot;                                                                                                                                            
+#&gt; [46] &quot;Guest researchers:&quot;                                                                                                                                                
+#&gt; [47] &quot;Khawli, E. el (Elissa) post-doc, Dr.&quot;                                                                                                                              
+#&gt; [48] &quot;Sterkens, dr. C.J.A. (Carl)&quot;                                                                                                                                       
+#&gt; [49] &quot;Vermeer, dr. P.A.D.M. (Paul)&quot;                                                                                                                                      
+#&gt; [50] &quot;Other researchers:&quot;                                                                                                                                                
+#&gt; [51] &quot;Grubben, M. (Malou)&quot;</code></pre>
+<pre class="r test"><code>soc_names</code></pre>
+<pre class="test2"><code>#&gt;  [1] &quot;Staff:&quot;                                                                                                                                                            
+#&gt;  [2] &quot;Batenburg, prof. dr. R. (Ronald)&quot;                                                                                                                                  
+#&gt;  [3] &quot;Begall, dr. K.H. (Katia)&quot;                                                                                                                                          
+#&gt;  [4] &quot;Bekhuis, dr. H. (Hidde)&quot;                                                                                                                                           
+#&gt;  [5] &quot;Berg, dr. L. van den (Lonneke)&quot;                                                                                                                                    
+#&gt;  [6] &quot;Blommaert, dr. L. (Lieselotte)&quot;                                                                                                                                    
+#&gt;  [7] &quot;Eisinga, prof. dr. R.N. (Rob)&quot;                                                                                                                                     
+#&gt;  [8] &quot;Gesthuizen, dr. M.J.W. (Maurice)&quot;                                                                                                                                  
+#&gt;  [9] &quot;Geurts, dr. P.G. (Nella)&quot;                                                                                                                                          
+#&gt; [10] &quot;Glas, dr. S. (Saskia)&quot;                                                                                                                                             
+#&gt; [11] &quot;Hek, dr. M. van (Margriet)&quot;                                                                                                                                        
+#&gt; [12] &quot;Hoekman, dr. R. H. A.(Remco)&quot;                                                                                                                                      
+#&gt; [13] &quot;Hofstra, dr. B. (Bas)&quot;                                                                                                                                             
+#&gt; [14] &quot;Koops, dr. J. (Judith)&quot;                                                                                                                                            
+#&gt; [15] &quot;Kraaykamp, prof. dr. G.L.M. (Gerbert)&quot;                                                                                                                             
+#&gt; [16] &quot;Meuleman, dr. (Roza)&quot;                                                                                                                                              
+#&gt; [17] &quot;Savelkoul, dr. M.J. (Michael)&quot;                                                                                                                                     
+#&gt; [18] &quot;Scheepers, prof. dr. P.L.H. (Peer)&quot;                                                                                                                                
+#&gt; [19] &quot;Spierings, dr. C.H.B.M. (Niels)&quot;                                                                                                                                   
+#&gt; [20] &quot;Tolsma, dr. J. (Jochem)&quot;                                                                                                                                           
+#&gt; [21] &quot;\r\n                                Verbakel, prof. dr. C.M.C. (Ellen)\r\n                                Head of the department\r\n                              &quot;
+#&gt; [22] &quot;Visser, dr. M. (Mark)&quot;                                                                                                                                             
+#&gt; [23] &quot;Wolbers, prof. dr. M.H.J. (Maarten)&quot;                                                                                                                               
+#&gt; [24] &quot;PhD:&quot;                                                                                                                                                              
+#&gt; [25] &quot;Bussemakers, C. (Carlijn) MSc&quot;                                                                                                                                     
+#&gt; [26] &quot;Franken, R. (Rob) MSc&quot;                                                                                                                                             
+#&gt; [27] &quot;Firat, M. (Mustafa) MSc&quot;                                                                                                                                           
+#&gt; [28] &quot;\r\n                                Güneyli, A. (Ayşegül)\r\n                              &quot;                                                                       
+#&gt; [29] &quot;Hendriks, I.P. (Inge) MSc&quot;                                                                                                                                         
+#&gt; [30] &quot;Jeroense, T.M.G. (Thijmen) MSc&quot;                                                                                                                                    
+#&gt; [31] &quot;Kollar, R. (Rachel)&quot;                                                                                                                                               
+#&gt; [32] &quot;Linders, N. (Nik) MSc&quot;                                                                                                                                             
+#&gt; [33] &quot;Loh, S.M. (Renae) MSc&quot;                                                                                                                                             
+#&gt; [34] &quot;Meijeren, M. (Maikel) MSc&quot;                                                                                                                                         
+#&gt; [35] &quot;Mensvoort, C.A. van (Carly) MSc&quot;                                                                                                                                   
+#&gt; [36] &quot;\r\n                                Mulders, A.M. (Anne Maaike) MSc\r\n                              &quot;                                                             
+#&gt; [37] &quot;Müller, K. (Katrin) MSc&quot;                                                                                                                                           
+#&gt; [38] &quot;Raiber, K. (Klara) MSc&quot;                                                                                                                                            
+#&gt; [39] &quot;Ramaekers, M.J.M. (Marlou) MSc&quot;                                                                                                                                    
+#&gt; [40] &quot;Wiertsema, S. (Sara) MSc&quot;                                                                                                                                          
+#&gt; [41] &quot;External PhD:&quot;                                                                                                                                                     
+#&gt; [42] &quot;Betkó, drs. J.G. (János)&quot;                                                                                                                                          
+#&gt; [43] &quot;Middendorp J. (Jansje) van MSc&quot;                                                                                                                                    
+#&gt; [44] &quot;Vis, E. (Elize) MSc&quot;                                                                                                                                               
+#&gt; [45] &quot;Weber, T. (Tijmen) MSc&quot;                                                                                                                                            
+#&gt; [46] &quot;Guest researchers:&quot;                                                                                                                                                
+#&gt; [47] &quot;Khawli, E. el (Elissa) post-doc, Dr.&quot;                                                                                                                              
+#&gt; [48] &quot;Sterkens, dr. C.J.A. (Carl)&quot;                                                                                                                                       
+#&gt; [49] &quot;Vermeer, dr. P.A.D.M. (Paul)&quot;                                                                                                                                      
+#&gt; [50] &quot;Other researchers:&quot;                                                                                                                                                
+#&gt; [51] &quot;Grubben, M. (Malou)&quot;</code></pre>
+<pre class="r test"><code>soc_experts &lt;- soc_staff[!fodd(1:nstaf)]  # in the 1 until 94st number, get the even elements
+head(soc_experts)</code></pre>
+<pre class="test2"><code>#&gt; [1] &quot;Expertise:&quot;                                                                                    
+#&gt; [2] &quot;Healthcare, labour market and healthcare professions and training&quot;                             
+#&gt; [3] &quot;Family, life course, labour market participation, division of household tasks and gender norms&quot;
+#&gt; [4] &quot;Welfare state, nationalism and sports&quot;                                                         
+#&gt; [5] &quot;Family, life course and transition to adulthood&quot;                                               
+#&gt; [6] &quot;Discrimination and inequality on the labour market&quot;</code></pre>
+<pre class="r test"><code>soc_df &lt;- data.frame(cbind(soc_names, soc_experts))  </code></pre>
+<pre class="r test"><code># inspect again, and remove the rows we don&#39;t need (check for yourself to be certain!)
+
+delrows &lt;- which(soc_df$soc_names == &quot;Staff:&quot; | soc_df$soc_names == &quot;PhD:&quot; | soc_df$soc_names == &quot;External PhD:&quot; |
+    soc_df$soc_names == &quot;Guest researchers:&quot; | soc_df$soc_names == &quot;Other researchers:&quot;)
+
+soc_df &lt;- soc_df[-delrows, ]</code></pre>
+<pre class="r test"><code># Last name seems to be everything before the comma
+soc_df$last_name &lt;- gsub(&quot;,.*$&quot;, &quot;&quot;, soc_df$soc_names)
+
+# first name is everything between brackets
+soc_df$first_name &lt;- str_extract_all(soc_df$soc_names, &quot;(?&lt;=\\().+?(?=\\))&quot;, simplify = TRUE)</code></pre>
+<pre class="r test"><code>soc_df$last_name &lt;- gsub(&quot; J. \\(Jansje\\) van MSc&quot;, &quot;&quot;, soc_df$last_name)
+soc_df$first_name &lt;- tolower(soc_df$first_name)  # everything to lower!
+soc_df$last_name &lt;- tolower(soc_df$last_name)</code></pre>
+<pre class="r test"><code># trimws looses all spacing before and after (if you specify &#39;both&#39;) a character string
+soc_df$last_name &lt;- trimws(soc_df$last_name, which = c(&quot;both&quot;), whitespace = &quot;[ \t\r\n]&quot;)
+soc_df$first_name &lt;- trimws(soc_df$first_name, which = c(&quot;both&quot;), whitespace = &quot;[ \t\r\n]&quot;)
+soc_df$soc_experts &lt;- trimws(soc_df$soc_experts, which = c(&quot;both&quot;), whitespace = &quot;[ \t\r\n]&quot;)
+soc_df$soc_names &lt;- trimws(soc_df$soc_names, which = c(&quot;both&quot;), whitespace = &quot;[ \t\r\n]&quot;)</code></pre>
+<pre class="r test"><code># set affiliation to radboud, comes in handy for querying google scholar
+soc_df$affiliation &lt;- &quot;radboud university&quot;</code></pre>
+<pre class="r test"><code>soc_df</code></pre>
+<pre class="test2"><code>#&gt;                                                                                       soc_names
+#&gt; 2                                                              Batenburg, prof. dr. R. (Ronald)
+#&gt; 3                                                                      Begall, dr. K.H. (Katia)
+#&gt; 4                                                                       Bekhuis, dr. H. (Hidde)
+#&gt; 5                                                                Berg, dr. L. van den (Lonneke)
+#&gt; 6                                                                Blommaert, dr. L. (Lieselotte)
+#&gt; 7                                                                 Eisinga, prof. dr. R.N. (Rob)
+#&gt; 8                                                              Gesthuizen, dr. M.J.W. (Maurice)
+#&gt; 9                                                                      Geurts, dr. P.G. (Nella)
+#&gt; 10                                                                        Glas, dr. S. (Saskia)
+#&gt; 11                                                                   Hek, dr. M. van (Margriet)
+#&gt; 12                                                                 Hoekman, dr. R. H. A.(Remco)
+#&gt; 13                                                                        Hofstra, dr. B. (Bas)
+#&gt; 14                                                                       Koops, dr. J. (Judith)
+#&gt; 15                                                        Kraaykamp, prof. dr. G.L.M. (Gerbert)
+#&gt; 16                                                                         Meuleman, dr. (Roza)
+#&gt; 17                                                                Savelkoul, dr. M.J. (Michael)
+#&gt; 18                                                           Scheepers, prof. dr. P.L.H. (Peer)
+#&gt; 19                                                              Spierings, dr. C.H.B.M. (Niels)
+#&gt; 20                                                                      Tolsma, dr. J. (Jochem)
+#&gt; 21 Verbakel, prof. dr. C.M.C. (Ellen)\r\n                                Head of the department
+#&gt; 22                                                                        Visser, dr. M. (Mark)
+#&gt; 23                                                          Wolbers, prof. dr. M.H.J. (Maarten)
+#&gt; 25                                                                Bussemakers, C. (Carlijn) MSc
+#&gt; 26                                                                        Franken, R. (Rob) MSc
+#&gt; 27                                                                      Firat, M. (Mustafa) MSc
+#&gt; 28                                                                        Güneyli, A. (Ayşegül)
+#&gt; 29                                                                    Hendriks, I.P. (Inge) MSc
+#&gt; 30                                                               Jeroense, T.M.G. (Thijmen) MSc
+#&gt; 31                                                                          Kollar, R. (Rachel)
+#&gt; 32                                                                        Linders, N. (Nik) MSc
+#&gt; 33                                                                        Loh, S.M. (Renae) MSc
+#&gt; 34                                                                    Meijeren, M. (Maikel) MSc
+#&gt; 35                                                              Mensvoort, C.A. van (Carly) MSc
+#&gt; 36                                                              Mulders, A.M. (Anne Maaike) MSc
+#&gt; 37                                                                      Müller, K. (Katrin) MSc
+#&gt; 38                                                                       Raiber, K. (Klara) MSc
+#&gt; 39                                                               Ramaekers, M.J.M. (Marlou) MSc
+#&gt; 40                                                                     Wiertsema, S. (Sara) MSc
+#&gt; 42                                                                     Betkó, drs. J.G. (János)
+#&gt; 43                                                               Middendorp J. (Jansje) van MSc
+#&gt; 44                                                                          Vis, E. (Elize) MSc
+#&gt; 45                                                                       Weber, T. (Tijmen) MSc
+#&gt; 47                                                         Khawli, E. el (Elissa) post-doc, Dr.
+#&gt; 48                                                                  Sterkens, dr. C.J.A. (Carl)
+#&gt; 49                                                                 Vermeer, dr. P.A.D.M. (Paul)
+#&gt; 51                                                                          Grubben, M. (Malou)
+#&gt;                                                                                                       soc_experts
+#&gt; 2                                               Healthcare, labour market and healthcare professions and training
+#&gt; 3                  Family, life course, labour market participation, division of household tasks and gender norms
+#&gt; 4                                                                           Welfare state, nationalism and sports
+#&gt; 5                                                                 Family, life course and transition to adulthood
+#&gt; 6                                                              Discrimination and inequality on the labour market
+#&gt; 7                                                                              Methods of research and statistics
+#&gt; 8                                                                                      Poverty en social cohesion
+#&gt; 9                                                                                       Integration and migration
+#&gt; 10                                                                          Islam, gender attitudes and sexuality
+#&gt; 11                                Educational inequality, gender inequality, organizational sociology and culture
+#&gt; 12                                                                                    Sports and policy sociology
+#&gt; 13                                                                           Diversity, inequality and innovation
+#&gt; 14                                                                                Family sociology and demography
+#&gt; 15                                                                     Educational inequality, culture and health
+#&gt; 16                                                                                        Culture and nationalism
+#&gt; 17                                                                Ethnic diversity, prejudice and social cohesion
+#&gt; 18                                                            Comparative research, social cohesion and diversity
+#&gt; 19                                               Islam, gender, populism, social media, Middle East and migration
+#&gt; 20                                                                   Inequality, criminology and ethnic diversity
+#&gt; 21                                                                                        Health, family and work
+#&gt; 22                                                                  Older workers, radicalism and social cohesion
+#&gt; 23                                                            Educational inequality and labour market inequality
+#&gt; 25                                                                Adverse youth experiences and social inequality
+#&gt; 26                                             Sport networks and motivation for sustainable sports participation
+#&gt; 27                                                   Social inequality, older workers, life course and retirement
+#&gt; 28                                                                                                      Work-care
+#&gt; 29                                                                     Resistance to refugees and social cohesion
+#&gt; 30                                Political participation, segregation, opinion polarization and voting behaviour
+#&gt; 31                                                                                                 Spirit project
+#&gt; 32                                                                    Populism, gender, masculinity and sexuality
+#&gt; 33 Educational sociology, social stratification, gender inequality and information communication technology (ICT)
+#&gt; 34                                                                   Social capital, volunteer work and diversity
+#&gt; 35                                                                            Gender, leadership and social norms
+#&gt; 36                                                                                   Social inequality in science
+#&gt; 37                                                        Opinions about discrimination, migration and inequality
+#&gt; 38                                                        Informal care, employment, social inequality and gender
+#&gt; 39                                                                                 Prosocial behaviour and family
+#&gt; 40                           Inequality in sports and physical activity, school-to-work transition and employment
+#&gt; 42                                   Social assistance benefit, poverty, reintegration, RCT and social experiment
+#&gt; 43                                                                                            Home administration
+#&gt; 44                      Healthcare, labour market, healthcare professions and training, health and social capital
+#&gt; 45                                International student mobility and the internationalization of higher education
+#&gt; 47                                                                                        Inequality in older age
+#&gt; 48                                             Religious conflicts, cohesion, religion and the philosophy of life
+#&gt; 49                                   Socialization processes, secularisation, religion and the philosophy of life
+#&gt; 51                                                                              Inequality in sports and movement
+#&gt;      last_name  first_name        affiliation
+#&gt; 2    batenburg      ronald radboud university
+#&gt; 3       begall       katia radboud university
+#&gt; 4      bekhuis       hidde radboud university
+#&gt; 5         berg     lonneke radboud university
+#&gt; 6    blommaert  lieselotte radboud university
+#&gt; 7      eisinga         rob radboud university
+#&gt; 8   gesthuizen     maurice radboud university
+#&gt; 9       geurts       nella radboud university
+#&gt; 10        glas      saskia radboud university
+#&gt; 11         hek    margriet radboud university
+#&gt; 12     hoekman       remco radboud university
+#&gt; 13     hofstra         bas radboud university
+#&gt; 14       koops      judith radboud university
+#&gt; 15   kraaykamp     gerbert radboud university
+#&gt; 16    meuleman        roza radboud university
+#&gt; 17   savelkoul     michael radboud university
+#&gt; 18   scheepers        peer radboud university
+#&gt; 19   spierings       niels radboud university
+#&gt; 20      tolsma      jochem radboud university
+#&gt; 21    verbakel       ellen radboud university
+#&gt; 22      visser        mark radboud university
+#&gt; 23     wolbers     maarten radboud university
+#&gt; 25 bussemakers     carlijn radboud university
+#&gt; 26     franken         rob radboud university
+#&gt; 27       firat     mustafa radboud university
+#&gt; 28     güneyli     ayşegül radboud university
+#&gt; 29    hendriks        inge radboud university
+#&gt; 30    jeroense     thijmen radboud university
+#&gt; 31      kollar      rachel radboud university
+#&gt; 32     linders         nik radboud university
+#&gt; 33         loh       renae radboud university
+#&gt; 34    meijeren      maikel radboud university
+#&gt; 35   mensvoort       carly radboud university
+#&gt; 36     mulders anne maaike radboud university
+#&gt; 37      müller      katrin radboud university
+#&gt; 38      raiber       klara radboud university
+#&gt; 39   ramaekers      marlou radboud university
+#&gt; 40   wiertsema        sara radboud university
+#&gt; 42       betkó       jános radboud university
+#&gt; 43  middendorp      jansje radboud university
+#&gt; 44         vis       elize radboud university
+#&gt; 45       weber      tijmen radboud university
+#&gt; 47      khawli      elissa radboud university
+#&gt; 48    sterkens        carl radboud university
+#&gt; 49     vermeer        paul radboud university
+#&gt; 51     grubben       malou radboud university</code></pre>
+<pre class="r test"><code>#require(scholar)
+
+get_scholar_id_fix &lt;- function (last_name = &quot;&quot;, first_name = &quot;&quot;, affiliation = NA)
+{
+  if (!any(nzchar(c(first_name, last_name))))
+    stop(&quot;At least one of first and last name must be specified!&quot;)
+  site &lt;- getOption(&quot;scholar_site&quot;)
+  url &lt;- paste0(site, &quot;/citations?view_op=search_authors&amp;mauthors=&quot;,
+                first_name, &quot;+&quot;, last_name, &quot;&amp;hl=en&amp;oi=ao&quot;)
+  page &lt;- get_scholar_resp(url)
+  if (is.null(page))
+    return(NA)
+  aa &lt;- httr::content(page, as = &quot;text&quot;)
+  # added by Bas Hofstra: bugfix for IDs that have a dash (&quot;-&quot;)
+  ids &lt;- substring(aa, regexpr(&quot;;user=&quot;, aa))
+  ids &lt;- substr(ids, 1, 19) # error prone, but unsure how to solve otherwise
+  # if (nchar(stringr::str_extract_all(string = aa, pattern = &quot;;user=[[:alnum:]]+[[:punct:]]&quot;)[[1]][1]) &lt; 18) {
+  #   ids &lt;- stringr::str_extract_all(string = aa, pattern = &quot;;user=[[:alnum:]]+[[:punct:]]+[[:alnum:]]+[[:punct:]]&quot;)
+  # } else {
+  #   ids &lt;- stringr::str_extract_all(string = aa, pattern = &quot;;user=[[:alnum:]]+[[:punct:]]&quot;)
+  # }
+  if (length(unlist(ids)) == 0) {
+    message(&quot;No Scholar ID found.&quot;)
+    return(NA)
+  }
+  ids &lt;- ids %&gt;% unlist %&gt;% gsub(&quot;;user=|[[:punct:]]$&quot;, &quot;&quot;,
+                                 .) %&gt;% unique
+  if (length(ids) &gt; 1) {
+    profiles &lt;- lapply(ids, scholar::get_profile)
+    if (is.na(affiliation)) {
+      x_profile &lt;- profiles[[1]]
+      warning(&quot;Selecting first out of &quot;, length(profiles),
+              &quot; candidate matches.&quot;)
+    }
+    else {
+      which_profile &lt;- sapply(profiles, function(x) {
+        stringr::str_count(string = x$affiliation, pattern = stringr::coll(affiliation,
+                                                                           ignore_case = TRUE))
+      })
+      if (all(which_profile == 0)) {
+        warning(&quot;No researcher found at the indicated affiliation.&quot;)
+        return(NA)
+      }
+      else {
+        x_profile &lt;- profiles[[which(which_profile !=
+                                       0)]]
+      }
+    }
+  }
+  else {
+    x_profile &lt;- scholar::get_profile(id = ids)
+  }
+  return(x_profile$id)
+}</code></pre>
+<pre class="r test"><code># Look throught get_scholar_id_fix(last_name, first_name, affiliation) 
+# if we can find google scholar profiles of sociology staff!
+soc_df$gs_id &lt;- &quot;&quot;
+
+for (i in 1:nrow(soc_df)) {
+  print(i)
+  time &lt;- runif(1, 0, 1)
+  Sys.sleep(time)
+  
+  tryCatch({
+     soc_df[i,c(&quot;gs_id&quot;)] &lt;- get_scholar_id_fix(last_name = soc_df[i, c(&quot;last_name&quot;)], # so search on last_name of staff (third column)
+                                             first_name = soc_df[i, c(&quot;first_name&quot;)],  # search on first_name of staff (fourth column)
+                                             affiliation = soc_df[i,c(&quot;affiliation&quot;)]) # search on affiliation of each staff (fifth column)
+
+    }, error=function(e){cat(&quot;ERROR :&quot;, conditionMessage(e), &quot;\n&quot;)}) # continue on error, but print the error
+  }</code></pre>
+<pre class="test2"><code>#&gt; [1] 1
+#&gt; [1] 2
+#&gt; [1] 3
+#&gt; [1] 4
+#&gt; [1] 5
+#&gt; [1] 6
+#&gt; [1] 7
+#&gt; [1] 8
+#&gt; [1] 9
+#&gt; [1] 10
+#&gt; [1] 11
+#&gt; [1] 12
+#&gt; [1] 13
+#&gt; [1] 14
+#&gt; [1] 15
+#&gt; [1] 16
+#&gt; [1] 17
+#&gt; [1] 18
+#&gt; [1] 19
+#&gt; [1] 20
+#&gt; [1] 21
+#&gt; [1] 22
+#&gt; [1] 23
+#&gt; [1] 24
+#&gt; [1] 25
+#&gt; [1] 26
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 27
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 28
+#&gt; [1] 29
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 30
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 31
+#&gt; [1] 32
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 33
+#&gt; [1] 34
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 35
+#&gt; [1] 36
+#&gt; [1] 37
+#&gt; [1] 38
+#&gt; [1] 39
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 40
+#&gt; [1] 41
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 42
+#&gt; [1] 43
+#&gt; [1] 44
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 45
+#&gt; ERROR : URL using bad/illegal format or missing URL 
+#&gt; [1] 46
+#&gt; ERROR : URL using bad/illegal format or missing URL</code></pre>
+<pre class="r test"><code># remove those without pubs from the df
+# seems we&#39;re left with about 34 sociology staff members!
+soc_df &lt;- soc_df[!soc_df$gs_id == &quot;&quot;, ]
+soc_df</code></pre>
+<pre class="test2"><code>#&gt;                                                                                       soc_names
+#&gt; 2                                                              Batenburg, prof. dr. R. (Ronald)
+#&gt; 3                                                                      Begall, dr. K.H. (Katia)
+#&gt; 4                                                                       Bekhuis, dr. H. (Hidde)
+#&gt; 5                                                                Berg, dr. L. van den (Lonneke)
+#&gt; 6                                                                Blommaert, dr. L. (Lieselotte)
+#&gt; 7                                                                 Eisinga, prof. dr. R.N. (Rob)
+#&gt; 8                                                              Gesthuizen, dr. M.J.W. (Maurice)
+#&gt; 9                                                                      Geurts, dr. P.G. (Nella)
+#&gt; 10                                                                        Glas, dr. S. (Saskia)
+#&gt; 11                                                                   Hek, dr. M. van (Margriet)
+#&gt; 12                                                                 Hoekman, dr. R. H. A.(Remco)
+#&gt; 13                                                                        Hofstra, dr. B. (Bas)
+#&gt; 14                                                                       Koops, dr. J. (Judith)
+#&gt; 15                                                        Kraaykamp, prof. dr. G.L.M. (Gerbert)
+#&gt; 16                                                                         Meuleman, dr. (Roza)
+#&gt; 17                                                                Savelkoul, dr. M.J. (Michael)
+#&gt; 18                                                           Scheepers, prof. dr. P.L.H. (Peer)
+#&gt; 19                                                              Spierings, dr. C.H.B.M. (Niels)
+#&gt; 20                                                                      Tolsma, dr. J. (Jochem)
+#&gt; 21 Verbakel, prof. dr. C.M.C. (Ellen)\r\n                                Head of the department
+#&gt; 22                                                                        Visser, dr. M. (Mark)
+#&gt; 23                                                          Wolbers, prof. dr. M.H.J. (Maarten)
+#&gt; 25                                                                Bussemakers, C. (Carlijn) MSc
+#&gt; 26                                                                        Franken, R. (Rob) MSc
+#&gt; 27                                                                      Firat, M. (Mustafa) MSc
+#&gt; 30                                                               Jeroense, T.M.G. (Thijmen) MSc
+#&gt; 33                                                                        Loh, S.M. (Renae) MSc
+#&gt; 35                                                              Mensvoort, C.A. van (Carly) MSc
+#&gt; 37                                                                      Müller, K. (Katrin) MSc
+#&gt; 38                                                                       Raiber, K. (Klara) MSc
+#&gt; 39                                                               Ramaekers, M.J.M. (Marlou) MSc
+#&gt; 40                                                                     Wiertsema, S. (Sara) MSc
+#&gt; 43                                                               Middendorp J. (Jansje) van MSc
+#&gt; 45                                                                       Weber, T. (Tijmen) MSc
+#&gt; 47                                                         Khawli, E. el (Elissa) post-doc, Dr.
+#&gt;                                                                                                       soc_experts
+#&gt; 2                                               Healthcare, labour market and healthcare professions and training
+#&gt; 3                  Family, life course, labour market participation, division of household tasks and gender norms
+#&gt; 4                                                                           Welfare state, nationalism and sports
+#&gt; 5                                                                 Family, life course and transition to adulthood
+#&gt; 6                                                              Discrimination and inequality on the labour market
+#&gt; 7                                                                              Methods of research and statistics
+#&gt; 8                                                                                      Poverty en social cohesion
+#&gt; 9                                                                                       Integration and migration
+#&gt; 10                                                                          Islam, gender attitudes and sexuality
+#&gt; 11                                Educational inequality, gender inequality, organizational sociology and culture
+#&gt; 12                                                                                    Sports and policy sociology
+#&gt; 13                                                                           Diversity, inequality and innovation
+#&gt; 14                                                                                Family sociology and demography
+#&gt; 15                                                                     Educational inequality, culture and health
+#&gt; 16                                                                                        Culture and nationalism
+#&gt; 17                                                                Ethnic diversity, prejudice and social cohesion
+#&gt; 18                                                            Comparative research, social cohesion and diversity
+#&gt; 19                                               Islam, gender, populism, social media, Middle East and migration
+#&gt; 20                                                                   Inequality, criminology and ethnic diversity
+#&gt; 21                                                                                        Health, family and work
+#&gt; 22                                                                  Older workers, radicalism and social cohesion
+#&gt; 23                                                            Educational inequality and labour market inequality
+#&gt; 25                                                                Adverse youth experiences and social inequality
+#&gt; 26                                             Sport networks and motivation for sustainable sports participation
+#&gt; 27                                                   Social inequality, older workers, life course and retirement
+#&gt; 30                                Political participation, segregation, opinion polarization and voting behaviour
+#&gt; 33 Educational sociology, social stratification, gender inequality and information communication technology (ICT)
+#&gt; 35                                                                            Gender, leadership and social norms
+#&gt; 37                                                        Opinions about discrimination, migration and inequality
+#&gt; 38                                                        Informal care, employment, social inequality and gender
+#&gt; 39                                                                                 Prosocial behaviour and family
+#&gt; 40                           Inequality in sports and physical activity, school-to-work transition and employment
+#&gt; 43                                                                                            Home administration
+#&gt; 45                                International student mobility and the internationalization of higher education
+#&gt; 47                                                                                        Inequality in older age
+#&gt;      last_name first_name        affiliation        gs_id
+#&gt; 2    batenburg     ronald radboud university UK7nVSEAAAAJ
+#&gt; 3       begall      katia radboud university e7zfTqMAAAAJ
+#&gt; 4      bekhuis      hidde radboud university Q4saWX8AAAAJ
+#&gt; 5         berg    lonneke radboud university vzBNQ1kAAAAJ
+#&gt; 6    blommaert lieselotte radboud university RG54uasAAAAJ
+#&gt; 7      eisinga        rob radboud university GDHdsXAAAAAJ
+#&gt; 8   gesthuizen    maurice radboud university n6hiblQAAAAJ
+#&gt; 9       geurts      nella radboud university VCTvbTkAAAAJ
+#&gt; 10        glas     saskia radboud university ZMc0j2YAAAAJ
+#&gt; 11         hek   margriet radboud university ZvLlx2EAAAAJ
+#&gt; 12     hoekman      remco radboud university LsMimOEAAAAJ
+#&gt; 13     hofstra        bas radboud university Nx7pDywAAAAJ
+#&gt; 14       koops     judith radboud university kLiOlQoAAAAJ
+#&gt; 15   kraaykamp    gerbert radboud university l8aM4jAAAAAJ
+#&gt; 16    meuleman       roza radboud university iKs_5WkAAAAJ
+#&gt; 17   savelkoul    michael radboud university _f3krXUAAAAJ
+#&gt; 18   scheepers       peer radboud university hPeXxvEAAAAJ
+#&gt; 19   spierings      niels radboud university cy3Ye6sAAAAJ
+#&gt; 20      tolsma     jochem radboud university Iu23-90AAAAJ
+#&gt; 21    verbakel      ellen radboud university w2McVJAAAAAJ
+#&gt; 22      visser       mark radboud university ItITloQAAAAJ
+#&gt; 23     wolbers    maarten radboud university TqKrXnMAAAAJ
+#&gt; 25 bussemakers    carlijn radboud university bDPtkIoAAAAJ
+#&gt; 26     franken        rob radboud university p3IwtT4AAAAJ
+#&gt; 27       firat    mustafa radboud university _ukytQYAAAAJ
+#&gt; 30    jeroense    thijmen radboud university izq-KNUAAAAJ
+#&gt; 33         loh      renae radboud university tFaMPOQAAAAJ
+#&gt; 35   mensvoort      carly radboud university z6iMs-UAAAAJ
+#&gt; 37      müller     katrin radboud university lkVq32sAAAAJ
+#&gt; 38      raiber      klara radboud university xE65HUcAAAAJ
+#&gt; 39   ramaekers     marlou radboud university fp99JAQAAAAJ
+#&gt; 40   wiertsema       sara radboud university wgQQD6kAAAAJ
+#&gt; 43  middendorp     jansje radboud university gs0li6MAAAAJ
+#&gt; 45       weber     tijmen radboud university KfLALRIAAAAJ
+#&gt; 47      khawli     elissa radboud university 2wDZZbsAAAAJ</code></pre>
+<pre class="r test"><code>soc_list_profiles &lt;- list()  # first we create an empty list that we then fill up with the for loop
+soc_list_publications &lt;- list()
+
+for (i in 1:nrow(soc_df)) {
+    print(i)
+    time &lt;- runif(1, 0, 1)
+    Sys.sleep(time)
+
+    # note how you call different elements in a list &#39;[[]]&#39;, fill in the i-th element
+    soc_list_profiles[[i]] &lt;- get_profile(soc_df[i, c(&quot;gs_id&quot;)])  # Note how we call row i (remember how to call rows in a DF/Matrix) and then the associated scholar id
+    soc_list_publications[[i]] &lt;- get_publications(soc_df[i, c(&quot;gs_id&quot;)])
+    soc_list_publications[[i]][, c(&quot;gs_id&quot;)] &lt;- soc_df[i, c(&quot;gs_id&quot;)]  # note that we again attach an id
+    # so both functions here call the entire profile and pubs for an author, based on google
+    # scholar ids
+
+}</code></pre>
+<pre class="test2"><code>#&gt; [1] 1
+#&gt; [1] 2
+#&gt; [1] 3
+#&gt; [1] 4
+#&gt; [1] 5
+#&gt; [1] 6
+#&gt; [1] 7
+#&gt; [1] 8
+#&gt; [1] 9
+#&gt; [1] 10
+#&gt; [1] 11
+#&gt; [1] 12
+#&gt; [1] 13
+#&gt; [1] 14
+#&gt; [1] 15
+#&gt; [1] 16
+#&gt; [1] 17
+#&gt; [1] 18
+#&gt; [1] 19
+#&gt; [1] 20
+#&gt; [1] 21
+#&gt; [1] 22
+#&gt; [1] 23
+#&gt; [1] 24
+#&gt; [1] 25
+#&gt; [1] 26
+#&gt; [1] 27
+#&gt; [1] 28
+#&gt; [1] 29
+#&gt; [1] 30
+#&gt; [1] 31
+#&gt; [1] 32
+#&gt; [1] 33
+#&gt; [1] 34
+#&gt; [1] 35</code></pre>
+<pre class="r test"><code># Notice how fast the data blow up! The 34 RU sociology scholars publish ~3000 papers
+soc_df_publications &lt;- bind_rows(soc_list_publications)</code></pre>
+<pre class="r test"><code>soc_profiles_df &lt;- list()
+for (i in 1:length(soc_list_profiles)) {
+    # soc_profiles_df[[i]] &lt;- data.frame(t(unlist(soc_list_profiles[[i]][1:8]))) #some annyoing
+    # data handling
+    soc_profiles_df[[i]] &lt;- unlist(soc_list_profiles[[i]][1:8])
+    soc_profiles_df[[i]] &lt;- data.frame(soc_profiles_df[[i]])
+    soc_profiles_df[[i]] &lt;- data.frame(t(soc_profiles_df[[i]]))
+
+}
+soc_profiles_df &lt;- bind_rows(soc_profiles_df)
+soc_df &lt;- left_join(soc_df, soc_profiles_df, by = c(gs_id = &quot;id&quot;))  # merge data with soc_df
+soc_df  # notice all the new information we were able to get from the scholar profiles!</code></pre>
+<pre class="test2"><code>#&gt;                                                                                       soc_names
+#&gt; 1                                                              Batenburg, prof. dr. R. (Ronald)
+#&gt; 2                                                                      Begall, dr. K.H. (Katia)
+#&gt; 3                                                                       Bekhuis, dr. H. (Hidde)
+#&gt; 4                                                                Berg, dr. L. van den (Lonneke)
+#&gt; 5                                                                Blommaert, dr. L. (Lieselotte)
+#&gt; 6                                                                 Eisinga, prof. dr. R.N. (Rob)
+#&gt; 7                                                              Gesthuizen, dr. M.J.W. (Maurice)
+#&gt; 8                                                                      Geurts, dr. P.G. (Nella)
+#&gt; 9                                                                         Glas, dr. S. (Saskia)
+#&gt; 10                                                                   Hek, dr. M. van (Margriet)
+#&gt; 11                                                                 Hoekman, dr. R. H. A.(Remco)
+#&gt; 12                                                                        Hofstra, dr. B. (Bas)
+#&gt; 13                                                                       Koops, dr. J. (Judith)
+#&gt; 14                                                        Kraaykamp, prof. dr. G.L.M. (Gerbert)
+#&gt; 15                                                                         Meuleman, dr. (Roza)
+#&gt; 16                                                                Savelkoul, dr. M.J. (Michael)
+#&gt; 17                                                           Scheepers, prof. dr. P.L.H. (Peer)
+#&gt; 18                                                              Spierings, dr. C.H.B.M. (Niels)
+#&gt; 19                                                                      Tolsma, dr. J. (Jochem)
+#&gt; 20 Verbakel, prof. dr. C.M.C. (Ellen)\r\n                                Head of the department
+#&gt; 21                                                                        Visser, dr. M. (Mark)
+#&gt; 22                                                          Wolbers, prof. dr. M.H.J. (Maarten)
+#&gt; 23                                                                Bussemakers, C. (Carlijn) MSc
+#&gt; 24                                                                        Franken, R. (Rob) MSc
+#&gt; 25                                                                      Firat, M. (Mustafa) MSc
+#&gt; 26                                                               Jeroense, T.M.G. (Thijmen) MSc
+#&gt; 27                                                                        Loh, S.M. (Renae) MSc
+#&gt; 28                                                              Mensvoort, C.A. van (Carly) MSc
+#&gt; 29                                                                      Müller, K. (Katrin) MSc
+#&gt; 30                                                                       Raiber, K. (Klara) MSc
+#&gt; 31                                                               Ramaekers, M.J.M. (Marlou) MSc
+#&gt; 32                                                                     Wiertsema, S. (Sara) MSc
+#&gt; 33                                                               Middendorp J. (Jansje) van MSc
+#&gt; 34                                                                       Weber, T. (Tijmen) MSc
+#&gt; 35                                                         Khawli, E. el (Elissa) post-doc, Dr.
+#&gt;                                                                                                       soc_experts
+#&gt; 1                                               Healthcare, labour market and healthcare professions and training
+#&gt; 2                  Family, life course, labour market participation, division of household tasks and gender norms
+#&gt; 3                                                                           Welfare state, nationalism and sports
+#&gt; 4                                                                 Family, life course and transition to adulthood
+#&gt; 5                                                              Discrimination and inequality on the labour market
+#&gt; 6                                                                              Methods of research and statistics
+#&gt; 7                                                                                      Poverty en social cohesion
+#&gt; 8                                                                                       Integration and migration
+#&gt; 9                                                                           Islam, gender attitudes and sexuality
+#&gt; 10                                Educational inequality, gender inequality, organizational sociology and culture
+#&gt; 11                                                                                    Sports and policy sociology
+#&gt; 12                                                                           Diversity, inequality and innovation
+#&gt; 13                                                                                Family sociology and demography
+#&gt; 14                                                                     Educational inequality, culture and health
+#&gt; 15                                                                                        Culture and nationalism
+#&gt; 16                                                                Ethnic diversity, prejudice and social cohesion
+#&gt; 17                                                            Comparative research, social cohesion and diversity
+#&gt; 18                                               Islam, gender, populism, social media, Middle East and migration
+#&gt; 19                                                                   Inequality, criminology and ethnic diversity
+#&gt; 20                                                                                        Health, family and work
+#&gt; 21                                                                  Older workers, radicalism and social cohesion
+#&gt; 22                                                            Educational inequality and labour market inequality
+#&gt; 23                                                                Adverse youth experiences and social inequality
+#&gt; 24                                             Sport networks and motivation for sustainable sports participation
+#&gt; 25                                                   Social inequality, older workers, life course and retirement
+#&gt; 26                                Political participation, segregation, opinion polarization and voting behaviour
+#&gt; 27 Educational sociology, social stratification, gender inequality and information communication technology (ICT)
+#&gt; 28                                                                            Gender, leadership and social norms
+#&gt; 29                                                        Opinions about discrimination, migration and inequality
+#&gt; 30                                                        Informal care, employment, social inequality and gender
+#&gt; 31                                                                                 Prosocial behaviour and family
+#&gt; 32                           Inequality in sports and physical activity, school-to-work transition and employment
+#&gt; 33                                                                                            Home administration
+#&gt; 34                                International student mobility and the internationalization of higher education
+#&gt; 35                                                                                        Inequality in older age
+#&gt;      last_name first_name      affiliation.x        gs_id                             name
+#&gt; 1    batenburg     ronald radboud university UK7nVSEAAAAJ                 Ronald Batenburg
+#&gt; 2       begall      katia radboud university e7zfTqMAAAAJ                     Katia Begall
+#&gt; 3      bekhuis      hidde radboud university Q4saWX8AAAAJ                    Hidde Bekhuis
+#&gt; 4         berg    lonneke radboud university vzBNQ1kAAAAJ             Lonneke van den Berg
+#&gt; 5    blommaert lieselotte radboud university RG54uasAAAAJ             Lieselotte Blommaert
+#&gt; 6      eisinga        rob radboud university GDHdsXAAAAAJ                      Rob Eisinga
+#&gt; 7   gesthuizen    maurice radboud university n6hiblQAAAAJ               Maurice Gesthuizen
+#&gt; 8       geurts      nella radboud university VCTvbTkAAAAJ                     Nella Geurts
+#&gt; 9         glas     saskia radboud university ZMc0j2YAAAAJ                      Saskia Glas
+#&gt; 10         hek   margriet radboud university ZvLlx2EAAAAJ                 Margriet van Hek
+#&gt; 11     hoekman      remco radboud university LsMimOEAAAAJ                    Remco Hoekman
+#&gt; 12     hofstra        bas radboud university Nx7pDywAAAAJ                      Bas Hofstra
+#&gt; 13       koops     judith radboud university kLiOlQoAAAAJ                  Judith C. Koops
+#&gt; 14   kraaykamp    gerbert radboud university l8aM4jAAAAAJ                Gerbert Kraaykamp
+#&gt; 15    meuleman       roza radboud university iKs_5WkAAAAJ                    Roza Meuleman
+#&gt; 16   savelkoul    michael radboud university _f3krXUAAAAJ                Michael Savelkoul
+#&gt; 17   scheepers       peer radboud university hPeXxvEAAAAJ                   peer scheepers
+#&gt; 18   spierings      niels radboud university cy3Ye6sAAAAJ                  Niels Spierings
+#&gt; 19      tolsma     jochem radboud university Iu23-90AAAAJ                    Jochem Tolsma
+#&gt; 20    verbakel      ellen radboud university w2McVJAAAAAJ                   Ellen Verbakel
+#&gt; 21      visser       mark radboud university ItITloQAAAAJ                      Mark Visser
+#&gt; 22     wolbers    maarten radboud university TqKrXnMAAAAJ               Maarten HJ Wolbers
+#&gt; 23 bussemakers    carlijn radboud university bDPtkIoAAAAJ              Carlijn Bussemakers
+#&gt; 24     franken        rob radboud university p3IwtT4AAAAJ                   Rob JM Franken
+#&gt; 25       firat    mustafa radboud university _ukytQYAAAAJ                      mustafa Inc
+#&gt; 26    jeroense    thijmen radboud university izq-KNUAAAAJ                 Thijmen Jeroense
+#&gt; 27         loh      renae radboud university tFaMPOQAAAAJ               Renae Sze Ming Loh
+#&gt; 28   mensvoort      carly radboud university z6iMs-UAAAAJ              Carly van Mensvoort
+#&gt; 29      müller     katrin radboud university lkVq32sAAAAJ PD Dr. Kathrin Friederike Müller
+#&gt; 30      raiber      klara radboud university xE65HUcAAAAJ                     Klara Raiber
+#&gt; 31   ramaekers     marlou radboud university fp99JAQAAAAJ                 Marlou Ramaekers
+#&gt; 32   wiertsema       sara radboud university wgQQD6kAAAAJ                   Sara Wiertsema
+#&gt; 33  middendorp     jansje radboud university gs0li6MAAAAJ            Jansje van Middendorp
+#&gt; 34       weber     tijmen radboud university KfLALRIAAAAJ                     Tijmen Weber
+#&gt; 35      khawli     elissa radboud university 2wDZZbsAAAAJ                 Elissa El Khawli
+#&gt;                                                                        affiliation.y total_cites
+#&gt; 1        Programmaleider NIVEL en bijzonder hoogleraar Radboud Universiteit Nijmegen        4015
+#&gt; 2                                                        Radboud University Nijmegen        1147
+#&gt; 3                                    Post Doc Sociology, Radboud University Nijmegen         416
+#&gt; 4                                                                 Radboud University          55
+#&gt; 5              Sociology/Social Cultural Research, Radboud University, Nijmegen, the         412
+#&gt; 6             Professor social science research methods, Radboud University Nijmegen        5794
+#&gt; 7       Sociology, Radboud University Nijmegen, the Netherland - Assistant Professor        2732
+#&gt; 8                                        Department of Sociology, Radboud University          56
+#&gt; 9                                  Assistant Professor (tenured), Radboud University         170
+#&gt; 10                                                                Radboud University         372
+#&gt; 11                Director, Mulier Institute / Senior researcher, Radboud University         783
+#&gt; 12                                           Assistant Professor, Radboud University         740
+#&gt; 13                                        Dr. Family Demographer, Radboud University          62
+#&gt; 14                             Professor of Sociology, Radboud Universiteit Nijmegen        8648
+#&gt; 15                     Assistant Professor - Sociology - Radboud University Nijmegen         265
+#&gt; 16     Assistant Professor - Sociology, Radboud University Nijmegen, the Netherlands         671
+#&gt; 17 hoogleraar methodologie, faculteit der sociale wetenschappen radboud universiteit       15756
+#&gt; 18                              Associate Professor of Sociology, Radboud University        2278
+#&gt; 19                  Professor, Radboud University Nijmegen / University of Groningen        2658
+#&gt; 20      Professor of Sociology, Department of Sociology, Radboud University Nijmegen        1929
+#&gt; 21                                           Assistant Professor, Radboud University         500
+#&gt; 22                              Professor of Sociology, Radboud University, Nijmegen        4069
+#&gt; 23                                       Department of Sociology, Radboud University          71
+#&gt; 24                                                               Unknown affiliation        1303
+#&gt; 25                                                                  firat university        8954
+#&gt; 26                                        PhD candidate, Radboud University Nijmegen           6
+#&gt; 27                                                 PhD candidate, Radboud University         123
+#&gt; 28                                                                Radboud University          38
+#&gt; 29                                Universtität Rostock, Institut für Medienforschung         252
+#&gt; 30                                        PhD candidate, Radboud University Nijmegen          25
+#&gt; 31                                                 PhD Candidate, Radboud University           1
+#&gt; 32                                                 PhD candidate, Radboud University        &lt;NA&gt;
+#&gt; 33                                            Buitenpromovendus Radboud Universiteit           3
+#&gt; 34              Lecturer Statistics and Research, HAN University of Applied Sciences          55
+#&gt; 35                              Postdoctoral researcher, Radboud University Nijmegen          18
+#&gt;    h_index i10_index                         fields1                                        fields2
+#&gt; 1       31        90                 Gezondheidszorg                                   arbeidsmarkt
+#&gt; 2        9         9                family sociology                              social demography
+#&gt; 3        9         9                      Sociologie                                         sports
+#&gt; 4        3         2                Family sociology                                     Demography
+#&gt; 5        9         9                    Labor market                   Inequality / Ex- / Inclusion
+#&gt; 6       34        80                research methods                             applied statistics
+#&gt; 7       26        44               social inequality                                social cohesion
+#&gt; 8        4         1                       Sociology                                      Migration
+#&gt; 9        7         4                          Gender                                          Islam
+#&gt; 10      10        10                       Sociology                                 stratification
+#&gt; 11      13        17                 sport sociology                                   sport policy
+#&gt; 12       9         8            Sociology of science                                Social networks
+#&gt; 13       5         3               family demography                               family sociology
+#&gt; 14      49       104           social stratification                         sociology of education
+#&gt; 15       9         9              Cultural Sociology                              Social inequality
+#&gt; 16       9         9                            &lt;NA&gt;                                           &lt;NA&gt;
+#&gt; 17      62       182                            &lt;NA&gt;                                           &lt;NA&gt;
+#&gt; 18      25        38                        politics                                          Islam
+#&gt; 19      24        37 social divisions between groups                                    segregation
+#&gt; 20      24        37                          Family                                       Partners
+#&gt; 21      10        10                     life course                              social inequality
+#&gt; 22      32        62      school-to-work transitions                         educational inequality
+#&gt; 23       3         2                       sociology                              social inequality
+#&gt; 24      11        11                            &lt;NA&gt;                                           &lt;NA&gt;
+#&gt; 25      45       258                    Lie symmetry                                        soliton
+#&gt; 26       1         0         Political Participation                                Social Networks
+#&gt; 27       3         2                       sociology information and communication technology (ICT)
+#&gt; 28       3         2               Gender inequality                              Social inequality
+#&gt; 29      11        11                            &lt;NA&gt;                                           &lt;NA&gt;
+#&gt; 30       3         1                   informal care                                     employment
+#&gt; 31       1         0                            &lt;NA&gt;                                           &lt;NA&gt;
+#&gt; 32    &lt;NA&gt;      &lt;NA&gt;                            &lt;NA&gt;                                           &lt;NA&gt;
+#&gt; 33       1         0                   vrijwilligers                            schuldhulpverlening
+#&gt; 34       2         2                       Sociology                                      Economics
+#&gt; 35       2         0                            &lt;NA&gt;                                           &lt;NA&gt;
+#&gt;                                                                                                    homepage
+#&gt; 1                                                                  https://www.nivel.nl/nl/ronald-batenburg
+#&gt; 2                                                                                                      &lt;NA&gt;
+#&gt; 3                                                                                                      &lt;NA&gt;
+#&gt; 4                                                        https://www.ru.nl/personen/berg-l-van-den-lonneke/
+#&gt; 5                                                              http://www.ru.nl/english/people/blommaert-e/
+#&gt; 6                                                                           http://robeisinga.ruhosting.nl/
+#&gt; 7  http://www.ru.nl/methodenentechnieken/methoden-technieken/medewerkers/vm_medewerkers/maurice_gesthuizen/
+#&gt; 8                                                                                                      &lt;NA&gt;
+#&gt; 9                                                                                                      &lt;NA&gt;
+#&gt; 10                                                                                                     &lt;NA&gt;
+#&gt; 11                                    https://www.mulierinstituut.nl/over-mulier/medewerkers/remco-hoekman/
+#&gt; 12                                                                               http://www.bashofstra.com/
+#&gt; 13                                                                                                     &lt;NA&gt;
+#&gt; 14                                                            https://www.ru.nl/english/people/kraaykamp-g/
+#&gt; 15                                                                                                     &lt;NA&gt;
+#&gt; 16                                                                                                     &lt;NA&gt;
+#&gt; 17                                                                                                     &lt;NA&gt;
+#&gt; 18                                                            https://www.ru.nl/english/people/spierings-c/
+#&gt; 19                                                                              http://www.jochemtolsma.nl/
+#&gt; 20                                                                             http://www.ellenverbakel.nl/
+#&gt; 21                                                         https://www.researchgate.net/profile/Mark_Visser
+#&gt; 22                                                                        http://www.socsci.ru.nl/maartenw/
+#&gt; 23                                                                                                     &lt;NA&gt;
+#&gt; 24                                                                                                     &lt;NA&gt;
+#&gt; 25                                                                                                     &lt;NA&gt;
+#&gt; 26                                                                   https://www.ru.nl/personen/jeroense-t/
+#&gt; 27                                                                                     http://renaeloh.com/
+#&gt; 28                                                        https://www.ru.nl/english/people/mensvoort-c-van/
+#&gt; 29         https://www.imf.uni-rostock.de/institut/mitarbeiterinnen/lehrende/dr-kathrin-friederike-mueller/
+#&gt; 30                                                               https://www.ru.nl/english/people/raiber-k/
+#&gt; 31                                                                                                     &lt;NA&gt;
+#&gt; 32                                                                                                     &lt;NA&gt;
+#&gt; 33                                                                                                     &lt;NA&gt;
+#&gt; 34                                                                                                     &lt;NA&gt;
+#&gt; 35                                                                                                     &lt;NA&gt;
+#&gt;                               fields3                      fields4                        fields5
+#&gt; 1                                &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 2                                &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 3                sports participation         inter-ethnic contact  national cultural consumption
+#&gt; 4                          Inequality                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 5    Ethnicity / Gender / Class / SES                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 6                                &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 7                                &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 8                         Integration                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 9               Migrant acculturation                  Arab region                 Public opinion
+#&gt; 10             educational inequality            gender inequality             cultural sociology
+#&gt; 11                sport participation             sport facilities                           &lt;NA&gt;
+#&gt; 12                    Online networks Computational social science                       Big data
+#&gt; 13                         inequality                contraception unmet need for family planning
+#&gt; 14                   cultural capital       educational inequality             cultural sociology
+#&gt; 15                   Cultural capital               Social capital              Gender inequality
+#&gt; 16                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 17                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 18                             gender                    migration                   social media
+#&gt; 19                         inequality                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 20                               Work                       Health            Informal caregiving
+#&gt; 21              social stratification          political sociology                     retirement
+#&gt; 22 social stratification and mobility         occupational careers                           &lt;NA&gt;
+#&gt; 23                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 24                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 25                applied mathematics                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 26                        Segregation                  Polarizaton                           &lt;NA&gt;
+#&gt; 27             educational inequality        social stratification                           &lt;NA&gt;
+#&gt; 28                               Work                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 29                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 30                             gender                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 31                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 32                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 33                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt; 34                      Data Analysis                    Education                     Philosophy
+#&gt; 35                               &lt;NA&gt;                         &lt;NA&gt;                           &lt;NA&gt;
+#&gt;                        fields
+#&gt; 1                        &lt;NA&gt;
+#&gt; 2                        &lt;NA&gt;
+#&gt; 3                        &lt;NA&gt;
+#&gt; 4                        &lt;NA&gt;
+#&gt; 5                        &lt;NA&gt;
+#&gt; 6                        &lt;NA&gt;
+#&gt; 7                        &lt;NA&gt;
+#&gt; 8                        &lt;NA&gt;
+#&gt; 9                        &lt;NA&gt;
+#&gt; 10                       &lt;NA&gt;
+#&gt; 11                       &lt;NA&gt;
+#&gt; 12                       &lt;NA&gt;
+#&gt; 13                       &lt;NA&gt;
+#&gt; 14                       &lt;NA&gt;
+#&gt; 15                       &lt;NA&gt;
+#&gt; 16                       &lt;NA&gt;
+#&gt; 17      sociale wetenschappen
+#&gt; 18                       &lt;NA&gt;
+#&gt; 19                       &lt;NA&gt;
+#&gt; 20                       &lt;NA&gt;
+#&gt; 21                       &lt;NA&gt;
+#&gt; 22                       &lt;NA&gt;
+#&gt; 23                       &lt;NA&gt;
+#&gt; 24                       &lt;NA&gt;
+#&gt; 25                       &lt;NA&gt;
+#&gt; 26                       &lt;NA&gt;
+#&gt; 27                       &lt;NA&gt;
+#&gt; 28                       &lt;NA&gt;
+#&gt; 29 Kommunikationswissenschaft
+#&gt; 30                       &lt;NA&gt;
+#&gt; 31                  Sociology
+#&gt; 32                  Sociology
+#&gt; 33                       &lt;NA&gt;
+#&gt; 34                       &lt;NA&gt;
+#&gt; 35                       &lt;NA&gt;</code></pre>
+<pre class="r test"><code># get citation history of a scholar
+soc_staff_cit &lt;- list()
+for (i in 1:nrow(soc_df)) {
+
+    soc_staff_cit[[i]] &lt;- get_citation_history(soc_df[i, c(&quot;gs_id&quot;)])
+
+    if (nrow(soc_staff_cit[[i]]) &gt; 0) {
+        soc_staff_cit[[i]][, c(&quot;gs_id&quot;)] &lt;- soc_df[i, c(&quot;gs_id&quot;)]  # again attach the gs_id as third column
+    }
+}
+soc_staff_cit &lt;- bind_rows(soc_staff_cit)
+colnames(soc_staff_cit)[3] &lt;- &quot;gs_id&quot;</code></pre>
+<pre class="r test"><code>require(rvest)
+require(xml2)
+require(tidyverse)
+
+# function to get collaborators and names from GS profiles
+fcollabs &lt;- function(gsid, lookforcollabs) {
+
+  htmlpage1 &lt;- read_html(paste0(&quot;https://scholar.google.nl/citations?user=&quot;, gsid, &quot;&amp;hl=en&quot;)) # so we paste the google scholar id
+  profilename &lt;- htmlpage1 %&gt;% html_nodes(xpath = &quot;//*/div[@id=&#39;gsc_prf_in&#39;]&quot;) %&gt;% html_text() # we extract the profile name of that google scholar page
+  profilecollabs1 &lt;- as.data.frame(0) # empty df necessary for later
+  profilecollabs2 &lt;- as.data.frame(0) # empty df necessary for later
+
+  if (lookforcollabs == 1) { # so if you want to look for collabs, set function to 1
+
+    htmlpage2 &lt;- read_html(paste0(&quot;https://scholar.google.com/citations?view_op=list_colleagues&amp;hl=en&amp;user=&quot;, gsid)) # so we paste the google scholar id
+    profilecollabs1 &lt;-  htmlpage2 %&gt;% html_nodes(css=&quot;h3&quot;) %&gt;% html_text() # get names
+    profilecollabs1 &lt;-  as.data.frame(profilecollabs1)
+
+    profilecollabs2 &lt;- htmlpage2 %&gt;% html_nodes(&quot;a&quot;) %&gt;% html_attr(&quot;href&quot;) # get the link
+    profilecollabs2 &lt;- profilecollabs2[seq_along(profilecollabs2) %% 2 &gt; 0]
+    profilecollabs2 &lt;- substring(profilecollabs2, 23)
+
+  }
+  if (nrow(profilecollabs1)&gt;1) { # if there ARE collabs
+
+    profilecollabs1 &lt;- as.data.frame(profilecollabs1) # we want to...
+    profilecollabs2 &lt;-  as.data.frame(profilecollabs2)
+    profilecollabs1[,c(&quot;coauth_id&quot;)] &lt;- profilecollabs2[,1]
+
+    profilecollabs1[,c(&quot;gs_id&quot;)] &lt;- gsid #... add gs_ids of focal GS profile
+    profilecollabs1[,c(&quot;name&quot;)] &lt;- profilename #...and the the profile name of GS profile attached
+
+    names(profilecollabs1)[1] &lt;- &quot;coauth&quot;
+
+  } else {
+    profilecollabs1 &lt;- as.data.frame(cbind(gsid, profilename)) # if NOT looking for collabs...
+    names(profilecollabs1) &lt;- c(&quot;gs_id&quot;, &quot;name&quot;) #...we only attach gs_id and profilename
+
+  }
+  return(profilecollabs1)
+
+}</code></pre>
+<pre class="r test"><code># first the soc collaborators note how we already build a function (fcollabs()) for you you need to
+# input a google scholar id and a 1 (if you want to find collabs) or 0 (only extracting names)
+# fcollabs --&gt; you can check it out if you&#39;re interested
+soc_collabs &lt;- list()
+for (i in 1:nrow(soc_df)) {
+
+    time &lt;- runif(1, 0, 1)
+    Sys.sleep(time)
+
+    soc_collabs[[i]] &lt;- fcollabs(soc_df[i, c(&quot;gs_id&quot;)], 1)
+
+}
+soc_collabs &lt;- bind_rows(soc_collabs)  # bind rows, get the unique ones!
+soc_collabs_unique &lt;- unique(soc_collabs[, &quot;coauth_id&quot;])  # so 229 unique collaborators for RU staff?
+soc_collabs_unique &lt;- soc_collabs_unique[!is.na(soc_collabs_unique)]
+save(soc_collabs, file = &quot;addfiles\\soc_df_collabs1.RData&quot;)  # you notice this takes a while, so we save the data here.</code></pre>
+<pre class="r test"><code># then the names of those collaborators plus THEIR collaborators understand that we don&#39;t have
+# names of them yet from the code above?
+collabs_1deep &lt;- list()
+for (i in 1:length(soc_collabs_unique)) {
+
+    time &lt;- runif(1, 0, 3)
+    Sys.sleep(time)
+
+    if (!soc_collabs_unique[i] %in% soc_df$gs_id) {
+        collabs_1deep[[i]] &lt;- fcollabs(soc_collabs_unique[i], 1)
+
+    }
+}
+collabs_1deep &lt;- bind_rows(collabs_1deep)
+collabs_1deep_unique &lt;- unique(collabs_1deep[, 2])
+collabs_1deep_unique &lt;- collabs_1deep_unique[!is.na(collabs_1deep_unique)]
+save(collabs_1deep, file = &quot;addfiles\\soc_collabs2.RData&quot;)  # you notice this takes a while, so we save the data here.</code></pre>
+<pre class="r test"><code>for (i in c(&quot;_ukytQYAAAAJ&quot;, &quot;lkVq32sAAAAJ&quot;, &quot;p3IwtT4AAAAJ&quot;)) {
+    # drop google scholar ids that look suspiciously productive
+    soc_df &lt;- soc_df[!soc_df$gs_id == i, ]
+    soc_df_publications &lt;- soc_df_publications[!(soc_df_publications$gs_id == i), ]
+    soc_staff_cit &lt;- soc_staff_cit[!(soc_staff_cit$gs_id == i), ]
+    soc_collabs &lt;- soc_collabs[!(soc_collabs$gs_id == i), ]
+}</code></pre>
+<pre class="r test"><code># get num co-authors of soc staff. If missing --&gt; empty space so dropped
+num_coauth_soc &lt;- soc_collabs[!is.na(soc_collabs$coauth), ]  # drop the NAs
+num_coauth_soc &lt;- data.frame(table(num_coauth_soc$gs_id))  # Number of coauthors per google scholar id of soc staff</code></pre>
+<pre class="r test"><code># get average number of co-authors of soc staff&#39;s co-authors
+num_coauth_col &lt;- data.frame(table(collabs_1deep$gs_id))  # Number of coauthors per google scholar id of coauthors
+friend_par &lt;- left_join(soc_collabs, num_coauth_col, by = c(coauth_id = &quot;Var1&quot;))
+friend_par &lt;- friend_par[!is.na(friend_par$coauth), ]  # drop NAs again
+friend_par &lt;- friend_par[!is.na(friend_par$Freq), ]
+friend_par &lt;- setDT(friend_par)[, mean(Freq), by = gs_id]  # average per gs_id of soc staff
+
+friend_par &lt;- left_join(friend_par, num_coauth_soc, by = c(gs_id = &quot;Var1&quot;))  # left join to num_coauth_soc
+names(friend_par) &lt;- c(&quot;gs_id&quot;, &quot;col_collabs&quot;, &quot;soc_collabs&quot;)  # better column names
+
+# And find the differences! Seems no friendship paradox here: that is, no more friends of friends
+# than my own friends
+summary(friend_par$soc_collabs)  # their collaborators&#39; co-authors, </code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;    2.00    8.25   14.00   21.85   31.75   80.00</code></pre>
+<pre class="r test"><code>t.test(friend_par$col_collabs, friend_par$soc_collabs)  # no paradox it seems...</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt;  Welch Two Sample t-test
+#&gt; 
+#&gt; data:  friend_par$col_collabs and friend_par$soc_collabs
+#&gt; t = -1.6195, df = 24.452, p-value = 0.1182
+#&gt; alternative hypothesis: true difference in means is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  -17.636272   2.119388
+#&gt; sample estimates:
+#&gt; mean of x mean of y 
+#&gt;  14.09156  21.85000</code></pre>
+<pre class="r test"><code>soc_df$total_cites &lt;- as.numeric(soc_df$total_cites)
+ggplot(soc_df) + geom_bar(aes(x = reorder(last_name, -total_cites), y = total_cites), stat = &quot;identity&quot;) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))</code></pre>
+<p><img src="webscraping_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<pre class="r test"><code>ggplot(soc_df[!soc_df$total_cites&gt;2000,]) + # note the subsetting of the data!
+      geom_bar(aes(x=reorder(last_name, -total_cites), y=total_cites), stat = &quot;identity&quot;) +
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
+<p><img src="webscraping_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<pre class="r test"><code>num_pubs &lt;- data.frame(table(soc_df_publications$gs_id))  # A table per gs_id, so counting the pubs per staff member
+colnames(num_pubs) &lt;- c(&quot;gs_id&quot;, &quot;num_pubs&quot;)  # better column names
+num_pubs &lt;- left_join(num_pubs, soc_df[, c(&quot;total_cites&quot;, &quot;gs_id&quot;)], by = c(gs_id = &quot;gs_id&quot;))  # left join on num_pubs
+num_pubs$total_cites[is.na(num_pubs$total_cites)] &lt;- 0  # if there are pubs but no cites, those pubs aren&#39;t cited yet
+
+# pretty obvious correlation, right?
+ggplot(num_pubs, aes(x = num_pubs, y = total_cites)) + geom_point() + geom_smooth(method = lm)</code></pre>
+<p><img src="webscraping_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre class="r test"><code>soc_df_publications &lt;- data.table(soc_df_publications)  # make it a DT
+min_year &lt;- soc_df_publications[, .SD[which.min(year)], by = gs_id]  # find the lowest publication year in the list of publications of soc staff
+num_pubs &lt;- left_join(num_pubs, min_year[, c(&quot;gs_id&quot;, &quot;year&quot;)], by = c(gs_id = &quot;gs_id&quot;))  # merge those data
+num_pubs$career_age &lt;- 2022 - num_pubs$year  # find career age
+summary(lm(total_cites ~ num_pubs + career_age, data = num_pubs))  # and the regression model</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = total_cites ~ num_pubs + career_age, data = num_pubs)
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -3742.5  -429.3    76.3   534.3  5408.4 
+#&gt; 
+#&gt; Coefficients:
+#&gt;              Estimate Std. Error t value Pr(&gt;|t|)   
+#&gt; (Intercept) -1228.347    518.599  -2.369  0.02473 * 
+#&gt; num_pubs        6.415      5.055   1.269  0.21446   
+#&gt; career_age    163.890     50.532   3.243  0.00297 **
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 1671 on 29 degrees of freedom
+#&gt; Multiple R-squared:  0.7514, Adjusted R-squared:  0.7342 
+#&gt; F-statistic: 43.82 on 2 and 29 DF,  p-value: 1.721e-09</code></pre>
+<pre class="r test"><code>num_coauth &lt;- soc_collabs[!is.na(soc_collabs$coauth), ]
+num_coauth &lt;- data.frame(table(num_coauth$gs_id))  # Number of coauthors per google scholar id
+names(num_coauth) &lt;- c(&quot;gs_id&quot;, &quot;num_coauth&quot;)  # better column names
+num_coauth$num_coauth &lt;- as.numeric(num_coauth$num_coauth)
+num_pubs &lt;- left_join(num_pubs, num_coauth, by = c(gs_id = &quot;gs_id&quot;))  # merge those dfs
+num_pubs$num_coauth[is.na(num_pubs$num_coauth)] &lt;- 0
+summary(lm(total_cites ~ num_pubs + career_age + num_coauth, data = num_pubs))  # and the regression model!</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = total_cites ~ num_pubs + career_age + num_coauth, 
+#&gt;     data = num_pubs)
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -3218.8  -700.2   206.4   585.9  2957.3 
+#&gt; 
+#&gt; Coefficients:
+#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept) -764.925    375.540  -2.037   0.0512 .  
+#&gt; num_pubs       9.518      3.611   2.636   0.0135 *  
+#&gt; career_age    24.790     43.721   0.567   0.5752    
+#&gt; num_coauth    96.800     17.604   5.499 7.11e-06 ***
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 1179 on 28 degrees of freedom
+#&gt; Multiple R-squared:  0.8805, Adjusted R-squared:  0.8676 
+#&gt; F-statistic: 68.74 on 3 and 28 DF,  p-value: 4.974e-13</code></pre>
+<pre class="r test"><code>soc_recip &lt;- soc_collabs[!is.na(soc_collabs$coauth), ]  # drop those without coauthors
+
+# notice how we switch these ids around to find reciprocated ties!
+soc_recip &lt;- left_join(soc_recip, collabs_1deep, by = c(gs_id = &quot;coauth_id&quot;, coauth_id = &quot;gs_id&quot;))
+soc_recip &lt;- soc_recip[!is.na(soc_recip$coauth.y), ]  #drop those coauthors who don&#39;t reciprocate
+soc_recip &lt;- data.frame(table(soc_recip$gs_id))  # count coauthors that have reciprocated
+
+num_pubs &lt;- left_join(num_pubs, soc_recip, by = c(gs_id = &quot;Var1&quot;))  # Join on gs_id for both
+num_pubs$reciprocity &lt;- num_pubs$Freq/num_pubs$num_coauth  # calculate share reciprocated 
+num_pubs$reciprocity[is.na(num_pubs$reciprocity)] &lt;- 0  # zero if no ties send or received
+cor(num_pubs$reciprocity, num_pubs$num_coauth)  # correlation is decent</code></pre>
+<pre class="test2"><code>#&gt; [1] 0.5024404</code></pre>
+<pre class="r test"><code>summary(lm(total_cites ~ num_pubs + career_age + reciprocity, data = num_pubs))  # and the regression model!</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = total_cites ~ num_pubs + career_age + reciprocity, 
+#&gt;     data = num_pubs)
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -3580.2  -743.8  -138.9   608.6  5409.6 
+#&gt; 
+#&gt; Coefficients:
+#&gt;              Estimate Std. Error t value Pr(&gt;|t|)  
+#&gt; (Intercept) -1364.879    532.228  -2.564   0.0160 *
+#&gt; num_pubs        7.745      5.187   1.493   0.1466  
+#&gt; career_age    145.413     53.196   2.734   0.0107 *
+#&gt; reciprocity  1765.039   1630.458   1.083   0.2882  
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 1666 on 28 degrees of freedom
+#&gt; Multiple R-squared:  0.7613, Adjusted R-squared:  0.7358 
+#&gt; F-statistic: 29.78 on 3 and 28 DF,  p-value: 7.427e-09</code></pre>
+<pre class="r test"><code>summary(lm(reciprocity ~ num_pubs + career_age + num_coauth, data = num_pubs))  # and the regression model!</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = reciprocity ~ num_pubs + career_age + num_coauth, 
+#&gt;     data = num_pubs)
+#&gt; 
+#&gt; Residuals:
+#&gt;      Min       1Q   Median       3Q      Max 
+#&gt; -0.18823 -0.10915 -0.07821  0.11368  0.44154 
+#&gt; 
+#&gt; Coefficients:
+#&gt;               Estimate Std. Error t value Pr(&gt;|t|)   
+#&gt; (Intercept)  0.1128073  0.0537680   2.098  0.04505 * 
+#&gt; num_pubs    -0.0005158  0.0005170  -0.998  0.32701   
+#&gt; career_age  -0.0001732  0.0062597  -0.028  0.97812   
+#&gt; num_coauth   0.0074056  0.0025205   2.938  0.00654 **
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 0.1689 on 28 degrees of freedom
+#&gt; Multiple R-squared:  0.3227, Adjusted R-squared:  0.2502 
+#&gt; F-statistic: 4.448 on 3 and 28 DF,  p-value: 0.01121</code></pre>
+<p>I will not do the gender part the way it was done in the tutorial,
+because we assign gender to everyone and not just to the sociology
+staff.</p>
+<div id="r-markdown" class="section level2" number="0.1">
+<h2><span class="header-section-number">0.1</span> R Markdown</h2>
+<p>This is an R Markdown document. Markdown is a simple formatting
+syntax for authoring HTML, PDF, and MS Word documents. For more details
+on using R Markdown see <a href="http://rmarkdown.rstudio.com"
+class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<p>When you click the <strong>Knit</strong> button a document will be
+generated that includes both content as well as the output of any
+embedded R code chunks within the document. You can embed an R code
+chunk like this:</p>
+<pre class="r test"><code>summary(cars)</code></pre>
+<pre class="test2"><code>#&gt;      speed           dist       
+#&gt;  Min.   : 4.0   Min.   :  2.00  
+#&gt;  1st Qu.:12.0   1st Qu.: 26.00  
+#&gt;  Median :15.0   Median : 36.00  
+#&gt;  Mean   :15.4   Mean   : 42.98  
+#&gt;  3rd Qu.:19.0   3rd Qu.: 56.00  
+#&gt;  Max.   :25.0   Max.   :120.00</code></pre>
+</div>
+<div id="including-plots" class="section level2" number="0.2">
+<h2><span class="header-section-number">0.2</span> Including Plots</h2>
+<p>You can also embed plots, for example:</p>
+<p><img src="webscraping_files/figure-html/pressure-1.png" width="672" /></p>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the
+code chunk to prevent printing of the R code that generated the
+plot.</p>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiV2Vic2NyYXBpbmcgU29jaW9sb2d5IFN0YWZmIgphdXRob3I6ICJBbnVzY2hrYSBQZWVsZW4iCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OiBodG1sX2RvY3VtZW50Ci0tLQoKCmBgYHtyIHdhcm5pbmc9RkFMU0UsIGdsb2JhbHNldHRpbmdzLCBlY2hvPUZBTFNFLCByZXN1bHRzPSdoaWRlJ30KbGlicmFyeShrbml0cikKCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKb3B0c19jaHVuayRzZXQodGlkeS5vcHRzPWxpc3Qod2lkdGguY3V0b2ZmPTEwMCksdGlkeT1UUlVFLCB3YXJuaW5nID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRSxjb21tZW50ID0gIiM+IiwgY2FjaGU9VFJVRSwgY2xhc3Muc291cmNlPWMoInRlc3QiKSwgY2xhc3Mub3V0cHV0PWMoInRlc3QyIikpCm9wdGlvbnMod2lkdGggPSAxMDApCnJnbDo6c2V0dXBLbml0cigpCgoKCmNvbG9yaXplIDwtIGZ1bmN0aW9uKHgsIGNvbG9yKSB7c3ByaW50ZigiPHNwYW4gc3R5bGU9J2NvbG9yOiAlczsnPiVzPC9zcGFuPiIsIGNvbG9yLCB4KSB9CmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCgpgYGB7cn0KIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyBUaXRsZTogICAgV2Vic2NyYXBpbmcgaW4gUgojIEF1dGhvcjogICBCYXMgSG9mc3RyYQojIFZlcnNpb246ICAyOS0wNy0yMDIxCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgojc3RhcnQgd2l0aCBjbGVhbiB3b3Jrc3BhY2UgCnJtKGxpc3Q9bHMoKSkKCiMgaW5zdGFsbC5wYWNrYWdlcygiZGF0YS50YWJsZSIpIApsaWJyYXJ5KGRhdGEudGFibGUpICMgbWFpbmx5IGZvciBmYXN0ZXIgZGF0YSBoYW5kbGluZwpsaWJyYXJ5KHRpZHl2ZXJzZSkgIyBJIGFzc3VtZSB5b3UgYWxyZWFkeSBpbnN0YWxsZWQgdGhpcyBvbmUhCiMgaW5zdGFsbC5wYWNrYWdlcygiaHR0ciIpICMgd2UgZG9uJ3QgbmVlZCB0aGlzIGZvciBub3cKIyByZXF1aXJlKGh0dHIpCiNpbnN0YWxsLnBhY2thZ2VzKCJ4bWwyIikKcmVxdWlyZSh4bWwyKQojaW5zdGFsbC5wYWNrYWdlcygicnZlc3QiKQpyZXF1aXJlKHJ2ZXN0KQojaW5zdGFsbC5wYWNrYWdlcygiZGV2dG9vbHMiKQpyZXF1aXJlKGRldnRvb2xzKQojIE5vdGUgd2UncmUgZG9pbmcgc29tZXRoaW5nIGRpZmZlcmVudCBoZXJlLiBXZSdyZSBpbnN0YWxsaW5nIGEgKmxhdGVzdCogdmVyc2lvbiBkaXJlY3RseSBmcm9tIEdpdEh1YgojIFRoaXMgaXMgYmVjYXVzZSB0aGUgcmVsZWFzZWQgdmVyc2lvbiBvZiB0aGlzIHBhY2thZ2VzIGNvbnRhaW5zIHNvbWUgZXJyb3JzIQojZGV2dG9vbHM6Omluc3RhbGxfZ2l0aHViKCJqa2VpcnN0ZWFkL3NjaG9sYXIiKSAKCgpyZXF1aXJlKHNjaG9sYXIpCgojZGVmaW5lIHdvcmtkaXJlY3RvcnksIG5vdGUgdGhlIGRvdWJsZSAqYmFja3NsYXNoZXMqIGlmIHlvdSdyZSBvbiB3aW5kb3dzCiMgc2V0d2QoIi95b3VycGF0aGhlcmUpIgpgYGAKYGBge3J9CiMgTGV0J3MgZmlyc3QgZ2V0IHRoZSBzdGFmZiBwYWdlIHJlYWRfaHRtbCBpcyBhIGZ1bmN0aW9uIHRoYXQgc2ltcGx5IGV4dHJhY3RzIGh0bWwgd2VicGFnZXMgYW5kCiMgcHV0cyB0aGVtIGluIHhtbCBmb3JtYXQKc29jX3N0YWZmIDwtIHJlYWRfaHRtbCgiaHR0cHM6Ly93d3cucnUubmwvc29jaW9sb2d5L3Jlc2VhcmNoL3N0YWZmLyIpCgpoZWFkKHNvY19zdGFmZikKCmNsYXNzKHNvY19zdGFmZikKYGBgCmBgYHtyfQpzb2Nfc3RhZmYgPC0gc29jX3N0YWZmICU+JQogICAgcnZlc3Q6Omh0bWxfbm9kZXMoImJvZHkiKSAlPiUKICAgIHhtbDI6OnhtbF9maW5kX2FsbCgiLy90ZCIpICU+JQogICAgcnZlc3Q6Omh0bWxfdGV4dCgpCmBgYAoKYGBge3J9CmZvZGQgPC0gZnVuY3Rpb24oeCkgewogICN3aGF0IGlzIHgsIHggaXMgYSB2ZWN0b3IKIHglJTIgIT0gMCAKfQoKbnN0YWYgPC0gbGVuZ3RoKHNvY19zdGFmZikKbnN0YWYKZm9kZCgxOm5zdGFmKQoKc29jX25hbWVzIDwtIHNvY19zdGFmZltmb2RkKDE6bnN0YWYpXSAKaGVhZChzb2NfbmFtZXMpCnNvY19uYW1lcwoKc29jX25hbWVzCgpgYGAKCmBgYHtyfQpzb2NfZXhwZXJ0cyA8LSBzb2Nfc3RhZmZbIWZvZGQoMTpuc3RhZildICAjIGluIHRoZSAxIHVudGlsIDk0c3QgbnVtYmVyLCBnZXQgdGhlIGV2ZW4gZWxlbWVudHMKaGVhZChzb2NfZXhwZXJ0cykKYGBgCgpgYGB7cn0Kc29jX2RmIDwtIGRhdGEuZnJhbWUoY2JpbmQoc29jX25hbWVzLCBzb2NfZXhwZXJ0cykpICAKYGBgCgoKYGBge3J9CiMgaW5zcGVjdCBhZ2FpbiwgYW5kIHJlbW92ZSB0aGUgcm93cyB3ZSBkb24ndCBuZWVkIChjaGVjayBmb3IgeW91cnNlbGYgdG8gYmUgY2VydGFpbiEpCgpkZWxyb3dzIDwtIHdoaWNoKHNvY19kZiRzb2NfbmFtZXMgPT0gIlN0YWZmOiIgfCBzb2NfZGYkc29jX25hbWVzID09ICJQaEQ6IiB8IHNvY19kZiRzb2NfbmFtZXMgPT0gIkV4dGVybmFsIFBoRDoiIHwKICAgIHNvY19kZiRzb2NfbmFtZXMgPT0gIkd1ZXN0IHJlc2VhcmNoZXJzOiIgfCBzb2NfZGYkc29jX25hbWVzID09ICJPdGhlciByZXNlYXJjaGVyczoiKQoKc29jX2RmIDwtIHNvY19kZlstZGVscm93cywgXQpgYGAKCmBgYHtyfQojIExhc3QgbmFtZSBzZWVtcyB0byBiZSBldmVyeXRoaW5nIGJlZm9yZSB0aGUgY29tbWEKc29jX2RmJGxhc3RfbmFtZSA8LSBnc3ViKCIsLiokIiwgIiIsIHNvY19kZiRzb2NfbmFtZXMpCgojIGZpcnN0IG5hbWUgaXMgZXZlcnl0aGluZyBiZXR3ZWVuIGJyYWNrZXRzCnNvY19kZiRmaXJzdF9uYW1lIDwtIHN0cl9leHRyYWN0X2FsbChzb2NfZGYkc29jX25hbWVzLCAiKD88PVxcKCkuKz8oPz1cXCkpIiwgc2ltcGxpZnkgPSBUUlVFKQpgYGAKCmBgYHtyfQpzb2NfZGYkbGFzdF9uYW1lIDwtIGdzdWIoIiBKLiBcXChKYW5zamVcXCkgdmFuIE1TYyIsICIiLCBzb2NfZGYkbGFzdF9uYW1lKQpzb2NfZGYkZmlyc3RfbmFtZSA8LSB0b2xvd2VyKHNvY19kZiRmaXJzdF9uYW1lKSAgIyBldmVyeXRoaW5nIHRvIGxvd2VyIQpzb2NfZGYkbGFzdF9uYW1lIDwtIHRvbG93ZXIoc29jX2RmJGxhc3RfbmFtZSkKYGBgCgpgYGB7cn0KIyB0cmltd3MgbG9vc2VzIGFsbCBzcGFjaW5nIGJlZm9yZSBhbmQgYWZ0ZXIgKGlmIHlvdSBzcGVjaWZ5ICdib3RoJykgYSBjaGFyYWN0ZXIgc3RyaW5nCnNvY19kZiRsYXN0X25hbWUgPC0gdHJpbXdzKHNvY19kZiRsYXN0X25hbWUsIHdoaWNoID0gYygiYm90aCIpLCB3aGl0ZXNwYWNlID0gIlsgXHRcclxuXSIpCnNvY19kZiRmaXJzdF9uYW1lIDwtIHRyaW13cyhzb2NfZGYkZmlyc3RfbmFtZSwgd2hpY2ggPSBjKCJib3RoIiksIHdoaXRlc3BhY2UgPSAiWyBcdFxyXG5dIikKc29jX2RmJHNvY19leHBlcnRzIDwtIHRyaW13cyhzb2NfZGYkc29jX2V4cGVydHMsIHdoaWNoID0gYygiYm90aCIpLCB3aGl0ZXNwYWNlID0gIlsgXHRcclxuXSIpCnNvY19kZiRzb2NfbmFtZXMgPC0gdHJpbXdzKHNvY19kZiRzb2NfbmFtZXMsIHdoaWNoID0gYygiYm90aCIpLCB3aGl0ZXNwYWNlID0gIlsgXHRcclxuXSIpCmBgYAoKYGBge3J9CiMgc2V0IGFmZmlsaWF0aW9uIHRvIHJhZGJvdWQsIGNvbWVzIGluIGhhbmR5IGZvciBxdWVyeWluZyBnb29nbGUgc2Nob2xhcgpzb2NfZGYkYWZmaWxpYXRpb24gPC0gInJhZGJvdWQgdW5pdmVyc2l0eSIKYGBgCgpgYGB7cn0Kc29jX2RmCmBgYAoKYGBge3J9CiNyZXF1aXJlKHNjaG9sYXIpCgpnZXRfc2Nob2xhcl9pZF9maXggPC0gZnVuY3Rpb24gKGxhc3RfbmFtZSA9ICIiLCBmaXJzdF9uYW1lID0gIiIsIGFmZmlsaWF0aW9uID0gTkEpCnsKICBpZiAoIWFueShuemNoYXIoYyhmaXJzdF9uYW1lLCBsYXN0X25hbWUpKSkpCiAgICBzdG9wKCJBdCBsZWFzdCBvbmUgb2YgZmlyc3QgYW5kIGxhc3QgbmFtZSBtdXN0IGJlIHNwZWNpZmllZCEiKQogIHNpdGUgPC0gZ2V0T3B0aW9uKCJzY2hvbGFyX3NpdGUiKQogIHVybCA8LSBwYXN0ZTAoc2l0ZSwgIi9jaXRhdGlvbnM/dmlld19vcD1zZWFyY2hfYXV0aG9ycyZtYXV0aG9ycz0iLAogICAgICAgICAgICAgICAgZmlyc3RfbmFtZSwgIisiLCBsYXN0X25hbWUsICImaGw9ZW4mb2k9YW8iKQogIHBhZ2UgPC0gZ2V0X3NjaG9sYXJfcmVzcCh1cmwpCiAgaWYgKGlzLm51bGwocGFnZSkpCiAgICByZXR1cm4oTkEpCiAgYWEgPC0gaHR0cjo6Y29udGVudChwYWdlLCBhcyA9ICJ0ZXh0IikKICAjIGFkZGVkIGJ5IEJhcyBIb2ZzdHJhOiBidWdmaXggZm9yIElEcyB0aGF0IGhhdmUgYSBkYXNoICgiLSIpCiAgaWRzIDwtIHN1YnN0cmluZyhhYSwgcmVnZXhwcigiO3VzZXI9IiwgYWEpKQogIGlkcyA8LSBzdWJzdHIoaWRzLCAxLCAxOSkgIyBlcnJvciBwcm9uZSwgYnV0IHVuc3VyZSBob3cgdG8gc29sdmUgb3RoZXJ3aXNlCiAgIyBpZiAobmNoYXIoc3RyaW5ncjo6c3RyX2V4dHJhY3RfYWxsKHN0cmluZyA9IGFhLCBwYXR0ZXJuID0gIjt1c2VyPVtbOmFsbnVtOl1dK1tbOnB1bmN0Ol1dIilbWzFdXVsxXSkgPCAxOCkgewogICMgICBpZHMgPC0gc3RyaW5ncjo6c3RyX2V4dHJhY3RfYWxsKHN0cmluZyA9IGFhLCBwYXR0ZXJuID0gIjt1c2VyPVtbOmFsbnVtOl1dK1tbOnB1bmN0Ol1dK1tbOmFsbnVtOl1dK1tbOnB1bmN0Ol1dIikKICAjIH0gZWxzZSB7CiAgIyAgIGlkcyA8LSBzdHJpbmdyOjpzdHJfZXh0cmFjdF9hbGwoc3RyaW5nID0gYWEsIHBhdHRlcm4gPSAiO3VzZXI9W1s6YWxudW06XV0rW1s6cHVuY3Q6XV0iKQogICMgfQogIGlmIChsZW5ndGgodW5saXN0KGlkcykpID09IDApIHsKICAgIG1lc3NhZ2UoIk5vIFNjaG9sYXIgSUQgZm91bmQuIikKICAgIHJldHVybihOQSkKICB9CiAgaWRzIDwtIGlkcyAlPiUgdW5saXN0ICU+JSBnc3ViKCI7dXNlcj18W1s6cHVuY3Q6XV0kIiwgIiIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC4pICU+JSB1bmlxdWUKICBpZiAobGVuZ3RoKGlkcykgPiAxKSB7CiAgICBwcm9maWxlcyA8LSBsYXBwbHkoaWRzLCBzY2hvbGFyOjpnZXRfcHJvZmlsZSkKICAgIGlmIChpcy5uYShhZmZpbGlhdGlvbikpIHsKICAgICAgeF9wcm9maWxlIDwtIHByb2ZpbGVzW1sxXV0KICAgICAgd2FybmluZygiU2VsZWN0aW5nIGZpcnN0IG91dCBvZiAiLCBsZW5ndGgocHJvZmlsZXMpLAogICAgICAgICAgICAgICIgY2FuZGlkYXRlIG1hdGNoZXMuIikKICAgIH0KICAgIGVsc2UgewogICAgICB3aGljaF9wcm9maWxlIDwtIHNhcHBseShwcm9maWxlcywgZnVuY3Rpb24oeCkgewogICAgICAgIHN0cmluZ3I6OnN0cl9jb3VudChzdHJpbmcgPSB4JGFmZmlsaWF0aW9uLCBwYXR0ZXJuID0gc3RyaW5ncjo6Y29sbChhZmZpbGlhdGlvbiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWdub3JlX2Nhc2UgPSBUUlVFKSkKICAgICAgfSkKICAgICAgaWYgKGFsbCh3aGljaF9wcm9maWxlID09IDApKSB7CiAgICAgICAgd2FybmluZygiTm8gcmVzZWFyY2hlciBmb3VuZCBhdCB0aGUgaW5kaWNhdGVkIGFmZmlsaWF0aW9uLiIpCiAgICAgICAgcmV0dXJuKE5BKQogICAgICB9CiAgICAgIGVsc2UgewogICAgICAgIHhfcHJvZmlsZSA8LSBwcm9maWxlc1tbd2hpY2god2hpY2hfcHJvZmlsZSAhPQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwKV1dCiAgICAgIH0KICAgIH0KICB9CiAgZWxzZSB7CiAgICB4X3Byb2ZpbGUgPC0gc2Nob2xhcjo6Z2V0X3Byb2ZpbGUoaWQgPSBpZHMpCiAgfQogIHJldHVybih4X3Byb2ZpbGUkaWQpCn0KYGBgCgoKYGBge3J9CiMgTG9vayB0aHJvdWdodCBnZXRfc2Nob2xhcl9pZF9maXgobGFzdF9uYW1lLCBmaXJzdF9uYW1lLCBhZmZpbGlhdGlvbikgCiMgaWYgd2UgY2FuIGZpbmQgZ29vZ2xlIHNjaG9sYXIgcHJvZmlsZXMgb2Ygc29jaW9sb2d5IHN0YWZmIQpzb2NfZGYkZ3NfaWQgPC0gIiIKCmZvciAoaSBpbiAxOm5yb3coc29jX2RmKSkgewogIHByaW50KGkpCiAgdGltZSA8LSBydW5pZigxLCAwLCAxKQogIFN5cy5zbGVlcCh0aW1lKQogIAogIHRyeUNhdGNoKHsKICAgICBzb2NfZGZbaSxjKCJnc19pZCIpXSA8LSBnZXRfc2Nob2xhcl9pZF9maXgobGFzdF9uYW1lID0gc29jX2RmW2ksIGMoImxhc3RfbmFtZSIpXSwgIyBzbyBzZWFyY2ggb24gbGFzdF9uYW1lIG9mIHN0YWZmICh0aGlyZCBjb2x1bW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpcnN0X25hbWUgPSBzb2NfZGZbaSwgYygiZmlyc3RfbmFtZSIpXSwgICMgc2VhcmNoIG9uIGZpcnN0X25hbWUgb2Ygc3RhZmYgKGZvdXJ0aCBjb2x1bW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFmZmlsaWF0aW9uID0gc29jX2RmW2ksYygiYWZmaWxpYXRpb24iKV0pICMgc2VhcmNoIG9uIGFmZmlsaWF0aW9uIG9mIGVhY2ggc3RhZmYgKGZpZnRoIGNvbHVtbikKCiAgICB9LCBlcnJvcj1mdW5jdGlvbihlKXtjYXQoIkVSUk9SIDoiLCBjb25kaXRpb25NZXNzYWdlKGUpLCAiXG4iKX0pICMgY29udGludWUgb24gZXJyb3IsIGJ1dCBwcmludCB0aGUgZXJyb3IKICB9CgojIHJlbW92ZSB0aG9zZSB3aXRob3V0IHB1YnMgZnJvbSB0aGUgZGYKIyBzZWVtcyB3ZSdyZSBsZWZ0IHdpdGggYWJvdXQgMzQgc29jaW9sb2d5IHN0YWZmIG1lbWJlcnMhCnNvY19kZiA8LSBzb2NfZGZbIXNvY19kZiRnc19pZCA9PSAiIiwgXQpzb2NfZGYKYGBgCgoKYGBge3J9CnNvY19saXN0X3Byb2ZpbGVzIDwtIGxpc3QoKSAgIyBmaXJzdCB3ZSBjcmVhdGUgYW4gZW1wdHkgbGlzdCB0aGF0IHdlIHRoZW4gZmlsbCB1cCB3aXRoIHRoZSBmb3IgbG9vcApzb2NfbGlzdF9wdWJsaWNhdGlvbnMgPC0gbGlzdCgpCgpmb3IgKGkgaW4gMTpucm93KHNvY19kZikpIHsKICAgIHByaW50KGkpCiAgICB0aW1lIDwtIHJ1bmlmKDEsIDAsIDEpCiAgICBTeXMuc2xlZXAodGltZSkKCiAgICAjIG5vdGUgaG93IHlvdSBjYWxsIGRpZmZlcmVudCBlbGVtZW50cyBpbiBhIGxpc3QgJ1tbXV0nLCBmaWxsIGluIHRoZSBpLXRoIGVsZW1lbnQKICAgIHNvY19saXN0X3Byb2ZpbGVzW1tpXV0gPC0gZ2V0X3Byb2ZpbGUoc29jX2RmW2ksIGMoImdzX2lkIildKSAgIyBOb3RlIGhvdyB3ZSBjYWxsIHJvdyBpIChyZW1lbWJlciBob3cgdG8gY2FsbCByb3dzIGluIGEgREYvTWF0cml4KSBhbmQgdGhlbiB0aGUgYXNzb2NpYXRlZCBzY2hvbGFyIGlkCiAgICBzb2NfbGlzdF9wdWJsaWNhdGlvbnNbW2ldXSA8LSBnZXRfcHVibGljYXRpb25zKHNvY19kZltpLCBjKCJnc19pZCIpXSkKICAgIHNvY19saXN0X3B1YmxpY2F0aW9uc1tbaV1dWywgYygiZ3NfaWQiKV0gPC0gc29jX2RmW2ksIGMoImdzX2lkIildICAjIG5vdGUgdGhhdCB3ZSBhZ2FpbiBhdHRhY2ggYW4gaWQKICAgICMgc28gYm90aCBmdW5jdGlvbnMgaGVyZSBjYWxsIHRoZSBlbnRpcmUgcHJvZmlsZSBhbmQgcHVicyBmb3IgYW4gYXV0aG9yLCBiYXNlZCBvbiBnb29nbGUKICAgICMgc2Nob2xhciBpZHMKCn0KIyBOb3RpY2UgaG93IGZhc3QgdGhlIGRhdGEgYmxvdyB1cCEgVGhlIDM0IFJVIHNvY2lvbG9neSBzY2hvbGFycyBwdWJsaXNoIH4zMDAwIHBhcGVycwpzb2NfZGZfcHVibGljYXRpb25zIDwtIGJpbmRfcm93cyhzb2NfbGlzdF9wdWJsaWNhdGlvbnMpCmBgYAoKCgpgYGB7cn0Kc29jX3Byb2ZpbGVzX2RmIDwtIGxpc3QoKQpmb3IgKGkgaW4gMTpsZW5ndGgoc29jX2xpc3RfcHJvZmlsZXMpKSB7CiAgICAjIHNvY19wcm9maWxlc19kZltbaV1dIDwtIGRhdGEuZnJhbWUodCh1bmxpc3Qoc29jX2xpc3RfcHJvZmlsZXNbW2ldXVsxOjhdKSkpICNzb21lIGFubnlvaW5nCiAgICAjIGRhdGEgaGFuZGxpbmcKICAgIHNvY19wcm9maWxlc19kZltbaV1dIDwtIHVubGlzdChzb2NfbGlzdF9wcm9maWxlc1tbaV1dWzE6OF0pCiAgICBzb2NfcHJvZmlsZXNfZGZbW2ldXSA8LSBkYXRhLmZyYW1lKHNvY19wcm9maWxlc19kZltbaV1dKQogICAgc29jX3Byb2ZpbGVzX2RmW1tpXV0gPC0gZGF0YS5mcmFtZSh0KHNvY19wcm9maWxlc19kZltbaV1dKSkKCn0Kc29jX3Byb2ZpbGVzX2RmIDwtIGJpbmRfcm93cyhzb2NfcHJvZmlsZXNfZGYpCnNvY19kZiA8LSBsZWZ0X2pvaW4oc29jX2RmLCBzb2NfcHJvZmlsZXNfZGYsIGJ5ID0gYyhnc19pZCA9ICJpZCIpKSAgIyBtZXJnZSBkYXRhIHdpdGggc29jX2RmCnNvY19kZiAgIyBub3RpY2UgYWxsIHRoZSBuZXcgaW5mb3JtYXRpb24gd2Ugd2VyZSBhYmxlIHRvIGdldCBmcm9tIHRoZSBzY2hvbGFyIHByb2ZpbGVzIQpgYGAKCmBgYHtyfQojIGdldCBjaXRhdGlvbiBoaXN0b3J5IG9mIGEgc2Nob2xhcgpzb2Nfc3RhZmZfY2l0IDwtIGxpc3QoKQpmb3IgKGkgaW4gMTpucm93KHNvY19kZikpIHsKCiAgICBzb2Nfc3RhZmZfY2l0W1tpXV0gPC0gZ2V0X2NpdGF0aW9uX2hpc3Rvcnkoc29jX2RmW2ksIGMoImdzX2lkIildKQoKICAgIGlmIChucm93KHNvY19zdGFmZl9jaXRbW2ldXSkgPiAwKSB7CiAgICAgICAgc29jX3N0YWZmX2NpdFtbaV1dWywgYygiZ3NfaWQiKV0gPC0gc29jX2RmW2ksIGMoImdzX2lkIildICAjIGFnYWluIGF0dGFjaCB0aGUgZ3NfaWQgYXMgdGhpcmQgY29sdW1uCiAgICB9Cn0Kc29jX3N0YWZmX2NpdCA8LSBiaW5kX3Jvd3Moc29jX3N0YWZmX2NpdCkKY29sbmFtZXMoc29jX3N0YWZmX2NpdClbM10gPC0gImdzX2lkIgpgYGAKCgpgYGB7cn0KcmVxdWlyZShydmVzdCkKcmVxdWlyZSh4bWwyKQpyZXF1aXJlKHRpZHl2ZXJzZSkKCiMgZnVuY3Rpb24gdG8gZ2V0IGNvbGxhYm9yYXRvcnMgYW5kIG5hbWVzIGZyb20gR1MgcHJvZmlsZXMKZmNvbGxhYnMgPC0gZnVuY3Rpb24oZ3NpZCwgbG9va2ZvcmNvbGxhYnMpIHsKCiAgaHRtbHBhZ2UxIDwtIHJlYWRfaHRtbChwYXN0ZTAoImh0dHBzOi8vc2Nob2xhci5nb29nbGUubmwvY2l0YXRpb25zP3VzZXI9IiwgZ3NpZCwgIiZobD1lbiIpKSAjIHNvIHdlIHBhc3RlIHRoZSBnb29nbGUgc2Nob2xhciBpZAogIHByb2ZpbGVuYW1lIDwtIGh0bWxwYWdlMSAlPiUgaHRtbF9ub2Rlcyh4cGF0aCA9ICIvLyovZGl2W0BpZD0nZ3NjX3ByZl9pbiddIikgJT4lIGh0bWxfdGV4dCgpICMgd2UgZXh0cmFjdCB0aGUgcHJvZmlsZSBuYW1lIG9mIHRoYXQgZ29vZ2xlIHNjaG9sYXIgcGFnZQogIHByb2ZpbGVjb2xsYWJzMSA8LSBhcy5kYXRhLmZyYW1lKDApICMgZW1wdHkgZGYgbmVjZXNzYXJ5IGZvciBsYXRlcgogIHByb2ZpbGVjb2xsYWJzMiA8LSBhcy5kYXRhLmZyYW1lKDApICMgZW1wdHkgZGYgbmVjZXNzYXJ5IGZvciBsYXRlcgoKICBpZiAobG9va2ZvcmNvbGxhYnMgPT0gMSkgeyAjIHNvIGlmIHlvdSB3YW50IHRvIGxvb2sgZm9yIGNvbGxhYnMsIHNldCBmdW5jdGlvbiB0byAxCgogICAgaHRtbHBhZ2UyIDwtIHJlYWRfaHRtbChwYXN0ZTAoImh0dHBzOi8vc2Nob2xhci5nb29nbGUuY29tL2NpdGF0aW9ucz92aWV3X29wPWxpc3RfY29sbGVhZ3VlcyZobD1lbiZ1c2VyPSIsIGdzaWQpKSAjIHNvIHdlIHBhc3RlIHRoZSBnb29nbGUgc2Nob2xhciBpZAogICAgcHJvZmlsZWNvbGxhYnMxIDwtICBodG1scGFnZTIgJT4lIGh0bWxfbm9kZXMoY3NzPSJoMyIpICU+JSBodG1sX3RleHQoKSAjIGdldCBuYW1lcwogICAgcHJvZmlsZWNvbGxhYnMxIDwtICBhcy5kYXRhLmZyYW1lKHByb2ZpbGVjb2xsYWJzMSkKCiAgICBwcm9maWxlY29sbGFiczIgPC0gaHRtbHBhZ2UyICU+JSBodG1sX25vZGVzKCJhIikgJT4lIGh0bWxfYXR0cigiaHJlZiIpICMgZ2V0IHRoZSBsaW5rCiAgICBwcm9maWxlY29sbGFiczIgPC0gcHJvZmlsZWNvbGxhYnMyW3NlcV9hbG9uZyhwcm9maWxlY29sbGFiczIpICUlIDIgPiAwXQogICAgcHJvZmlsZWNvbGxhYnMyIDwtIHN1YnN0cmluZyhwcm9maWxlY29sbGFiczIsIDIzKQoKICB9CiAgaWYgKG5yb3cocHJvZmlsZWNvbGxhYnMxKT4xKSB7ICMgaWYgdGhlcmUgQVJFIGNvbGxhYnMKCiAgICBwcm9maWxlY29sbGFiczEgPC0gYXMuZGF0YS5mcmFtZShwcm9maWxlY29sbGFiczEpICMgd2Ugd2FudCB0by4uLgogICAgcHJvZmlsZWNvbGxhYnMyIDwtICBhcy5kYXRhLmZyYW1lKHByb2ZpbGVjb2xsYWJzMikKICAgIHByb2ZpbGVjb2xsYWJzMVssYygiY29hdXRoX2lkIildIDwtIHByb2ZpbGVjb2xsYWJzMlssMV0KCiAgICBwcm9maWxlY29sbGFiczFbLGMoImdzX2lkIildIDwtIGdzaWQgIy4uLiBhZGQgZ3NfaWRzIG9mIGZvY2FsIEdTIHByb2ZpbGUKICAgIHByb2ZpbGVjb2xsYWJzMVssYygibmFtZSIpXSA8LSBwcm9maWxlbmFtZSAjLi4uYW5kIHRoZSB0aGUgcHJvZmlsZSBuYW1lIG9mIEdTIHByb2ZpbGUgYXR0YWNoZWQKCiAgICBuYW1lcyhwcm9maWxlY29sbGFiczEpWzFdIDwtICJjb2F1dGgiCgogIH0gZWxzZSB7CiAgICBwcm9maWxlY29sbGFiczEgPC0gYXMuZGF0YS5mcmFtZShjYmluZChnc2lkLCBwcm9maWxlbmFtZSkpICMgaWYgTk9UIGxvb2tpbmcgZm9yIGNvbGxhYnMuLi4KICAgIG5hbWVzKHByb2ZpbGVjb2xsYWJzMSkgPC0gYygiZ3NfaWQiLCAibmFtZSIpICMuLi53ZSBvbmx5IGF0dGFjaCBnc19pZCBhbmQgcHJvZmlsZW5hbWUKCiAgfQogIHJldHVybihwcm9maWxlY29sbGFiczEpCgp9CgpgYGAKCgpgYGB7cn0KIyBmaXJzdCB0aGUgc29jIGNvbGxhYm9yYXRvcnMgbm90ZSBob3cgd2UgYWxyZWFkeSBidWlsZCBhIGZ1bmN0aW9uIChmY29sbGFicygpKSBmb3IgeW91IHlvdSBuZWVkIHRvCiMgaW5wdXQgYSBnb29nbGUgc2Nob2xhciBpZCBhbmQgYSAxIChpZiB5b3Ugd2FudCB0byBmaW5kIGNvbGxhYnMpIG9yIDAgKG9ubHkgZXh0cmFjdGluZyBuYW1lcykKIyBmY29sbGFicyAtLT4geW91IGNhbiBjaGVjayBpdCBvdXQgaWYgeW91J3JlIGludGVyZXN0ZWQKc29jX2NvbGxhYnMgPC0gbGlzdCgpCmZvciAoaSBpbiAxOm5yb3coc29jX2RmKSkgewoKICAgIHRpbWUgPC0gcnVuaWYoMSwgMCwgMSkKICAgIFN5cy5zbGVlcCh0aW1lKQoKICAgIHNvY19jb2xsYWJzW1tpXV0gPC0gZmNvbGxhYnMoc29jX2RmW2ksIGMoImdzX2lkIildLCAxKQoKfQpzb2NfY29sbGFicyA8LSBiaW5kX3Jvd3Moc29jX2NvbGxhYnMpICAjIGJpbmQgcm93cywgZ2V0IHRoZSB1bmlxdWUgb25lcyEKc29jX2NvbGxhYnNfdW5pcXVlIDwtIHVuaXF1ZShzb2NfY29sbGFic1ssICJjb2F1dGhfaWQiXSkgICMgc28gMjI5IHVuaXF1ZSBjb2xsYWJvcmF0b3JzIGZvciBSVSBzdGFmZj8Kc29jX2NvbGxhYnNfdW5pcXVlIDwtIHNvY19jb2xsYWJzX3VuaXF1ZVshaXMubmEoc29jX2NvbGxhYnNfdW5pcXVlKV0Kc2F2ZShzb2NfY29sbGFicywgZmlsZSA9ICJhZGRmaWxlc1xcc29jX2RmX2NvbGxhYnMxLlJEYXRhIikgICMgeW91IG5vdGljZSB0aGlzIHRha2VzIGEgd2hpbGUsIHNvIHdlIHNhdmUgdGhlIGRhdGEgaGVyZS4KYGBgCgoKYGBge3J9CiMgdGhlbiB0aGUgbmFtZXMgb2YgdGhvc2UgY29sbGFib3JhdG9ycyBwbHVzIFRIRUlSIGNvbGxhYm9yYXRvcnMgdW5kZXJzdGFuZCB0aGF0IHdlIGRvbid0IGhhdmUKIyBuYW1lcyBvZiB0aGVtIHlldCBmcm9tIHRoZSBjb2RlIGFib3ZlPwpjb2xsYWJzXzFkZWVwIDwtIGxpc3QoKQpmb3IgKGkgaW4gMTpsZW5ndGgoc29jX2NvbGxhYnNfdW5pcXVlKSkgewoKICAgIHRpbWUgPC0gcnVuaWYoMSwgMCwgMykKICAgIFN5cy5zbGVlcCh0aW1lKQoKICAgIGlmICghc29jX2NvbGxhYnNfdW5pcXVlW2ldICVpbiUgc29jX2RmJGdzX2lkKSB7CiAgICAgICAgY29sbGFic18xZGVlcFtbaV1dIDwtIGZjb2xsYWJzKHNvY19jb2xsYWJzX3VuaXF1ZVtpXSwgMSkKCiAgICB9Cn0KY29sbGFic18xZGVlcCA8LSBiaW5kX3Jvd3MoY29sbGFic18xZGVlcCkKY29sbGFic18xZGVlcF91bmlxdWUgPC0gdW5pcXVlKGNvbGxhYnNfMWRlZXBbLCAyXSkKY29sbGFic18xZGVlcF91bmlxdWUgPC0gY29sbGFic18xZGVlcF91bmlxdWVbIWlzLm5hKGNvbGxhYnNfMWRlZXBfdW5pcXVlKV0Kc2F2ZShjb2xsYWJzXzFkZWVwLCBmaWxlID0gImFkZGZpbGVzXFxzb2NfY29sbGFiczIuUkRhdGEiKSAgIyB5b3Ugbm90aWNlIHRoaXMgdGFrZXMgYSB3aGlsZSwgc28gd2Ugc2F2ZSB0aGUgZGF0YSBoZXJlLgpgYGAKCmBgYHtyfQpmb3IgKGkgaW4gYygiX3VreXRRWUFBQUFKIiwgImxrVnEzMnNBQUFBSiIsICJwM0l3dFQ0QUFBQUoiKSkgewogICAgIyBkcm9wIGdvb2dsZSBzY2hvbGFyIGlkcyB0aGF0IGxvb2sgc3VzcGljaW91c2x5IHByb2R1Y3RpdmUKICAgIHNvY19kZiA8LSBzb2NfZGZbIXNvY19kZiRnc19pZCA9PSBpLCBdCiAgICBzb2NfZGZfcHVibGljYXRpb25zIDwtIHNvY19kZl9wdWJsaWNhdGlvbnNbIShzb2NfZGZfcHVibGljYXRpb25zJGdzX2lkID09IGkpLCBdCiAgICBzb2Nfc3RhZmZfY2l0IDwtIHNvY19zdGFmZl9jaXRbIShzb2Nfc3RhZmZfY2l0JGdzX2lkID09IGkpLCBdCiAgICBzb2NfY29sbGFicyA8LSBzb2NfY29sbGFic1shKHNvY19jb2xsYWJzJGdzX2lkID09IGkpLCBdCn0KYGBgCgpgYGB7cn0KIyBnZXQgbnVtIGNvLWF1dGhvcnMgb2Ygc29jIHN0YWZmLiBJZiBtaXNzaW5nIC0tPiBlbXB0eSBzcGFjZSBzbyBkcm9wcGVkCm51bV9jb2F1dGhfc29jIDwtIHNvY19jb2xsYWJzWyFpcy5uYShzb2NfY29sbGFicyRjb2F1dGgpLCBdICAjIGRyb3AgdGhlIE5BcwpudW1fY29hdXRoX3NvYyA8LSBkYXRhLmZyYW1lKHRhYmxlKG51bV9jb2F1dGhfc29jJGdzX2lkKSkgICMgTnVtYmVyIG9mIGNvYXV0aG9ycyBwZXIgZ29vZ2xlIHNjaG9sYXIgaWQgb2Ygc29jIHN0YWZmCmBgYAoKCmBgYHtyfQojIGdldCBhdmVyYWdlIG51bWJlciBvZiBjby1hdXRob3JzIG9mIHNvYyBzdGFmZidzIGNvLWF1dGhvcnMKbnVtX2NvYXV0aF9jb2wgPC0gZGF0YS5mcmFtZSh0YWJsZShjb2xsYWJzXzFkZWVwJGdzX2lkKSkgICMgTnVtYmVyIG9mIGNvYXV0aG9ycyBwZXIgZ29vZ2xlIHNjaG9sYXIgaWQgb2YgY29hdXRob3JzCmZyaWVuZF9wYXIgPC0gbGVmdF9qb2luKHNvY19jb2xsYWJzLCBudW1fY29hdXRoX2NvbCwgYnkgPSBjKGNvYXV0aF9pZCA9ICJWYXIxIikpCmZyaWVuZF9wYXIgPC0gZnJpZW5kX3BhclshaXMubmEoZnJpZW5kX3BhciRjb2F1dGgpLCBdICAjIGRyb3AgTkFzIGFnYWluCmZyaWVuZF9wYXIgPC0gZnJpZW5kX3BhclshaXMubmEoZnJpZW5kX3BhciRGcmVxKSwgXQpmcmllbmRfcGFyIDwtIHNldERUKGZyaWVuZF9wYXIpWywgbWVhbihGcmVxKSwgYnkgPSBnc19pZF0gICMgYXZlcmFnZSBwZXIgZ3NfaWQgb2Ygc29jIHN0YWZmCgpmcmllbmRfcGFyIDwtIGxlZnRfam9pbihmcmllbmRfcGFyLCBudW1fY29hdXRoX3NvYywgYnkgPSBjKGdzX2lkID0gIlZhcjEiKSkgICMgbGVmdCBqb2luIHRvIG51bV9jb2F1dGhfc29jCm5hbWVzKGZyaWVuZF9wYXIpIDwtIGMoImdzX2lkIiwgImNvbF9jb2xsYWJzIiwgInNvY19jb2xsYWJzIikgICMgYmV0dGVyIGNvbHVtbiBuYW1lcwoKIyBBbmQgZmluZCB0aGUgZGlmZmVyZW5jZXMhIFNlZW1zIG5vIGZyaWVuZHNoaXAgcGFyYWRveCBoZXJlOiB0aGF0IGlzLCBubyBtb3JlIGZyaWVuZHMgb2YgZnJpZW5kcwojIHRoYW4gbXkgb3duIGZyaWVuZHMKc3VtbWFyeShmcmllbmRfcGFyJHNvY19jb2xsYWJzKSAgIyB0aGVpciBjb2xsYWJvcmF0b3JzJyBjby1hdXRob3JzLCAKYGBgCgpgYGB7cn0KdC50ZXN0KGZyaWVuZF9wYXIkY29sX2NvbGxhYnMsIGZyaWVuZF9wYXIkc29jX2NvbGxhYnMpICAjIG5vIHBhcmFkb3ggaXQgc2VlbXMuLi4KYGBgCgpgYGB7cn0Kc29jX2RmJHRvdGFsX2NpdGVzIDwtIGFzLm51bWVyaWMoc29jX2RmJHRvdGFsX2NpdGVzKQpnZ3Bsb3Qoc29jX2RmKSArIGdlb21fYmFyKGFlcyh4ID0gcmVvcmRlcihsYXN0X25hbWUsIC10b3RhbF9jaXRlcyksIHkgPSB0b3RhbF9jaXRlcyksIHN0YXQgPSAiaWRlbnRpdHkiKSArCiAgICB0aGVtZShheGlzLnRleHQueCA9IGVsZW1lbnRfdGV4dChhbmdsZSA9IDkwLCB2anVzdCA9IDAuNSwgaGp1c3QgPSAxKSkKYGBgCgpgYGB7cn0KZ2dwbG90KHNvY19kZlshc29jX2RmJHRvdGFsX2NpdGVzPjIwMDAsXSkgKyAjIG5vdGUgdGhlIHN1YnNldHRpbmcgb2YgdGhlIGRhdGEhCiAgICAgIGdlb21fYmFyKGFlcyh4PXJlb3JkZXIobGFzdF9uYW1lLCAtdG90YWxfY2l0ZXMpLCB5PXRvdGFsX2NpdGVzKSwgc3RhdCA9ICJpZGVudGl0eSIpICsKICAgICAgdGhlbWUoYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoYW5nbGUgPSA5MCwgdmp1c3QgPSAwLjUsIGhqdXN0PTEpKQpgYGAKCmBgYHtyfQpudW1fcHVicyA8LSBkYXRhLmZyYW1lKHRhYmxlKHNvY19kZl9wdWJsaWNhdGlvbnMkZ3NfaWQpKSAgIyBBIHRhYmxlIHBlciBnc19pZCwgc28gY291bnRpbmcgdGhlIHB1YnMgcGVyIHN0YWZmIG1lbWJlcgpjb2xuYW1lcyhudW1fcHVicykgPC0gYygiZ3NfaWQiLCAibnVtX3B1YnMiKSAgIyBiZXR0ZXIgY29sdW1uIG5hbWVzCm51bV9wdWJzIDwtIGxlZnRfam9pbihudW1fcHVicywgc29jX2RmWywgYygidG90YWxfY2l0ZXMiLCAiZ3NfaWQiKV0sIGJ5ID0gYyhnc19pZCA9ICJnc19pZCIpKSAgIyBsZWZ0IGpvaW4gb24gbnVtX3B1YnMKbnVtX3B1YnMkdG90YWxfY2l0ZXNbaXMubmEobnVtX3B1YnMkdG90YWxfY2l0ZXMpXSA8LSAwICAjIGlmIHRoZXJlIGFyZSBwdWJzIGJ1dCBubyBjaXRlcywgdGhvc2UgcHVicyBhcmVuJ3QgY2l0ZWQgeWV0CgojIHByZXR0eSBvYnZpb3VzIGNvcnJlbGF0aW9uLCByaWdodD8KZ2dwbG90KG51bV9wdWJzLCBhZXMoeCA9IG51bV9wdWJzLCB5ID0gdG90YWxfY2l0ZXMpKSArIGdlb21fcG9pbnQoKSArIGdlb21fc21vb3RoKG1ldGhvZCA9IGxtKQpgYGAKCgoKYGBge3J9CnNvY19kZl9wdWJsaWNhdGlvbnMgPC0gZGF0YS50YWJsZShzb2NfZGZfcHVibGljYXRpb25zKSAgIyBtYWtlIGl0IGEgRFQKbWluX3llYXIgPC0gc29jX2RmX3B1YmxpY2F0aW9uc1ssIC5TRFt3aGljaC5taW4oeWVhcildLCBieSA9IGdzX2lkXSAgIyBmaW5kIHRoZSBsb3dlc3QgcHVibGljYXRpb24geWVhciBpbiB0aGUgbGlzdCBvZiBwdWJsaWNhdGlvbnMgb2Ygc29jIHN0YWZmCm51bV9wdWJzIDwtIGxlZnRfam9pbihudW1fcHVicywgbWluX3llYXJbLCBjKCJnc19pZCIsICJ5ZWFyIildLCBieSA9IGMoZ3NfaWQgPSAiZ3NfaWQiKSkgICMgbWVyZ2UgdGhvc2UgZGF0YQpudW1fcHVicyRjYXJlZXJfYWdlIDwtIDIwMjIgLSBudW1fcHVicyR5ZWFyICAjIGZpbmQgY2FyZWVyIGFnZQpzdW1tYXJ5KGxtKHRvdGFsX2NpdGVzIH4gbnVtX3B1YnMgKyBjYXJlZXJfYWdlLCBkYXRhID0gbnVtX3B1YnMpKSAgIyBhbmQgdGhlIHJlZ3Jlc3Npb24gbW9kZWwKYGBgCgoKYGBge3J9Cm51bV9jb2F1dGggPC0gc29jX2NvbGxhYnNbIWlzLm5hKHNvY19jb2xsYWJzJGNvYXV0aCksIF0KbnVtX2NvYXV0aCA8LSBkYXRhLmZyYW1lKHRhYmxlKG51bV9jb2F1dGgkZ3NfaWQpKSAgIyBOdW1iZXIgb2YgY29hdXRob3JzIHBlciBnb29nbGUgc2Nob2xhciBpZApuYW1lcyhudW1fY29hdXRoKSA8LSBjKCJnc19pZCIsICJudW1fY29hdXRoIikgICMgYmV0dGVyIGNvbHVtbiBuYW1lcwpudW1fY29hdXRoJG51bV9jb2F1dGggPC0gYXMubnVtZXJpYyhudW1fY29hdXRoJG51bV9jb2F1dGgpCm51bV9wdWJzIDwtIGxlZnRfam9pbihudW1fcHVicywgbnVtX2NvYXV0aCwgYnkgPSBjKGdzX2lkID0gImdzX2lkIikpICAjIG1lcmdlIHRob3NlIGRmcwpudW1fcHVicyRudW1fY29hdXRoW2lzLm5hKG51bV9wdWJzJG51bV9jb2F1dGgpXSA8LSAwCnN1bW1hcnkobG0odG90YWxfY2l0ZXMgfiBudW1fcHVicyArIGNhcmVlcl9hZ2UgKyBudW1fY29hdXRoLCBkYXRhID0gbnVtX3B1YnMpKSAgIyBhbmQgdGhlIHJlZ3Jlc3Npb24gbW9kZWwhCmBgYAoKCmBgYHtyfQpzb2NfcmVjaXAgPC0gc29jX2NvbGxhYnNbIWlzLm5hKHNvY19jb2xsYWJzJGNvYXV0aCksIF0gICMgZHJvcCB0aG9zZSB3aXRob3V0IGNvYXV0aG9ycwoKIyBub3RpY2UgaG93IHdlIHN3aXRjaCB0aGVzZSBpZHMgYXJvdW5kIHRvIGZpbmQgcmVjaXByb2NhdGVkIHRpZXMhCnNvY19yZWNpcCA8LSBsZWZ0X2pvaW4oc29jX3JlY2lwLCBjb2xsYWJzXzFkZWVwLCBieSA9IGMoZ3NfaWQgPSAiY29hdXRoX2lkIiwgY29hdXRoX2lkID0gImdzX2lkIikpCnNvY19yZWNpcCA8LSBzb2NfcmVjaXBbIWlzLm5hKHNvY19yZWNpcCRjb2F1dGgueSksIF0gICNkcm9wIHRob3NlIGNvYXV0aG9ycyB3aG8gZG9uJ3QgcmVjaXByb2NhdGUKc29jX3JlY2lwIDwtIGRhdGEuZnJhbWUodGFibGUoc29jX3JlY2lwJGdzX2lkKSkgICMgY291bnQgY29hdXRob3JzIHRoYXQgaGF2ZSByZWNpcHJvY2F0ZWQKCm51bV9wdWJzIDwtIGxlZnRfam9pbihudW1fcHVicywgc29jX3JlY2lwLCBieSA9IGMoZ3NfaWQgPSAiVmFyMSIpKSAgIyBKb2luIG9uIGdzX2lkIGZvciBib3RoCm51bV9wdWJzJHJlY2lwcm9jaXR5IDwtIG51bV9wdWJzJEZyZXEvbnVtX3B1YnMkbnVtX2NvYXV0aCAgIyBjYWxjdWxhdGUgc2hhcmUgcmVjaXByb2NhdGVkIApudW1fcHVicyRyZWNpcHJvY2l0eVtpcy5uYShudW1fcHVicyRyZWNpcHJvY2l0eSldIDwtIDAgICMgemVybyBpZiBubyB0aWVzIHNlbmQgb3IgcmVjZWl2ZWQKY29yKG51bV9wdWJzJHJlY2lwcm9jaXR5LCBudW1fcHVicyRudW1fY29hdXRoKSAgIyBjb3JyZWxhdGlvbiBpcyBkZWNlbnQKYGBgCmBgYHtyfQpzdW1tYXJ5KGxtKHRvdGFsX2NpdGVzIH4gbnVtX3B1YnMgKyBjYXJlZXJfYWdlICsgcmVjaXByb2NpdHksIGRhdGEgPSBudW1fcHVicykpICAjIGFuZCB0aGUgcmVncmVzc2lvbiBtb2RlbCEKYGBgCgpgYGB7cn0Kc3VtbWFyeShsbShyZWNpcHJvY2l0eSB+IG51bV9wdWJzICsgY2FyZWVyX2FnZSArIG51bV9jb2F1dGgsIGRhdGEgPSBudW1fcHVicykpICAjIGFuZCB0aGUgcmVncmVzc2lvbiBtb2RlbCEKYGBgCgpJIHdpbGwgbm90IGRvIHRoZSBnZW5kZXIgcGFydCB0aGUgd2F5IGl0IHdhcyBkb25lIGluIHRoZSB0dXRvcmlhbCwgYmVjYXVzZSB3ZSBhc3NpZ24gZ2VuZGVyIHRvIGV2ZXJ5b25lIGFuZCBub3QganVzdCB0byB0aGUgc29jaW9sb2d5IHN0YWZmLiAKYGBge3J9CgpgYGAKCgpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpgYGAKCiMjIFIgTWFya2Rvd24KClRoaXMgaXMgYW4gUiBNYXJrZG93biBkb2N1bWVudC4gTWFya2Rvd24gaXMgYSBzaW1wbGUgZm9ybWF0dGluZyBzeW50YXggZm9yIGF1dGhvcmluZyBIVE1MLCBQREYsIGFuZCBNUyBXb3JkIGRvY3VtZW50cy4gRm9yIG1vcmUgZGV0YWlscyBvbiB1c2luZyBSIE1hcmtkb3duIHNlZSA8aHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbT4uCgpXaGVuIHlvdSBjbGljayB0aGUgKipLbml0KiogYnV0dG9uIGEgZG9jdW1lbnQgd2lsbCBiZSBnZW5lcmF0ZWQgdGhhdCBpbmNsdWRlcyBib3RoIGNvbnRlbnQgYXMgd2VsbCBhcyB0aGUgb3V0cHV0IG9mIGFueSBlbWJlZGRlZCBSIGNvZGUgY2h1bmtzIHdpdGhpbiB0aGUgZG9jdW1lbnQuIFlvdSBjYW4gZW1iZWQgYW4gUiBjb2RlIGNodW5rIGxpa2UgdGhpczoKCmBgYHtyIGNhcnN9CnN1bW1hcnkoY2FycykKYGBgCgojIyBJbmNsdWRpbmcgUGxvdHMKCllvdSBjYW4gYWxzbyBlbWJlZCBwbG90cywgZm9yIGV4YW1wbGU6CgpgYGB7ciBwcmVzc3VyZSwgZWNobz1GQUxTRX0KcGxvdChwcmVzc3VyZSkKYGBgCgpOb3RlIHRoYXQgdGhlIGBlY2hvID0gRkFMU0VgIHBhcmFtZXRlciB3YXMgYWRkZWQgdG8gdGhlIGNvZGUgY2h1bmsgdG8gcHJldmVudCBwcmludGluZyBvZiB0aGUgUiBjb2RlIHRoYXQgZ2VuZXJhdGVkIHRoZSBwbG90Lgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("webscraping.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
