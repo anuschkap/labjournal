@@ -581,7 +581,7 @@ for (i in 1:length(origin_ln)) {
 ```
 
 
-```{r extracting-verklaring-kenmerken, eval=FALSe}
+```{r extracting-verklaring-kenmerken, eval=FALSE}
 
 # Detaching the names and origin info for easier data handling
 origin <- unlist(origin_ln)

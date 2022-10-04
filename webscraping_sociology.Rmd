@@ -58,7 +58,8 @@ require(scholar)
 #define workdirectory, note the double *backslashes* if you're on windows
 # setwd("/yourpathhere)"
 ```
-```{r}
+
+```{r, eval=FALSE}
 # Let's first get the staff page read_html is a function that simply extracts html webpages and
 # puts them in xml format
 soc_staff <- read_html("https://www.ru.nl/sociology/research/staff/")
@@ -67,7 +68,8 @@ head(soc_staff)
 
 class(soc_staff)
 ```
-```{r}
+
+```{r, eval=FALSE}
 soc_staff <- soc_staff %>%
     rvest::html_nodes("body") %>%
     xml2::xml_find_all("//td") %>%
