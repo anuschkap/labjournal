@@ -16,7 +16,12 @@ navbar:
         href: lab1.html
       - text: "Week 2"
         href: lab2.html
-      
+      - text: "Week 3 - Scraping Sociology"  
+        href: webscraping_sociology.html
+      - text: "Week 3 - Scraping Data Science"  
+        href: webscraping_datascience.html
+      - text: "Week 4"  
+        href: Rsienatutorial.html
       
         # here, other .Rmds can be added
     - text: "Report"
