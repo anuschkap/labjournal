@@ -158,4 +158,19 @@ head(soc_twitter)
 ```
 
 
+```{r, eval=FALSE}
+#If I ever get the loop fixed, the Kardashian Index can be calculated using the following code. Of course I have to adapt this to the names of my own variables. 
+calculate_kardashian_index <- function(twitter_followers, total_citations) {
+  
+  # Set F_a as number of twitter followers:
+  F_a <- twitter_followers
+  
+  # Calculate F_c using equation 1 of Hall (2014):
+  F_c <- 43 * (total_citations ^ 0.32)
+  
+  # Retrurn Kardashian Index (equation 2 of Hall 2014):
+  F_a / F_c
+}
+```
+
 

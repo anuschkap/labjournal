@@ -1,0 +1,403 @@
+---
+title: "Tutorial R Siena"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r warning=FALSE, globalsettings, echo=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+```{r, eval=FALSE}
+rm(list=ls())
+```
+
+
+# My movez tutorial 
+
+```{r}
+#install.packages("sna")
+#install.packages("ape")
+```
+
+
+```{r}
+library(RSiena)
+library(sna)
+library(ape)
+library(network)
+```
+
+
+```{r}
+fMoran.I <- function(x, weight, scaled = FALSE, na.rm = FALSE, alternative = "two.sided", rowstandardize = TRUE) {
+    if (rowstandardize) {
+        if (dim(weight)[1] != dim(weight)[2]) 
+            stop("'weight' must be a square matrix")
+        n <- length(x)
+        if (dim(weight)[1] != n) 
+            stop("'weight' must have as many rows as observations in 'x'")
+        ei <- -1/(n - 1)
+        nas <- is.na(x)
+        if (any(nas)) {
+            if (na.rm) {
+                x <- x[!nas]
+                n <- length(x)
+                weight <- weight[!nas, !nas]
+            } else {
+                warning("'x' has missing values: maybe you wanted to set na.rm = TRUE?")
+                return(list(observed = NA, expected = ei, sd = NA, p.value = NA))
+            }
+        }
+        ROWSUM <- rowSums(weight)
+        ROWSUM[ROWSUM == 0] <- 1
+        weight <- weight/ROWSUM
+        s <- sum(weight)
+        m <- mean(x)
+        y <- x - m
+        cv <- sum(weight * y %o% y)
+        v <- sum(y^2)
+        obs <- (n/s) * (cv/v)
+        if (scaled) {
+            i.max <- (n/s) * (sd(rowSums(weight) * y)/sqrt(v/(n - 1)))
+            obs <- obs/i.max
+        }
+        S1 <- 0.5 * sum((weight + t(weight))^2)
+        S2 <- sum((apply(weight, 1, sum) + apply(weight, 2, sum))^2)
+        s.sq <- s^2
+        k <- (sum(y^4)/n)/(v/n)^2
+        sdi <- sqrt((n * ((n^2 - 3 * n + 3) * S1 - n * S2 + 3 * s.sq) - k * (n * (n - 1) * S1 - 2 * n * 
+            S2 + 6 * s.sq))/((n - 1) * (n - 2) * (n - 3) * s.sq) - 1/((n - 1)^2))
+        alternative <- match.arg(alternative, c("two.sided", "less", "greater"))
+        pv <- pnorm(obs, mean = ei, sd = sdi)
+        if (alternative == "two.sided") 
+            pv <- if (obs <= ei) 
+                2 * pv else 2 * (1 - pv)
+        if (alternative == "greater") 
+            pv <- 1 - pv
+        list(observed = obs, expected = ei, sd = sdi, p.value = pv)
+    } else {
+        if (dim(weight)[1] != dim(weight)[2]) 
+            stop("'weight' must be a square matrix")
+        n <- length(x)
+        if (dim(weight)[1] != n) 
+            stop("'weight' must have as many rows as observations in 'x'")
+        ei <- -1/(n - 1)
+        nas <- is.na(x)
+        if (any(nas)) {
+            if (na.rm) {
+                x <- x[!nas]
+                n <- length(x)
+                weight <- weight[!nas, !nas]
+            } else {
+                warning("'x' has missing values: maybe you wanted to set na.rm = TRUE?")
+                return(list(observed = NA, expected = ei, sd = NA, p.value = NA))
+            }
+        }
+        # ROWSUM <- rowSums(weight) ROWSUM[ROWSUM == 0] <- 1 weight <- weight/ROWSUM
+        s <- sum(weight)
+        m <- mean(x)
+        y <- x - m
+        cv <- sum(weight * y %o% y)
+        v <- sum(y^2)
+        obs <- (n/s) * (cv/v)
+        if (scaled) {
+            i.max <- (n/s) * (sd(rowSums(weight) * y)/sqrt(v/(n - 1)))
+            obs <- obs/i.max
+        }
+        S1 <- 0.5 * sum((weight + t(weight))^2)
+        S2 <- sum((apply(weight, 1, sum) + apply(weight, 2, sum))^2)
+        s.sq <- s^2
+        k <- (sum(y^4)/n)/(v/n)^2
+        sdi <- sqrt((n * ((n^2 - 3 * n + 3) * S1 - n * S2 + 3 * s.sq) - k * (n * (n - 1) * S1 - 2 * n * 
+            S2 + 6 * s.sq))/((n - 1) * (n - 2) * (n - 3) * s.sq) - 1/((n - 1)^2))
+        alternative <- match.arg(alternative, c("two.sided", "less", "greater"))
+        pv <- pnorm(obs, mean = ei, sd = sdi)
+        if (alternative == "two.sided") 
+            pv <- if (obs <= ei) 
+                2 * pv else 2 * (1 - pv)
+        if (alternative == "greater") 
+            pv <- 1 - pv
+        list(observed = obs, expected = ei, sd = sdi, p.value = pv)
+    }
+    
+    
+}
+```
+
+
+```{r}
+fanscsv <- function(ans = ans, filename = "ans.csv", write = TRUE) {
+    ans1_mat <- matrix(NA, nrow = length(ans$effects[, 2]), ncol = 3)
+    row.names(ans1_mat) <- ans$effects[, 2]
+    ans1_mat[, 1] <- (ans$theta)
+    ans1_mat[, 2] <- (ans$se)
+    ans1_mat[, 3] <- (ans$tconv)
+    ans1_mat <- rbind(ans1_mat, c(ans$tconv.max))
+    row.names(ans1_mat)[length(row.names(ans1_mat))] <- "Overall maximum convergence ratio:"
+    colnames(ans1_mat) <- c("Estimate", "Standard Error", "Convergence t-ratio")
+    print(ans1_mat)
+    if (write) {
+        write.csv(ans1_mat, filename)
+    }
+}
+```
+
+
+```{r}
+load("/Users/anuschka/Documents/labjournal/data/beh_data.RData")  #change to your working directory
+str(ExData, 1)
+str(ExData$depvars, 1)
+```
+
+```{r}
+library(network)
+friend.data.w1 <- s501
+friend.data.w2 <- s502
+friend.data.w3 <- s503
+drink <- s50a
+smoke <- s50s
+
+net1 <- network::as.network(friend.data.w1)
+net2 <- network::as.network(friend.data.w2)
+net3 <- network::as.network(friend.data.w3)
+
+# nacf does not row standardize!
+snam1 <- nacf(net1, drink[, 1], type = "moran", neighborhood.type = "out", demean = TRUE)
+snam1[2]  #the first order matrix is stored in second list-element
+
+
+```
+
+
+```{r}
+geodistances <- geodist(net1, count.paths = TRUE)
+geodistances <- geodistances$gdist
+
+# first define a nb based on distance 1.
+weights1 <- geodistances == 1
+
+# this function rowstandardizes by default
+ape::Moran.I(drink[, 1], scaled = FALSE, weight = weights1, na.rm = TRUE)
+```
+
+```{r}
+fMoran.I(drink[, 1], scaled = FALSE, weight = weights1, na.rm = TRUE, rowstandardize = FALSE)
+```
+
+```{r}
+# step 1: calculate distances
+geodistances <- geodist(net1, count.paths = TRUE)
+geodistances <- geodistances$gdist
+# set the distance to yourself as Inf
+diag(geodistances) <- Inf
+
+
+# step 2: define a distance decay function. This one is pretty standard in the spatial
+# autocorrelation literature but actually pretty arbitrary.
+weights2 <- exp(-geodistances)
+
+# step 3: I dont want to rowstandardize.
+fMoran.I(drink[, 1], scaled = FALSE, weight = weights2, na.rm = TRUE, rowstandardize = FALSE)
+```
+
+```{r}
+# step 1: calculate distances
+fnet <- ExData$depvars$friendship[, , 1]
+fnet[fnet == 10] <- 0
+
+geodistances <- geodist(fnet, count.paths = TRUE)
+geodistances <- geodistances$gdist
+# set the distance to yourself as Inf
+diag(geodistances) <- Inf
+# head(geodistances) #have a look for yourself.
+
+# step 2: define a distance decay function. This one is pretty standard in the spatial
+# autocorrelation literature but actually pretty arbitrary.
+weights2 <- exp(-geodistances)
+
+# step 3: In this case I do want to rowstandardize because I think the influence is by the total
+# class but class sizes vary.
+fMoran.I(ExData$depvars$mvpa_y[, , 1], scaled = FALSE, weight = weights2, na.rm = TRUE, rowstandardize = TRUE)
+```
+
+```{r}
+# some background info:
+nclass <- c(28, 18, 18, 18, 18, 25, 24)
+classid <- rep(1:7, times = nclass)
+
+print("Moran's I: class 1")
+```
+
+```{r}
+fMoran.I(ExData$depvars$mvpa_y[, , 1][1:28], scaled = FALSE, weight = weights2[1:28, 1:28], na.rm = TRUE, 
+    rowstandardize = TRUE)
+```
+
+```{r}
+print("Moran's I: class 2")
+```
+```{r}
+fMoran.I(ExData$depvars$mvpa_y[, , 1][29:46], scaled = FALSE, weight = weights2[29:46, 29:46], na.rm = TRUE, 
+    rowstandardize = TRUE)
+```
+
+From the site: "Correlations within classes are somewhat lower and/or not significant. Probably there is thus also similarity beween pupils because they are in the same class (might be due to selection and influence processes, or class/context effects of course)."
+--> why is this the conclusion when there is a lower similarity?
+
+```{r}
+# Step 1: DATA
+friend.data.w1 <- s501
+friend.data.w2 <- s502
+friend.data.w3 <- s503
+drink <- s50a
+smoke <- s50s
+
+friendship <- sienaDependent(array(c(friend.data.w1, friend.data.w2, friend.data.w3), dim = c(50, 50, 
+    3)))  # create tie-dependent variable
+
+drinkingbeh <- sienaDependent(drink, type = "behavior")  # create behavior-dependent variable
+
+smoke1 <- coCovar(smoke[, 1])  #covariate
+
+# Define the data set and obtain the basic effects object
+myCoEvolutionData <- sienaDataCreate(friendship, smoke1, drinkingbeh)
+
+# STEP 2: have a look at data.
+print01Report(myCoEvolutionData, modelname = "s50_3_CoEvinit")
+# look at the created file!!
+
+# STEP 3: Define effects
+myCoEvolutionEff <- getEffects(myCoEvolutionData)
+# effectsDocumentation(myCoEvolutionEff)
+
+# structural effects
+myCoEvolutionEff <- includeEffects(myCoEvolutionEff, transTrip, cycle3)
+
+# homophily effect for the constant covariate smoking
+myCoEvolutionEff <- includeEffects(myCoEvolutionEff, simX, interaction1 = "smoke1")
+
+# selection effect related to drinking behavior?
+myCoEvolutionEff <- includeEffects(myCoEvolutionEff, egoX, altX, simX, interaction1 = "drinkingbeh")
+
+# INFLUENCE PART!! inline with the above I use totAlt
+myCoEvolutionEff <- includeEffects(myCoEvolutionEff, name = "drinkingbeh", totAlt, interaction1 = "friendship")
+
+# Check what effects you have decided to include:
+
+myCoEvolutionEff
+
+# STEP 4: define algorithm
+myCoEvAlgorithm <- sienaAlgorithmCreate(projname = "s50CoEv_3")
+
+# STEP 5: estimate the model
+(ans <- siena07(myCoEvAlgorithm, data = myCoEvolutionData, effects = myCoEvolutionEff))
+
+# use this function if you want to save as excel fanscsv(ans, write=FALSE) #uncomment if you want.
+```
+
+
+```{r}
+# these are the respective class sizes.
+nclass <- c(28, 18, 18, 18, 18, 25, 24)
+classid <- rep(1:7, times = nclass)
+
+test <- ExData[classid == 1]  #change classid to select a different class. 
+# because everything needs to be mean centered again also make sure to run the next command
+class1 <- sienaDataCreate(test$depvars$friendship, test$depvars$advice, test$depvars$mvpa_y, test$cCovars$ethnicNLNA, 
+    test$cCovars$sex, test$cCovars$lft, test$cCovars$primary, test$vCovars$mvpa_x)
+```
+
+```{r}
+require(RSiena)
+require(xtable)  # for some html output
+
+# Step 1: DATA
+#load("beh_data.RData")
+mydata <- ExData
+
+# Stept 2: some first summary
+print01Report(mydata, modelname = "segtest1")
+# look at the printed doc!!
+
+# Step 3: set algorithm
+myalgorithm <- sienaAlgorithmCreate(projname = "segtest1")
+```
+
+
+```{r}
+# Step 4: set effects
+NBeff <- getEffects(mydata)
+# have a look at all possible effects effectsDocumentation(NBeff) #uncomment if you want to have a
+# look
+
+# possible order?  a: uncontrolled for network structure effects b: controlled for network structure
+# effects M1a/b: selection: homophily tendencies demographics: simsex, simethnic, M2a/b: selection:
+# homophily tendencies health: MVPA_y M3a/b: influence: on health M4: total
+
+# I am just estimating the total model in this example.
+
+# Structural effects only focus on friendship network in this example, thus specifying 'name'
+# argument is not necessary.
+NBeff <- includeEffects(NBeff, inPop, transTrip, transRecTrip)
+```
+
+```{r}
+# selection effects
+NBeff <- includeEffects(NBeff, egoX, altX, egoXaltX, interaction1 = "ethnicNLNA")
+```
+
+```{r}
+NBeff <- includeEffects(NBeff, egoX, altX, sameX, interaction1 = "sex")
+```
+
+```{r}
+NBeff <- includeEffects(NBeff, egoX, altX, absDiffX, interaction1 = "mvpa_y")
+```
+
+```{r}
+# behavioral model: node effects
+NBeff <- includeEffects(NBeff, effFrom, name = "mvpa_y", interaction1 = "sex")
+```
+
+```{r}
+NBeff <- includeEffects(NBeff, effFrom, name = "mvpa_y", interaction1 = "lft")
+```
+```{r}
+NBeff <- includeEffects(NBeff, effFrom, name = "mvpa_y", interaction1 = "ethnicNLNA")
+```
+
+```{r}
+# influence effects
+NBeff <- includeEffects(NBeff, totSimRecip, name = "mvpa_y", interaction1 = "friendship")
+```
+
+```{r}
+# look at all effects
+NBeff
+```
+```{r}
+# Please uncomment this section. I just don't want to reestimate the model. It does take a while.
+(ans <- siena07(myalgorithm, data = ExData, effects = NBeff)) 
+save(ans, file="/Users/anuschka/Documents/labjournal/data/ans.RData")
+siena.table(ans, type='html', tstat=T, d=2, sig=T)
+load("/Users/anuschka/Documents/labjournal/data/ans.RData")
+ans
+```
+

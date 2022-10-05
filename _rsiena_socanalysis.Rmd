@@ -1,0 +1,154 @@
+---
+title: "Tutorial R Siena"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r warning=FALSE, globalsettings, echo=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+```{r}
+library(tidyverse)
+```
+
+# Visualizing sociology publication network
+
+```{r}
+pubs_soc_1922 <- soc_df_publications %>%
+              mutate(author = tolower(author)) %>%
+              filter(year>=2019 & year<=2022)
+```
+
+```{r}
+net_array[,,1]
+socmat1 <- as.matrix(net_array[,,1])
+socmat2 <- as.matrix(net_array[,,2])
+socmat3 <- as.matrix(net_array[,,3])
+```
+
+```{r}
+soc_net1 <- graph_from_adjacency_matrix(
+  socmat1,
+  mode = c("undirected"),
+  weighted = NULL,
+  diag = FALSE,
+ )
+
+soc_net2 <- graph_from_adjacency_matrix(
+  socmat2,
+  mode = c("undirected"),
+  weighted = NULL,
+  diag = FALSE,
+ )
+
+soc_net3 <- graph_from_adjacency_matrix(
+  socmat3,
+  mode = c("undirected"),
+  weighted = NULL,
+  diag = FALSE,
+ )
+```
+
+```{r}
+plot(soc_net3)
+
+```
+
+```{r}
+plot(soc_net1 ,
+     vertex.color = "gold", # nice color for the vertices
+     vertex.size = 4,  # we'll vertices a bit smaller
+     vertex.frame.color = "gray",  # we'll put a gray frame around vertices
+     vertex.label.color = "black",  # not that ugly blue color for the labels (names)
+     vertex.label.family = "Helvetica", # not a fan of times new roman in figures
+     vertex.label.cex = 0.4,  # make the label a bit smaller too
+     vertex.label.dist = 0.5,  # we'll pull the labels a bit away from the vertices
+     edge.curved = 0.2, # curved edges is always a nice touch
+     edge.arrow.size = 0.1) # make arrow size (direction of edge) smaller
+```
+
+
+
+
+
+# Estimating RSiena model for sociology
+
+
+```{r}
+#start with clean workspace 
+rm(list=ls())
+
+#load dataobjects
+load("soc_net_array.RData")
+#load("soc_collabs.RData")
+load("/Users/anuschka/Documents/labjournal/data/soc_staff_cit.RData")
+load("/Users/anuschka/Documents/labjournal/data/soc_df_s5.RData")
+
+library(RSiena)
+
+#dependent
+net <- sienaDependent(net_array)
+
+### Step 1: define data
+gender <- as.numeric(soc_df$gender=="female")
+gender <- coCovar(gender)
+ncollabs <- (soc_df$ncollabs)
+ncollabs <- coCovar(ncollabs)
+
+
+
+pubsw1 <- pubsw2 <- pubsw3 <- NA
+
+for (i in 1:length(soc_df$gs_id)) {
+  pubsw1[i] <- nrow(soc_staff_cit[(soc_staff_cit$gs_id == soc_df$gs_id[i]) & soc_staff_cit$year>=2010 & soc_staff_cit$year<=2013,])
+  pubsw2[i] <- nrow(soc_staff_cit[(soc_staff_cit$gs_id == soc_df$gs_id[i]) & soc_staff_cit$year>=2014 & soc_staff_cit$year<=2018,])
+  pubsw3[i] <- nrow(soc_staff_cit[(soc_staff_cit$gs_id == soc_df$gs_id[i]) & soc_staff_cit$year>=2019 & soc_staff_cit$year<=2022,])
+}
+
+pub_df <- as.matrix(data.frame(pubsw1, pubsw2, pubsw3))
+
+pubs <- varCovar(pub_df)
+
+mydata <- sienaDataCreate(net, gender, ncollabs, pubs)
+
+### Step 2: create effects structure
+myeff <- getEffects(mydata)
+effectsDocumentation(myeff)
+### Step 3: get initial description
+print01Report(mydata, modelname = "soc_init")
+
+### Step4: specify model
+myeff <- includeEffects(myeff, outAct)
+myeff <- includeEffects(myeff, sameX, interaction1 = "gender")
+myeff <- includeEffects(myeff, egoX, interaction1 = "pubs")
+myeff <- includeEffects(myeff, sameX, interaction1="ncollabs")
+myeff <- includeEffects(myeff, transTripX, interaction1="ncollabs")
+
+### Step5 estimate
+myAlgorithm <- sienaAlgorithmCreate(projname = "soc_init")
+(ans <- siena07(myAlgorithm, data = mydata, effects = myeff))
+# (the outer parentheses lead to printing the obtained result on the screen) if necessary, estimate
+# further
+(ans <- siena07(myAlgorithm, data = mydata, effects = myeff, prevAns = ans))
+(ans1 <- siena07(myAlgorithm, data = mydata, effects = myeff, prevAns = ans))
+(ans2 <- siena07(myAlgorithm, data = mydata, effects = myeff, prevAns = ans1))
+```
+
+
+
+
