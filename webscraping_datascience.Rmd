@@ -255,15 +255,20 @@ data_df  # notice all the new information we were able to get from the scholar p
 ```{r, eval=FALSE}
 # get citation history of a scholar
 data_staff_cit <- list()
-for (i in 1:nrow(data_df)) {
-    data_staff_cit[[i]] <- get_citation_history(data_df[i, c("gs_id")])
+for (i in 1:nrow(datadef_df)) {
+    data_staff_cit[[i]] <- get_citation_history(datadef_df[i, c("gs_id")])
     if (nrow(data_staff_cit[[i]]) > 0) {
-        data_staff_cit[[i]][, c("gs_id")] <- data_df[i, c("gs_id")]  # again attach the gs_id as third column
+        data_staff_cit[[i]][, c("gs_id")] <- datadef_df[i, c("gs_id")]  # again attach the gs_id as third column
     }
 }
 data_staff_cit <- bind_rows(data_staff_cit)
 colnames(data_staff_cit)[3] <- "gs_id"
 ```
+
+```{r, eval=FALSE}
+save(data_staff_cit, file="/Users/anuschka/Documents/labjournal/data/data_staff_cit.RData")
+```
+
 
 ```{r, eval=FALSE}
 require(rvest)

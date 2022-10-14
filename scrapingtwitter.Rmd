@@ -37,9 +37,8 @@ Here I scrape Twitter Data for both the data science and the sociology departmen
 require(httr)
 require(jsonlite)
 require(dplyr)
-bearer_token <- Sys.getenv("AAAAAAAAAAAAAAAAAAAAAKrlhQEAAAAA2FanC26ruzLTXpxNhyzmoiW67dc%3DbKf1jIQ1ocJS3TJQcJDAihczebimKPGjrqsOZSEXAoiGUnK83x")
-headers <- c(`Authorization` = sprintf('Bearer %s', bearer_token))
-auth_setup_default()
+
+
 ```
 
 
@@ -135,6 +134,7 @@ for (i in 1:length(soc_twitter)) {
 
 soc_twitterinfo <- as.data.frame(cbind(twids, twnames, twscreennames, twfollowercounts))
 
+
 soc_df <- cbind(soc_df, soc_twitterinfo)
 
 names(soc_twitterinfo)[names(soc_twitterinfo) == 'twnames'] <- 'name'
@@ -148,6 +148,11 @@ soc_dfc <- soc_df
 soc_df <- soc_df[-c (33:40), , drop=FALSE]
 save(soc_df, file="./data/soc_df.RData")
 ```
+
+```{r,eval=FALSE}
+save(soc_twitterinfo, file="/Users/anuschka/Documents/labjournal/data/soc_twitterinfo.RData")
+```
+
 
 ```{r, echo=FALSE}
 load("/Users/anuschka/Documents/labjournal/data/soc_twitter.RData")
