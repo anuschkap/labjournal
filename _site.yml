@@ -33,6 +33,18 @@ navbar:
         href: introduction.html 
       - text: "Data & Methods"
         href: datach.html
+        
+        # Other model
+    - text: "Final Report"
+      menu:
+      - text: "Introduction"
+        href: final_introduction.html 
+      - text: "Theory" 
+        href: final_theory.html
+      - text: "Descriptives"
+        href: descriptives.html
+      - text: "RSiena results" 
+        href: rsiena_results.html
 
   right:
   - icon: fab fa-github

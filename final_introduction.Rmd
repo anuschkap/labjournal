@@ -1,0 +1,85 @@
+---
+title: "introduction"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+The rise of the Internet, like on many aspects in life, has had an
+influence on social networks (Licoppe & Smoreda, 2005). Because o the
+internet, selection and influence processes have changed. Literature on
+mate-selection shows that when using the Internet to find a partner,
+individuals tend to select partners that show more similarity when
+compared to couples that selected each other in offline settings (Carter
+& Buckwalter, 2009). Also, within online friendship relations, a high
+level of homophily is visible (Aiello et al., 2012).
+
+However, less is known about the influence of social media on networks
+of scientists. On the one hand, following the literature on mate- and
+friendship selection, it is interesting to investigate whether
+scientists select other scientists that are similarly active on social
+media. On the other hand, it is possible that scientists with social
+media popularity will also become attractive to be selected by others to
+collaborate. In the current paper, I would like to investigate several
+research questions to gain more insights into the influence of social
+media on networks of scientists at two academic departments: *How do
+scientists within the Sociology and Data Science department of Radboud
+University differ in social media activity?* And, *how do scientists
+between the Sociology and Data Science department of Radboud University
+differ in social media activity?*
+
+While these questions are descriptive in nature, I would also like to
+investigate network effects. For this, the Kardashian Index (Hall, 2014)
+will be used. This index expresses the ratio between scientists'
+popularity on social media and their publishing of significant
+peer-reviewed papers. A high Kardashian Index means that a scientist may
+be 'overvalued', while a low Kardashian Index means an undervaluation of
+a scientist. To study the possible influence of the Kardashian Index on
+a network based on co-publication, I aim to answer the following
+research question: *To what extent does the Kardashian Index influence
+network dynamics of co-publication networks of the Sociology and Data
+Science department at Radboud University?*
+
+NEED TO ADJUST THIS PART 
+
+An answer to this question is both relevant to society and to science.
+The evolution of social networks is not only relevant to the individuals
+within that network, but is also a signifier of cohesion (SOURCE) and
+inequality (Karimi et al., 2018). Since individuals are embedded in
+networks, the decisions these individuals make within these networks
+will also affect the societal level (EXPLAIN MORE CLEARLY). In this
+case, investigating how social media participation has an influence on
+selecting collaborators within one network of scientists, could be
+translated into the influence of social media on networks in general.
+Possibly, selection mechanisms have changed as a consequence of social
+media and therefore it has an influence on cohesion. The current paper
+will also add to the literature by applying a social network
+perspective. Performing a social network analysis is of added value, as
+it can reveal precisely how selection in social networks may alter as a
+consequence of social media. This reveals to a deeper extent which
+mechanisms underlie the influence of internet on cohesion.

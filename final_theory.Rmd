@@ -1,0 +1,56 @@
+---
+title: "introduction"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+# Hypotheses
+
+Also descriptive hypotheses? For which people I expect a higher
+Kardashian Index (not really related to networks)
+
+*Scientists, because of the homophily effect, like to select scientist
+that are rather similar in their KI.*
+
+Scientists with a high Kardashian Index more popular: Hall explains that
+sometimes scientific speakers are invited because of their popularity,
+not based on good publications --\> maybe now social media has become
+more popular, scientists indeed attach value to other scientists,
+regardless of whether they have good publications or not. Thus then
+scientists with a high KI could still be popular. *Scientists prefer to
+co-publish with other scientists that have a high KI*
+
+Question: Should I also run a model where I disregard the Kardashian
+Index but only look at Twitter follower count?
+
+On the other hand, maybe scientists with a high KI are very unpopular
+because they are criticized for being active on social media but not
+really contributing to science. If this is true, then the following
+hypothesis can be expected: *Scientists prefer to co-publish with other
+scientist that have a low KI*.

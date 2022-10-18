@@ -1,4 +1,37 @@
 
+---
+title: "Descriptive Statistics"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+
 ```{r}
 #start with clean workspace 
 rm(list=ls())
@@ -7,7 +40,7 @@ getwd()
 
 # packages
 
-```{r}
+```{r, echo=FALSE}
 library(data.table) 
 library(tidyverse) 
 require(stringi)
@@ -15,6 +48,7 @@ require(Rsiena)
 require(igraph)
 
 ```
+
 # Data
 
 ```{r, echo=FALSE}
@@ -33,9 +67,6 @@ snet3 <- soc_net_array[ ,, 3]
 diag(snet1) <- 0
 diag(snet2) <- 0
 diag(snet3) <- 0
-
-degree <- rowSums(net3)
-hist(degree)
 
 ```
 
@@ -120,7 +151,7 @@ When we first have a look at the Kardashian Index of the sociology staff, we see
 sel <- socdef_df$twitter_dum==1
 hist(socdef_df$ki[sel], col="lightblue", border="darkblue")
 ```
-Here we can see that the distribution is still skewed, but that there are now a lower number of staff members with a low KI, given that they have Twitter. Still, most of the staff members have a low KI. 
+Here we can see that the distribution is still skewed, but that there are now a lower number of staff members with a low KI, given that they have Twitter. Still, most of the staff members have a low KI, but some staff members do have a KI that is categorized as 'Kardashian Scientist' (>5)(Hall, 2014)
 
 Now let's see how this ki is predicted by several factors. 
 ```{r}
@@ -231,11 +262,10 @@ hist(datadef_df$ki[sel2], col="red", border="darkblue")
 We also observe this pattern when only selecting the individuals with twitter, although the frequency of individuals with a KI between 0 and 1 is now a bit lower. We also observe some staff members with a high KI. Compared to sociology, the KI at the data science department is even more skewed. 
 
 ```{r}
-#I don't have pubyears here yet, I have to make that later and include it here. 
-modelki2 <- lm(ki ~ gender + dutch, data=datadef_df)
+modelki2 <- lm(ki ~ gender + dutch + pub_first, data=datadef_df)
 summary(modelki2)
 ```
-At the data science department, we see that the KI is predicted way differently than at the sociology department. The effect of gender is negative, meaning that men have a lower KI than women, but this effect is not significant. The effect of ethnicity is also not significant. 
+At the data science department, we see that the KI is predicted way differently than at the sociology department. The effect of gender and ethnicity are not significant, but age is a significant predictor of a KI. The younger, the higher the KI. 
 
 # Comparing the two departments
 Summarizing the two departments, we see that the density of the copublication network of sociology is higher than the density of data science. On the other hand, the transitivity is much higher within data science than within sociology. May this have to do with divisions within several theoretical topics, in which people within sociology could collaborate to a lesser extent? In terms of productivity (no network characteristic), we see that the data science department has copublished more than sociology. 

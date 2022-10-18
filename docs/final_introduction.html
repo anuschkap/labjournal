@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Anuschka Peelen" />
+
+<meta name="date" content="2022-10-18" />
+
+<title>introduction</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="tweaks.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    My journal
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab1.html">Week 1</a>
+    </li>
+    <li>
+      <a href="lab2.html">Week 2</a>
+    </li>
+    <li>
+      <a href="webscraping_sociology.html">Week 3 - Scraping Sociology</a>
+    </li>
+    <li>
+      <a href="webscraping_datascience.html">Week 3 - Scraping Data Science</a>
+    </li>
+    <li>
+      <a href="scrapingtwitter.html">Week 3 - Twitter scraping</a>
+    </li>
+    <li>
+      <a href="Rsienatutorial.html">Week 4</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Report
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="introduction.html">Introduction</a>
+    </li>
+    <li>
+      <a href="datach.html">Data &amp; Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Final Report
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="final_introduction.html">Introduction</a>
+    </li>
+    <li>
+      <a href="final_theory.html">Theory</a>
+    </li>
+    <li>
+      <a href="descriptives.html">Descriptives</a>
+    </li>
+    <li>
+      <a href="rsiena_results.html">RSiena results</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JochemTolsma/labjournal">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">introduction</h1>
+<h4 class="author">Anuschka Peelen</h4>
+<h4 class="date">2022-10-18</h4>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p>The rise of the Internet, like on many aspects in life, has had an
+influence on social networks (Licoppe &amp; Smoreda, 2005). Because o
+the internet, selection and influence processes have changed. Literature
+on mate-selection shows that when using the Internet to find a partner,
+individuals tend to select partners that show more similarity when
+compared to couples that selected each other in offline settings (Carter
+&amp; Buckwalter, 2009). Also, within online friendship relations, a
+high level of homophily is visible (Aiello et al., 2012).</p>
+<p>However, less is known about the influence of social media on
+networks of scientists. On the one hand, following the literature on
+mate- and friendship selection, it is interesting to investigate whether
+scientists select other scientists that are similarly active on social
+media. On the other hand, it is possible that scientists with social
+media popularity will also become attractive to be selected by others to
+collaborate. In the current paper, I would like to investigate several
+research questions to gain more insights into the influence of social
+media on networks of scientists at two academic departments: <em>How do
+scientists within the Sociology and Data Science department of Radboud
+University differ in social media activity?</em> And, <em>how do
+scientists between the Sociology and Data Science department of Radboud
+University differ in social media activity?</em></p>
+<p>While these questions are descriptive in nature, I would also like to
+investigate network effects. For this, the Kardashian Index (Hall, 2014)
+will be used. This index expresses the ratio between scientists’
+popularity on social media and their publishing of significant
+peer-reviewed papers. A high Kardashian Index means that a scientist may
+be ‘overvalued’, while a low Kardashian Index means an undervaluation of
+a scientist. To study the possible influence of the Kardashian Index on
+a network based on co-publication, I aim to answer the following
+research question: <em>To what extent does the Kardashian Index
+influence network dynamics of co-publication networks of the Sociology
+and Data Science department at Radboud University?</em></p>
+<p>NEED TO ADJUST THIS PART</p>
+<p>An answer to this question is both relevant to society and to
+science. The evolution of social networks is not only relevant to the
+individuals within that network, but is also a signifier of cohesion
+(SOURCE) and inequality (Karimi et al., 2018). Since individuals are
+embedded in networks, the decisions these individuals make within these
+networks will also affect the societal level (EXPLAIN MORE CLEARLY). In
+this case, investigating how social media participation has an influence
+on selecting collaborators within one network of scientists, could be
+translated into the influence of social media on networks in general.
+Possibly, selection mechanisms have changed as a consequence of social
+media and therefore it has an influence on cohesion. The current paper
+will also add to the literature by applying a social network
+perspective. Performing a social network analysis is of added value, as
+it can reveal precisely how selection in social networks may alter as a
+consequence of social media. This reveals to a deeper extent which
+mechanisms underlie the influence of internet on cohesion.</p>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiaW50cm9kdWN0aW9uIgphdXRob3I6ICJBbnVzY2hrYSBQZWVsZW4iCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OiBodG1sX2RvY3VtZW50CmVkaXRvcl9vcHRpb25zOiAKICBtYXJrZG93bjogCiAgICB3cmFwOiA3MgotLS0KCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCmBgYAoKYGBge3IsIGdsb2JhbHNldHRpbmdzLCBlY2hvPUZBTFNFLCB3YXJuaW5nPUZBTFNFLCByZXN1bHRzPSdoaWRlJ30KbGlicmFyeShrbml0cikKCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKb3B0c19jaHVuayRzZXQodGlkeS5vcHRzPWxpc3Qod2lkdGguY3V0b2ZmPTEwMCksdGlkeT1UUlVFLCB3YXJuaW5nID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRSxjb21tZW50ID0gIiM+IiwgY2FjaGU9VFJVRSwgY2xhc3Muc291cmNlPWMoInRlc3QiKSwgY2xhc3Mub3V0cHV0PWMoInRlc3QyIikpCm9wdGlvbnMod2lkdGggPSAxMDApCnJnbDo6c2V0dXBLbml0cigpCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KYGBgCgpgYGB7ciBrbGlwcHksIGVjaG89RkFMU0UsIGluY2x1ZGU9VFJVRX0Ka2xpcHB5OjprbGlwcHkocG9zaXRpb24gPSBjKCd0b3AnLCAncmlnaHQnKSkKI2tsaXBweTo6a2xpcHB5KGNvbG9yID0gJ2RhcmtyZWQnKQoja2xpcHB5OjprbGlwcHkodG9vbHRpcF9tZXNzYWdlID0gJ0NsaWNrIHRvIGNvcHknLCB0b29sdGlwX3N1Y2Nlc3MgPSAnRG9uZScpCmBgYAoKVGhlIHJpc2Ugb2YgdGhlIEludGVybmV0LCBsaWtlIG9uIG1hbnkgYXNwZWN0cyBpbiBsaWZlLCBoYXMgaGFkIGFuCmluZmx1ZW5jZSBvbiBzb2NpYWwgbmV0d29ya3MgKExpY29wcGUgJiBTbW9yZWRhLCAyMDA1KS4gQmVjYXVzZSBvIHRoZQppbnRlcm5ldCwgc2VsZWN0aW9uIGFuZCBpbmZsdWVuY2UgcHJvY2Vzc2VzIGhhdmUgY2hhbmdlZC4gTGl0ZXJhdHVyZSBvbgptYXRlLXNlbGVjdGlvbiBzaG93cyB0aGF0IHdoZW4gdXNpbmcgdGhlIEludGVybmV0IHRvIGZpbmQgYSBwYXJ0bmVyLAppbmRpdmlkdWFscyB0ZW5kIHRvIHNlbGVjdCBwYXJ0bmVycyB0aGF0IHNob3cgbW9yZSBzaW1pbGFyaXR5IHdoZW4KY29tcGFyZWQgdG8gY291cGxlcyB0aGF0IHNlbGVjdGVkIGVhY2ggb3RoZXIgaW4gb2ZmbGluZSBzZXR0aW5ncyAoQ2FydGVyCiYgQnVja3dhbHRlciwgMjAwOSkuIEFsc28sIHdpdGhpbiBvbmxpbmUgZnJpZW5kc2hpcCByZWxhdGlvbnMsIGEgaGlnaApsZXZlbCBvZiBob21vcGhpbHkgaXMgdmlzaWJsZSAoQWllbGxvIGV0IGFsLiwgMjAxMikuCgpIb3dldmVyLCBsZXNzIGlzIGtub3duIGFib3V0IHRoZSBpbmZsdWVuY2Ugb2Ygc29jaWFsIG1lZGlhIG9uIG5ldHdvcmtzCm9mIHNjaWVudGlzdHMuIE9uIHRoZSBvbmUgaGFuZCwgZm9sbG93aW5nIHRoZSBsaXRlcmF0dXJlIG9uIG1hdGUtIGFuZApmcmllbmRzaGlwIHNlbGVjdGlvbiwgaXQgaXMgaW50ZXJlc3RpbmcgdG8gaW52ZXN0aWdhdGUgd2hldGhlcgpzY2llbnRpc3RzIHNlbGVjdCBvdGhlciBzY2llbnRpc3RzIHRoYXQgYXJlIHNpbWlsYXJseSBhY3RpdmUgb24gc29jaWFsCm1lZGlhLiBPbiB0aGUgb3RoZXIgaGFuZCwgaXQgaXMgcG9zc2libGUgdGhhdCBzY2llbnRpc3RzIHdpdGggc29jaWFsCm1lZGlhIHBvcHVsYXJpdHkgd2lsbCBhbHNvIGJlY29tZSBhdHRyYWN0aXZlIHRvIGJlIHNlbGVjdGVkIGJ5IG90aGVycyB0bwpjb2xsYWJvcmF0ZS4gSW4gdGhlIGN1cnJlbnQgcGFwZXIsIEkgd291bGQgbGlrZSB0byBpbnZlc3RpZ2F0ZSBzZXZlcmFsCnJlc2VhcmNoIHF1ZXN0aW9ucyB0byBnYWluIG1vcmUgaW5zaWdodHMgaW50byB0aGUgaW5mbHVlbmNlIG9mIHNvY2lhbAptZWRpYSBvbiBuZXR3b3JrcyBvZiBzY2llbnRpc3RzIGF0IHR3byBhY2FkZW1pYyBkZXBhcnRtZW50czogKkhvdyBkbwpzY2llbnRpc3RzIHdpdGhpbiB0aGUgU29jaW9sb2d5IGFuZCBEYXRhIFNjaWVuY2UgZGVwYXJ0bWVudCBvZiBSYWRib3VkClVuaXZlcnNpdHkgZGlmZmVyIGluIHNvY2lhbCBtZWRpYSBhY3Rpdml0eT8qIEFuZCwgKmhvdyBkbyBzY2llbnRpc3RzCmJldHdlZW4gdGhlIFNvY2lvbG9neSBhbmQgRGF0YSBTY2llbmNlIGRlcGFydG1lbnQgb2YgUmFkYm91ZCBVbml2ZXJzaXR5CmRpZmZlciBpbiBzb2NpYWwgbWVkaWEgYWN0aXZpdHk/KgoKV2hpbGUgdGhlc2UgcXVlc3Rpb25zIGFyZSBkZXNjcmlwdGl2ZSBpbiBuYXR1cmUsIEkgd291bGQgYWxzbyBsaWtlIHRvCmludmVzdGlnYXRlIG5ldHdvcmsgZWZmZWN0cy4gRm9yIHRoaXMsIHRoZSBLYXJkYXNoaWFuIEluZGV4IChIYWxsLCAyMDE0KQp3aWxsIGJlIHVzZWQuIFRoaXMgaW5kZXggZXhwcmVzc2VzIHRoZSByYXRpbyBiZXR3ZWVuIHNjaWVudGlzdHMnCnBvcHVsYXJpdHkgb24gc29jaWFsIG1lZGlhIGFuZCB0aGVpciBwdWJsaXNoaW5nIG9mIHNpZ25pZmljYW50CnBlZXItcmV2aWV3ZWQgcGFwZXJzLiBBIGhpZ2ggS2FyZGFzaGlhbiBJbmRleCBtZWFucyB0aGF0IGEgc2NpZW50aXN0IG1heQpiZSAnb3ZlcnZhbHVlZCcsIHdoaWxlIGEgbG93IEthcmRhc2hpYW4gSW5kZXggbWVhbnMgYW4gdW5kZXJ2YWx1YXRpb24gb2YKYSBzY2llbnRpc3QuIFRvIHN0dWR5IHRoZSBwb3NzaWJsZSBpbmZsdWVuY2Ugb2YgdGhlIEthcmRhc2hpYW4gSW5kZXggb24KYSBuZXR3b3JrIGJhc2VkIG9uIGNvLXB1YmxpY2F0aW9uLCBJIGFpbSB0byBhbnN3ZXIgdGhlIGZvbGxvd2luZwpyZXNlYXJjaCBxdWVzdGlvbjogKlRvIHdoYXQgZXh0ZW50IGRvZXMgdGhlIEthcmRhc2hpYW4gSW5kZXggaW5mbHVlbmNlCm5ldHdvcmsgZHluYW1pY3Mgb2YgY28tcHVibGljYXRpb24gbmV0d29ya3Mgb2YgdGhlIFNvY2lvbG9neSBhbmQgRGF0YQpTY2llbmNlIGRlcGFydG1lbnQgYXQgUmFkYm91ZCBVbml2ZXJzaXR5PyoKCk5FRUQgVE8gQURKVVNUIFRISVMgUEFSVCAKCkFuIGFuc3dlciB0byB0aGlzIHF1ZXN0aW9uIGlzIGJvdGggcmVsZXZhbnQgdG8gc29jaWV0eSBhbmQgdG8gc2NpZW5jZS4KVGhlIGV2b2x1dGlvbiBvZiBzb2NpYWwgbmV0d29ya3MgaXMgbm90IG9ubHkgcmVsZXZhbnQgdG8gdGhlIGluZGl2aWR1YWxzCndpdGhpbiB0aGF0IG5ldHdvcmssIGJ1dCBpcyBhbHNvIGEgc2lnbmlmaWVyIG9mIGNvaGVzaW9uIChTT1VSQ0UpIGFuZAppbmVxdWFsaXR5IChLYXJpbWkgZXQgYWwuLCAyMDE4KS4gU2luY2UgaW5kaXZpZHVhbHMgYXJlIGVtYmVkZGVkIGluCm5ldHdvcmtzLCB0aGUgZGVjaXNpb25zIHRoZXNlIGluZGl2aWR1YWxzIG1ha2Ugd2l0aGluIHRoZXNlIG5ldHdvcmtzCndpbGwgYWxzbyBhZmZlY3QgdGhlIHNvY2lldGFsIGxldmVsIChFWFBMQUlOIE1PUkUgQ0xFQVJMWSkuIEluIHRoaXMKY2FzZSwgaW52ZXN0aWdhdGluZyBob3cgc29jaWFsIG1lZGlhIHBhcnRpY2lwYXRpb24gaGFzIGFuIGluZmx1ZW5jZSBvbgpzZWxlY3RpbmcgY29sbGFib3JhdG9ycyB3aXRoaW4gb25lIG5ldHdvcmsgb2Ygc2NpZW50aXN0cywgY291bGQgYmUKdHJhbnNsYXRlZCBpbnRvIHRoZSBpbmZsdWVuY2Ugb2Ygc29jaWFsIG1lZGlhIG9uIG5ldHdvcmtzIGluIGdlbmVyYWwuClBvc3NpYmx5LCBzZWxlY3Rpb24gbWVjaGFuaXNtcyBoYXZlIGNoYW5nZWQgYXMgYSBjb25zZXF1ZW5jZSBvZiBzb2NpYWwKbWVkaWEgYW5kIHRoZXJlZm9yZSBpdCBoYXMgYW4gaW5mbHVlbmNlIG9uIGNvaGVzaW9uLiBUaGUgY3VycmVudCBwYXBlcgp3aWxsIGFsc28gYWRkIHRvIHRoZSBsaXRlcmF0dXJlIGJ5IGFwcGx5aW5nIGEgc29jaWFsIG5ldHdvcmsKcGVyc3BlY3RpdmUuIFBlcmZvcm1pbmcgYSBzb2NpYWwgbmV0d29yayBhbmFseXNpcyBpcyBvZiBhZGRlZCB2YWx1ZSwgYXMKaXQgY2FuIHJldmVhbCBwcmVjaXNlbHkgaG93IHNlbGVjdGlvbiBpbiBzb2NpYWwgbmV0d29ya3MgbWF5IGFsdGVyIGFzIGEKY29uc2VxdWVuY2Ugb2Ygc29jaWFsIG1lZGlhLiBUaGlzIHJldmVhbHMgdG8gYSBkZWVwZXIgZXh0ZW50IHdoaWNoCm1lY2hhbmlzbXMgdW5kZXJsaWUgdGhlIGluZmx1ZW5jZSBvZiBpbnRlcm5ldCBvbiBjb2hlc2lvbi4K</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("final_introduction.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

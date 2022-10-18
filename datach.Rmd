@@ -43,10 +43,18 @@ department of Radboud University. Information on publications,
 co-authorship and citations will be scraped from Google Scholar using
 the Scholar package in R. Social media participation will be expressed
 using the Kardashian Index, which compares the Twitter followers with
-number of citations of academics (Hall, 2014). In order to calculate
-these, the twitteR package in R will be used to extract Twitter user
-information of scholars of the departments. Using the number of
-followers and the citations, the index can be calculated. Data will be
+number of citations of academics (Hall, 2014). 
+In order to calculate these, the twitteR package in R is used to extract Twitter user
+information of scholars of the departments. For each full name, the first user scraped is saved. By eye-balling, twitter users with a high amount were checked. In some cases, the match between full name and Twitter username was not made correctly. In those instances, this was corrected by hand. Using the number of
+followers and the citations scraped from Google Scholar, the Kardashian Index is calculated. 
+
+<br> 
+
+The control variable Twitter Dummy was added to indicate whether the scholar has Twitter or not. Furthermore, the variable Dutch shows the ethnicity of the staff member. Ethnicity was scraped using the Achternamenbank. In case of a typical Dutch last name, the staff member got a score one on the dummy Dutch. In other cases, the scholar scores a zero. This means that all last names that are not Dutch are taken together as one category, not distinguishing between (Non-)Western ethnic background. Similarly to ethnicity, the Meertens namenbank was used to determine the gender of the respondent. In case of a first name that is more often used for women than for men, a scholar scores a zero on the dummy gender. In case of a first name that is more often used for men, the scholar scores a one on the dummy. 
+
+
+
+Data will be
 collected for two different times, and then the evolution of the
 networks of Sociology and Data Science will be compared.
 
