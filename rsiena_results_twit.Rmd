@@ -1,0 +1,347 @@
+---
+title: "R Siena"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+     code_folding: "hide"
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r warning=FALSE, globalsettings, echo=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+library(RSiena)
+library(tidyverse)
+load("/Users/anuschka/Documents/labjournal/data/data_net_array.RData")
+load("/Users/anuschka/Documents/labjournal/data/socdef_net_array.RData")
+load("/Users/anuschka/Documents/labjournal/data/socdef_df.RData")
+load("/Users/anuschka/Documents/labjournal/data/datadef_df.RData")
+load("/Users/anuschka/Documents/labjournal/data/soc_twitterinfo.RData")
+```
+
+# Estimate a model for sociology
+
+
+
+
+```{r}
+save(socdef_df, file="/Users/anuschka/Documents/labjournal/data/socdef_df.RData")
+```
+
+
+```{r, eval=FALSE}
+#dependent
+snet <- sienaDependent(soc_net_array)
+
+### Step 1: define data
+#gender
+gender <- as.numeric(socdef_df$gender=="female")
+gender <- coCovar(gender)
+
+#Kardashian Index
+#ki <- as.numeric(socdef_df$ki)
+#ki <- coCovar(ki)
+
+#Ethnicity
+dutch <- as.numeric(socdef_df$dutch)
+dutch <- coCovar(dutch)
+
+#Twitter dummy as control variable
+twitter_dum <- (socdef_df$twitter_dum)
+twitter_dum <- coCovar(twitter_dum)
+
+#Twitter followercount
+followers <- as.numeric(socdef_df$followers)
+followers <- coCovar(followers)
+
+
+
+#year first pub
+# soc_staff_cit %>% group_by(gs_id) %>%
+#   mutate(pub_first = min(year)) %>% 
+#   select(c("gs_id", "pub_first")) %>%
+#   distinct(gs_id, pub_first, .keep_all = TRUE) -> firstpub_df
+# 
+# socdef_df <- left_join(socdef_df, firstpub_df)
+# 
+# #if no publication yet, set pub_first op 2023
+# socdef_df %>% mutate(pub_first = replace_na(pub_first, 2023)) -> socdef_df
+
+pub_first <-  coCovar(socdef_df$pub_first)
+```
+
+```{r, eval=FALSE}
+mydata <- sienaDataCreate(snet, gender, dutch, pub_first, twitter_dum, followers)
+```
+
+```{r,eval=FALSE}
+### Step 2: create effects structure
+myeffs <- getEffects(mydata)
+effectsDocumentation(myeffs)
+### Step 3: get initial description
+print01Report(mydata, modelname = "/Users/anuschka/Documents/labjournal/results/soc_report_twit")
+```
+
+
+```{r,eval=FALSE}
+### Step4: specify model with structural effects
+myeffs <- includeEffects(myeffs, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffs <- includeEffects(myeffs, transTriads)
+myeffs <- includeEffects(myeffs, absDiffX, interaction1 = "followers")
+```
+
+```{r, eval=FALSE}
+### Step5 estimate
+myAlgorithm <- sienaAlgorithmCreate(projname = "soc_report_twit")
+(ans <- siena07(myAlgorithm, data = mydata, effects = myeffs))
+# (the outer parentheses lead to printing the obtained result on the screen) if necessary, estimate
+# further
+(ans <- siena07(myAlgorithm, data = mydata, effects = myeffs, prevAns = ans))
+```
+
+```{r, eval=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans, file="/Users/anuschka/Documents/labjournal/results/soc_model_struc_twit")
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/soc_model_struc_twit")
+summary(ans)
+```
+
+Similar effect bc of course we did not add the covariates yet. All structural effects are significant. 
+
+```{r,eval=FALSE}
+myeffs1 <- getEffects(mydata)
+myeffs1 <- includeEffects(myeffs1, degPlus) 
+myeffs1 <- includeEffects(myeffs1, transTriads)
+myeffs1 <- includeEffects(myeffs1, absDiffX, interaction1 = "followers")
+myeffs1 <- includeEffects(myeffs1, sameX, interaction1 = "dutch")
+myeffs1 <- includeEffects(myeffs1, absDiffX, interaction1 = "pub_first")
+#myeffs1 <- includeEffects(myeffs1, sameX, interaction1 = "twitter_dum")
+myeffs1 <- includeEffects(myeffs1, sameX, interaction1 = "gender")
+```
+
+```{r, eval=FALSE}
+(ans1 <- siena07(myAlgorithm, data = mydata, effects = myeffs1, prevAns = ans))
+```
+
+```{r, eval=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans1, file="/Users/anuschka/Documents/labjournal/results/soc_model_cov1_twit")
+```
+
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/soc_model_cov1_twit")
+summary(ans1)
+```
+
+
+
+```{r,eval=FALSE}
+myeffs2 <- getEffects(mydata)
+myeffs2 <- includeEffects(myeffs2, degPlus) 
+myeffs2 <- includeEffects(myeffs2, transTriads)
+myeffs2 <- includeEffects(myeffs2, altX, interaction1 = "followers")
+myeffs2 <- includeEffects(myeffs2, sameX, interaction1 = "dutch")
+myeffs2 <- includeEffects(myeffs2, absDiffX, interaction1 = "pub_first")
+#myeffs2 <- includeEffects(myeffs2, sameX, interaction1 = "twitter_dum")
+myeffs2 <- includeEffects(myeffs2, sameX, interaction1 = "gender")
+```
+
+```{r, eval=FALSE}
+(ans2 <- siena07(myAlgorithm, data = mydata, effects = myeffs2, prevAns = ans1))
+```
+
+```{r, eval=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans2, file="/Users/anuschka/Documents/labjournal/results/soc_model_cov2_twit")
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/soc_model_cov2_twit")
+summary(ans2)
+```
+
+
+# RSiena Data Science
+
+
+```{r}
+rm(list=ls())
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/data/data_net_array.RData")
+load("/Users/anuschka/Documents/labjournal/data/datadef_df.RData")
+```
+
+
+```{r}
+save(datadef_df, file="/Users/anuschka/Documents/labjournal/data/datadef_df.RData")
+```
+
+```{r, eval=FALSE}
+#dependent
+dnet <- sienaDependent(dnet_array)
+
+### Step 1: define data
+#gender
+gender <- as.numeric(datadef_df$gender=="female")
+gender <- coCovar(gender)
+
+#Kardashian Index
+#ki <- as.numeric(datadef_df$ki)
+#ki <- coCovar(ki)
+
+#Ethnicity
+dutch <- as.numeric(datadef_df$dutch)
+dutch <- coCovar(dutch)
+
+#Twitter dummy as control variable
+twitter_dum <- (datadef_df$twitter_dum)
+twitter_dum <- coCovar(twitter_dum)
+
+#Twitter followers
+followers <- as.numeric(datadef_df$followers)
+followers <- coCovar(followers)
+
+# #year first pub
+# data_staff_cit %>% group_by(gs_id) %>%
+#   mutate(pub_first = min(year)) %>% 
+#   select(c("gs_id", "pub_first")) %>%
+#   distinct(gs_id, pub_first, .keep_all = TRUE) -> firstpub_df1
+# 
+# datadef_df <- left_join(datadef_df, firstpub_df1)
+# 
+# #if no publication yet, set pub_first op 2023
+# datadef_df %>% mutate(pub_first = replace_na(pub_first, 2023)) -> datadef_df
+
+pub_first <-  coCovar(datadef_df$pub_first)
+```
+
+```{r, eval=FALSE}
+mydata <- sienaDataCreate(dnet, gender, followers, dutch, pub_first, twitter_dum)
+```
+
+```{r, eval=FALSE}
+### Step 2: create effects structure
+myeff <- getEffects(mydata)
+effectsDocumentation(myeff)
+### Step 3: get initial description
+print01Report(mydata, modelname = "/Users/anuschka/Documents/labjournal/results/data_report_twit")
+```
+
+```{r, eval=FALSE}
+### Step4: specify model
+myeff <- includeEffects(myeff, degPlus) 
+myeff <- includeEffects(myeff, transTriads)
+myeff <- includeEffects(myeff, absDiffX, interaction1 = "followers")
+```
+
+```{r, eval=FALSE}
+### Step5 estimate
+myAlgorithm <- sienaAlgorithmCreate(projname = "data_report_twit")
+(ans <- siena07(myAlgorithm, data = mydata, effects = myeff))
+# (the outer parentheses lead to printing the obtained result on the screen) if necessary, estimate
+# further
+#(ans <- siena07(myAlgorithm, data = mydata, effects = myeff, prevAns = ans))
+```
+
+```{r, eval=FALSE}
+save(ans, file="/Users/anuschka/Documents/labjournal/results/data_model_struc_twit")
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/data_model_struc_twit")
+summary(ans)
+```
+
+```{r,eval=FALSE}
+myeffd1 <- getEffects(mydata)
+myeffd1 <- includeEffects(myeffd1, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffd1 <- includeEffects(myeffd1, transTriads)
+myeffd1 <- includeEffects(myeffd1, absDiffX, interaction1 = "followers")
+myeffd1 <- includeEffects(myeffd1, sameX, interaction1 = "dutch")
+myeffd1 <- includeEffects(myeffd1, absDiffX, interaction1 = "pub_first")
+#myeffd1 <- includeEffects(myeffd1, sameX, interaction1 = "twitter_dum")
+myeffd1 <- includeEffects(myeffd1, sameX, interaction1 = "gender")
+(ansd1 <- siena07(myAlgorithm, data = mydata, effects = myeffd1, prevAns = ans))
+```
+
+
+```{r, eval=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ansd1, file="/Users/anuschka/Documents/labjournal/results/data_model_cov1_twit")
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/data_model_cov1_twit")
+summary(ansd1)
+```
+
+```{r, eval=FALSE}
+myeffd2a <- getEffects(mydata)
+myeffd2a <- includeEffects(myeffd2a, degPlus) 
+myeffd2a <- includeEffects(myeffd2a, transTriads)
+myeffd2a <- includeEffects(myeffd2a, altX, interaction1 = "followers")
+(ansd2a <- siena07(myAlgorithm, data = mydata, effects = myeffd2, prevAns = ansd1))
+```
+
+```{r, eval=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ansd2a, file="/Users/anuschka/Documents/labjournal/results/data_model_cov2a_twit")
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/data_model_cov2a_twit")
+summary(ansd2a)
+```
+
+```{r,eval=FALSE}
+myeffd2 <- getEffects(mydata)
+myeffd2 <- includeEffects(myeffd2, degPlus) 
+myeffd2 <- includeEffects(myeffd2, transTriads)
+myeffd2 <- includeEffects(myeffd2, altX, interaction1 = "followers")
+myeffd2 <- includeEffects(myeffd2, sameX, interaction1 = "dutch")
+myeffd2 <- includeEffects(myeffd2, absDiffX, interaction1 = "pub_first")
+#myeffd2 <- includeEffects(myeffd2, sameX, interaction1 = "twitter_dum")
+myeffd2 <- includeEffects(myeffd2, sameX, interaction1 = "gender")
+(ansd2 <- siena07(myAlgorithm, data = mydata, effects = myeffd2, prevAns = ansd1))
+```
+
+```{r, eval=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ansd2, file="/Users/anuschka/Documents/labjournal/results/data_model_cov2_twit")
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/data_model_cov2_twit")
+summary(ansd2)
+```
+

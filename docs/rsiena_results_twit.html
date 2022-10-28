@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Anuschka Peelen" />
+
+<meta name="date" content="2022-10-28" />
+
+<title>R Siena</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="tweaks.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    My journal
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab1.html">Week 1</a>
+    </li>
+    <li>
+      <a href="lab2.html">Week 2</a>
+    </li>
+    <li>
+      <a href="webscraping_sociology.html">Week 3 - Scraping Sociology</a>
+    </li>
+    <li>
+      <a href="webscraping_datascience.html">Week 3 - Scraping Data Science</a>
+    </li>
+    <li>
+      <a href="scrapingtwitter.html">Week 3 - Twitter scraping</a>
+    </li>
+    <li>
+      <a href="Rsienatutorial.html">Week 4 - RSiena</a>
+    </li>
+    <li>
+      <a href="rsiena_mymovez.html">Week 4 - MyMovez tutorial</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Report
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="introduction.html">Introduction</a>
+    </li>
+    <li>
+      <a href="datach.html">Data &amp; Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Final Report
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="final_introduction.html">Introduction</a>
+    </li>
+    <li>
+      <a href="final_theory.html">Theory</a>
+    </li>
+    <li>
+      <a href="final_data.html">Data</a>
+    </li>
+    <li>
+      <a href="descriptives.html">Descriptives</a>
+    </li>
+    <li>
+      <a href="rsiena_results.html">RSiena results</a>
+    </li>
+    <li>
+      <a href="conclusion.html">Conclusion</a>
+    </li>
+    <li>
+      <a href="rsiena_results_twit.html">Appendix A</a>
+    </li>
+    <li>
+      <a href="appendixb.html">Appendix B</a>
+    </li>
+    <li>
+      <a></a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JochemTolsma/labjournal">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">R Siena</h1>
+<h4 class="author">Anuschka Peelen</h4>
+<h4 class="date">2022-10-28</h4>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="estimate-a-model-for-sociology" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span> Estimate a model for
+sociology</h1>
+<pre class="r test"><code>save(socdef_df, file=&quot;/Users/anuschka/Documents/labjournal/data/socdef_df.RData&quot;)</code></pre>
+<pre class="r test"><code>#dependent
+snet &lt;- sienaDependent(soc_net_array)
+
+### Step 1: define data
+#gender
+gender &lt;- as.numeric(socdef_df$gender==&quot;female&quot;)
+gender &lt;- coCovar(gender)
+
+#Kardashian Index
+#ki &lt;- as.numeric(socdef_df$ki)
+#ki &lt;- coCovar(ki)
+
+#Ethnicity
+dutch &lt;- as.numeric(socdef_df$dutch)
+dutch &lt;- coCovar(dutch)
+
+#Twitter dummy as control variable
+twitter_dum &lt;- (socdef_df$twitter_dum)
+twitter_dum &lt;- coCovar(twitter_dum)
+
+#Twitter followercount
+followers &lt;- as.numeric(socdef_df$followers)
+followers &lt;- coCovar(followers)
+
+
+
+#year first pub
+# soc_staff_cit %&gt;% group_by(gs_id) %&gt;%
+#   mutate(pub_first = min(year)) %&gt;% 
+#   select(c(&quot;gs_id&quot;, &quot;pub_first&quot;)) %&gt;%
+#   distinct(gs_id, pub_first, .keep_all = TRUE) -&gt; firstpub_df
+# 
+# socdef_df &lt;- left_join(socdef_df, firstpub_df)
+# 
+# #if no publication yet, set pub_first op 2023
+# socdef_df %&gt;% mutate(pub_first = replace_na(pub_first, 2023)) -&gt; socdef_df
+
+pub_first &lt;-  coCovar(socdef_df$pub_first)</code></pre>
+<pre class="r test"><code>mydata &lt;- sienaDataCreate(snet, gender, dutch, pub_first, twitter_dum, followers)</code></pre>
+<pre class="r test"><code>### Step 2: create effects structure
+myeffs &lt;- getEffects(mydata)
+effectsDocumentation(myeffs)
+### Step 3: get initial description
+print01Report(mydata, modelname = &quot;/Users/anuschka/Documents/labjournal/results/soc_report_twit&quot;)</code></pre>
+<pre class="r test"><code>### Step4: specify model with structural effects
+myeffs &lt;- includeEffects(myeffs, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffs &lt;- includeEffects(myeffs, transTriads)
+myeffs &lt;- includeEffects(myeffs, absDiffX, interaction1 = &quot;followers&quot;)</code></pre>
+<pre class="r test"><code>### Step5 estimate
+myAlgorithm &lt;- sienaAlgorithmCreate(projname = &quot;soc_report_twit&quot;)
+(ans &lt;- siena07(myAlgorithm, data = mydata, effects = myeffs))
+# (the outer parentheses lead to printing the obtained result on the screen) if necessary, estimate
+# further
+(ans &lt;- siena07(myAlgorithm, data = mydata, effects = myeffs, prevAns = ans))</code></pre>
+<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans, file=&quot;/Users/anuschka/Documents/labjournal/results/soc_model_struc_twit&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                      Estimate   Standard   Convergence 
+#&gt;                                                   Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1    1.5523  ( 0.4264   )             
+#&gt;   0.2      Rate parameter period 2    2.4902  ( 0.7085   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)          -2.7680  ( 0.3799   )    0.0517   
+#&gt;   2.  eval transitive triads          0.5974  ( 0.2531   )   -0.0132   
+#&gt;   3.  eval degree act+pop             0.0899  ( 0.0382   )    0.0192   
+#&gt;   4.  eval followers abs. difference  0.0002  ( 0.0002   )    0.0324   
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.1159 
+#&gt; 
+#&gt; 
+#&gt; Total of 2496 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.144        0.025       -0.012        0.000
+#&gt;        0.262        0.064       -0.006        0.000
+#&gt;       -0.842       -0.628        0.001        0.000
+#&gt;       -0.332        0.001        0.092        0.000
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt;       74.829       56.534     2327.748    61601.966
+#&gt;       56.563       74.738     2113.136    46002.509
+#&gt;      858.691      800.121    30546.116   678027.382
+#&gt;    32874.337    24052.368   973634.455 71698108.953
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt; 1.019690e+02 8.947000e+01 3.349854e+03 8.872810e+04
+#&gt; 8.190000e-01 1.170820e+02 3.414132e+03 7.943304e+04
+#&gt; 9.470000e-01 9.010000e-01 1.225888e+05 2.838908e+06
+#&gt; 6.830000e-01 5.710000e-01 6.300000e-01 1.654947e+08</code></pre>
+<p>Similar effect bc of course we did not add the covariates yet. All
+structural effects are significant.</p>
+<pre class="r test"><code>myeffs1 &lt;- getEffects(mydata)
+myeffs1 &lt;- includeEffects(myeffs1, degPlus) 
+myeffs1 &lt;- includeEffects(myeffs1, transTriads)
+myeffs1 &lt;- includeEffects(myeffs1, absDiffX, interaction1 = &quot;followers&quot;)
+myeffs1 &lt;- includeEffects(myeffs1, sameX, interaction1 = &quot;dutch&quot;)
+myeffs1 &lt;- includeEffects(myeffs1, absDiffX, interaction1 = &quot;pub_first&quot;)
+#myeffs1 &lt;- includeEffects(myeffs1, sameX, interaction1 = &quot;twitter_dum&quot;)
+myeffs1 &lt;- includeEffects(myeffs1, sameX, interaction1 = &quot;gender&quot;)</code></pre>
+<pre class="r test"><code>(ans1 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffs1, prevAns = ans))</code></pre>
+<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans1, file=&quot;/Users/anuschka/Documents/labjournal/results/soc_model_cov1_twit&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                      Estimate   Standard   Convergence 
+#&gt;                                                   Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1    1.5922  ( 0.4546   )             
+#&gt;   0.2      Rate parameter period 2    2.5406  ( 0.6931   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)          -3.0969  ( 0.5756   )   -0.0011   
+#&gt;   2.  eval transitive triads          0.6016  ( 0.2678   )    0.0278   
+#&gt;   3.  eval degree act+pop             0.0952  ( 0.0422   )    0.0045   
+#&gt;   4.  eval same gender               -0.0649  ( 0.2591   )   -0.0009   
+#&gt;   5.  eval same dutch                 0.2363  ( 0.3407   )   -0.0142   
+#&gt;   6.  eval pub_first abs. difference  0.0112  ( 0.0187   )    0.0098   
+#&gt;   7.  eval followers abs. difference  0.0002  ( 0.0002   )   -0.0251   
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.0886 
+#&gt; 
+#&gt; 
+#&gt; Total of 2552 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.331        0.036       -0.017       -0.026       -0.133       -0.003        0.000
+#&gt;        0.235        0.072       -0.007       -0.001       -0.019        0.001        0.000
+#&gt;       -0.694       -0.623        0.002       -0.001        0.005        0.000        0.000
+#&gt;       -0.171       -0.020       -0.066        0.067        0.002        0.001        0.000
+#&gt;       -0.676       -0.211        0.365        0.018        0.116        0.000        0.000
+#&gt;       -0.325        0.175       -0.163        0.121        0.037        0.000        0.000
+#&gt;       -0.281        0.050        0.045       -0.035        0.091        0.150        0.000
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt;       75.393       54.940     2327.248       72.590      102.251     1593.519    56706.914
+#&gt;       57.019       72.610     2102.094       58.155       80.422     1158.604    41734.819
+#&gt;      865.427      771.476    30363.712      844.537     1122.169    18694.872   640384.632
+#&gt;       32.865       25.347     1016.528       59.454       44.546      632.912    28798.710
+#&gt;       54.505       39.346     1591.890       52.614       94.303     1107.422    40138.363
+#&gt;      795.335      586.434    25552.691      701.190     1047.813    22087.280   524447.281
+#&gt;    31789.567    21456.392   937879.704    33622.457    42047.397   598886.797 72574615.150
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt; 1.203200e+02 1.061660e+02 3.988914e+03 1.193750e+02 1.664840e+02 2.539889e+03 9.208920e+04
+#&gt; 8.390000e-01 1.331870e+02 4.003745e+03 1.073590e+02 1.502070e+02 2.248103e+03 8.146286e+04
+#&gt; 9.560000e-01 9.120000e-01 1.446818e+05 3.917482e+03 5.372742e+03 8.628509e+04 3.015680e+06
+#&gt; 8.370000e-01 7.150000e-01 7.920000e-01 1.691130e+02 1.671320e+02 2.377767e+03 1.013753e+05
+#&gt; 9.200000e-01 7.890000e-01 8.560000e-01 7.790000e-01 2.719810e+02 3.423169e+03 1.281729e+05
+#&gt; 9.250000e-01 7.780000e-01 9.070000e-01 7.310000e-01 8.300000e-01 6.261579e+04 1.810544e+06
+#&gt; 6.540000e-01 5.500000e-01 6.180000e-01 6.080000e-01 6.060000e-01 5.640000e-01 1.646616e+08</code></pre>
+<pre class="r test"><code>myeffs2 &lt;- getEffects(mydata)
+myeffs2 &lt;- includeEffects(myeffs2, degPlus) 
+myeffs2 &lt;- includeEffects(myeffs2, transTriads)
+myeffs2 &lt;- includeEffects(myeffs2, altX, interaction1 = &quot;followers&quot;)
+myeffs2 &lt;- includeEffects(myeffs2, sameX, interaction1 = &quot;dutch&quot;)
+myeffs2 &lt;- includeEffects(myeffs2, absDiffX, interaction1 = &quot;pub_first&quot;)
+#myeffs2 &lt;- includeEffects(myeffs2, sameX, interaction1 = &quot;twitter_dum&quot;)
+myeffs2 &lt;- includeEffects(myeffs2, sameX, interaction1 = &quot;gender&quot;)</code></pre>
+<pre class="r test"><code>(ans2 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffs2, prevAns = ans1))</code></pre>
+<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans2, file=&quot;/Users/anuschka/Documents/labjournal/results/soc_model_cov2_twit&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                      Estimate   Standard   Convergence 
+#&gt;                                                   Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1    1.5836  ( 0.4446   )             
+#&gt;   0.2      Rate parameter period 2    2.4934  ( 0.7225   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)          -3.0943  ( 0.5877   )   0.0812    
+#&gt;   2.  eval transitive triads          0.5839  ( 0.2708   )   0.0777    
+#&gt;   3.  eval degree act+pop             0.1003  ( 0.0427   )   0.0808    
+#&gt;   4.  eval same gender               -0.0550  ( 0.2561   )   0.0638    
+#&gt;   5.  eval same dutch                 0.2676  ( 0.3455   )   0.0843    
+#&gt;   6.  eval pub_first abs. difference  0.0143  ( 0.0201   )   0.0738    
+#&gt;   7.  eval followers alter            0.0004  ( 0.0003   )   0.0013    
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.0881 
+#&gt; 
+#&gt; 
+#&gt; Total of 2750 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.345        0.041       -0.018       -0.032       -0.132       -0.005        0.000
+#&gt;        0.259        0.073       -0.007       -0.003       -0.027        0.001        0.000
+#&gt;       -0.713       -0.610        0.002        0.000        0.005        0.000        0.000
+#&gt;       -0.211       -0.039       -0.041        0.066        0.002        0.001        0.000
+#&gt;       -0.652       -0.290        0.357        0.019        0.119        0.000        0.000
+#&gt;       -0.384        0.129       -0.081        0.132        0.057        0.000        0.000
+#&gt;       -0.221        0.091        0.057        0.004        0.020        0.330        0.000
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt;       73.755       56.723     2273.134       74.653      103.747     1501.381    -4582.017
+#&gt;       57.793       73.478     2110.739       63.145       83.949     1128.141    -4634.246
+#&gt;      837.234      767.043    29297.561      865.045     1126.664    17316.134   -66442.202
+#&gt;       35.615       29.843     1123.049       63.654       49.941      670.470      533.056
+#&gt;       55.374       43.214     1632.926       55.676       98.863     1078.684    -2649.541
+#&gt;      725.122      538.161    22614.073      680.713      981.912    20052.859  -123637.683
+#&gt;     4351.323     2103.656   102729.284     5811.749     6801.602   -19447.777 21159065.778
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt;      113.680      100.012     3694.905      118.948      160.725     2262.289    -4852.812
+#&gt;        0.841      124.304     3709.183      110.725      141.890     1947.076    -3070.529
+#&gt;        0.951        0.913   132684.027     3911.455     5059.158    74377.015  -163485.060
+#&gt;        0.848        0.755        0.816      173.156      167.676     2268.632      974.241
+#&gt;        0.914        0.771        0.842        0.772      272.120     3092.556    -4878.885
+#&gt;        0.907        0.746        0.873        0.737        0.801    54741.251  -224160.575
+#&gt;       -0.077       -0.047       -0.076        0.013       -0.050       -0.163 34697137.157</code></pre>
+</div>
+<div id="rsiena-data-science" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> RSiena Data
+Science</h1>
+<pre class="r test"><code>rm(list=ls())</code></pre>
+<pre class="r test"><code>save(datadef_df, file=&quot;/Users/anuschka/Documents/labjournal/data/datadef_df.RData&quot;)</code></pre>
+<pre class="r test"><code>#dependent
+dnet &lt;- sienaDependent(dnet_array)
+
+### Step 1: define data
+#gender
+gender &lt;- as.numeric(datadef_df$gender==&quot;female&quot;)
+gender &lt;- coCovar(gender)
+
+#Kardashian Index
+#ki &lt;- as.numeric(datadef_df$ki)
+#ki &lt;- coCovar(ki)
+
+#Ethnicity
+dutch &lt;- as.numeric(datadef_df$dutch)
+dutch &lt;- coCovar(dutch)
+
+#Twitter dummy as control variable
+twitter_dum &lt;- (datadef_df$twitter_dum)
+twitter_dum &lt;- coCovar(twitter_dum)
+
+#Twitter followers
+followers &lt;- as.numeric(datadef_df$followers)
+followers &lt;- coCovar(followers)
+
+# #year first pub
+# data_staff_cit %&gt;% group_by(gs_id) %&gt;%
+#   mutate(pub_first = min(year)) %&gt;% 
+#   select(c(&quot;gs_id&quot;, &quot;pub_first&quot;)) %&gt;%
+#   distinct(gs_id, pub_first, .keep_all = TRUE) -&gt; firstpub_df1
+# 
+# datadef_df &lt;- left_join(datadef_df, firstpub_df1)
+# 
+# #if no publication yet, set pub_first op 2023
+# datadef_df %&gt;% mutate(pub_first = replace_na(pub_first, 2023)) -&gt; datadef_df
+
+pub_first &lt;-  coCovar(datadef_df$pub_first)</code></pre>
+<pre class="r test"><code>mydata &lt;- sienaDataCreate(dnet, gender, followers, dutch, pub_first, twitter_dum)</code></pre>
+<pre class="r test"><code>### Step 2: create effects structure
+myeff &lt;- getEffects(mydata)
+effectsDocumentation(myeff)
+### Step 3: get initial description
+print01Report(mydata, modelname = &quot;/Users/anuschka/Documents/labjournal/results/data_report_twit&quot;)</code></pre>
+<pre class="r test"><code>### Step4: specify model
+myeff &lt;- includeEffects(myeff, degPlus) 
+myeff &lt;- includeEffects(myeff, transTriads)
+myeff &lt;- includeEffects(myeff, absDiffX, interaction1 = &quot;followers&quot;)</code></pre>
+<pre class="r test"><code>### Step5 estimate
+myAlgorithm &lt;- sienaAlgorithmCreate(projname = &quot;data_report_twit&quot;)
+(ans &lt;- siena07(myAlgorithm, data = mydata, effects = myeff))
+# (the outer parentheses lead to printing the obtained result on the screen) if necessary, estimate
+# further
+#(ans &lt;- siena07(myAlgorithm, data = mydata, effects = myeff, prevAns = ans))</code></pre>
+<pre class="r test"><code>save(ans, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_struc_twit&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                      Estimate   Standard   Convergence 
+#&gt;                                                   Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1    1.5924  ( 0.4342   )             
+#&gt;   0.2      Rate parameter period 2    3.0146  ( 0.6705   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)          -2.3438  ( 0.3280   )   0.0187    
+#&gt;   2.  eval transitive triads          1.2607  ( 0.2165   )   0.0033    
+#&gt;   3.  eval degree act+pop             0.0329  ( 0.0338   )   0.0064    
+#&gt;   4.  eval followers abs. difference  0.0000  ( 0.0001   )   0.0410    
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.0486 
+#&gt; 
+#&gt; 
+#&gt; Total of 2012 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.108        0.004       -0.009        0.000
+#&gt;        0.063        0.047       -0.003        0.000
+#&gt;       -0.854       -0.397        0.001        0.000
+#&gt;       -0.352       -0.011        0.143        0.000
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt; 8.133700e+01 4.866900e+01 2.294112e+03 7.104186e+04
+#&gt; 6.806500e+01 1.252330e+02 2.856483e+03 6.124563e+04
+#&gt; 8.908750e+02 8.827480e+02 3.288545e+04 7.442331e+05
+#&gt; 3.758213e+04 2.203888e+04 9.908670e+05 1.392190e+08
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt; 1.338790e+02 1.878760e+02 5.266452e+03 1.216372e+05
+#&gt; 7.410000e-01 4.795450e+02 1.012903e+04 1.894994e+05
+#&gt; 8.970000e-01 9.110000e-01 2.576368e+05 4.960728e+06
+#&gt; 5.550000e-01 4.570000e-01 5.160000e-01 3.584187e+08</code></pre>
+<pre class="r test"><code>myeffd1 &lt;- getEffects(mydata)
+myeffd1 &lt;- includeEffects(myeffd1, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffd1 &lt;- includeEffects(myeffd1, transTriads)
+myeffd1 &lt;- includeEffects(myeffd1, absDiffX, interaction1 = &quot;followers&quot;)
+myeffd1 &lt;- includeEffects(myeffd1, sameX, interaction1 = &quot;dutch&quot;)
+myeffd1 &lt;- includeEffects(myeffd1, absDiffX, interaction1 = &quot;pub_first&quot;)
+#myeffd1 &lt;- includeEffects(myeffd1, sameX, interaction1 = &quot;twitter_dum&quot;)
+myeffd1 &lt;- includeEffects(myeffd1, sameX, interaction1 = &quot;gender&quot;)
+(ansd1 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd1, prevAns = ans))</code></pre>
+<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
+save(ansd1, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_cov1_twit&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                      Estimate   Standard   Convergence 
+#&gt;                                                   Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1    1.5968  ( 0.4346   )             
+#&gt;   0.2      Rate parameter period 2    2.9903  ( 0.6729   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)          -2.1508  ( 0.3814   )    0.0310   
+#&gt;   2.  eval transitive triads          1.2449  ( 0.2162   )   -0.0318   
+#&gt;   3.  eval degree act+pop             0.0366  ( 0.0341   )    0.0039   
+#&gt;   4.  eval same gender               -0.0450  ( 0.2118   )    0.0312   
+#&gt;   5.  eval followers abs. difference  0.0000  ( 0.0002   )   -0.0214   
+#&gt;   6.  eval same dutch                -0.0517  ( 0.2003   )    0.0413   
+#&gt;   7.  eval pub_first abs. difference -0.0152  ( 0.0119   )    0.0198   
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.1006 
+#&gt; 
+#&gt; 
+#&gt; Total of 2389 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.145        0.002       -0.009       -0.022        0.000       -0.022       -0.001
+#&gt;        0.026        0.047       -0.003        0.003        0.000        0.001        0.000
+#&gt;       -0.725       -0.373        0.001        0.000        0.000        0.000        0.000
+#&gt;       -0.276        0.055       -0.063        0.045        0.000       -0.004        0.000
+#&gt;       -0.324        0.088        0.074        0.004        0.000        0.000        0.000
+#&gt;       -0.283        0.025        0.037       -0.089        0.012        0.040        0.000
+#&gt;       -0.219       -0.111       -0.049        0.028        0.083       -0.097        0.000
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt; 8.466500e+01 5.091200e+01 2.425062e+03 9.903300e+01 8.136578e+04 9.630800e+01 1.682442e+03
+#&gt; 6.940000e+01 1.282500e+02 2.938579e+03 8.369600e+01 6.648115e+04 7.787400e+01 1.536368e+03
+#&gt; 9.133740e+02 8.873710e+02 3.370918e+04 1.077350e+03 8.577978e+05 1.028735e+03 1.908679e+04
+#&gt; 5.118200e+01 3.307600e+01 1.495108e+03 1.063810e+02 4.890596e+04 6.239200e+01 1.006226e+03
+#&gt; 3.744450e+04 1.845711e+04 9.835460e+05 4.466568e+04 1.381984e+08 4.098145e+04 6.683628e+05
+#&gt; 4.792000e+01 2.735500e+01 1.374125e+03 6.235300e+01 4.714052e+04 9.926200e+01 9.869880e+02
+#&gt; 8.312970e+02 5.863450e+02 2.531296e+04 9.515030e+02 7.390169e+05 9.938940e+02 2.989596e+04
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt; 1.317890e+02 1.832150e+02 5.147083e+03 1.596940e+02 1.263302e+05 1.493700e+02 2.741700e+03
+#&gt; 7.230000e-01 4.875590e+02 1.008829e+04 2.362960e+02 2.046990e+05 2.066350e+02 4.059730e+03
+#&gt; 8.900000e-01 9.070000e-01 2.539187e+05 6.332508e+03 5.223704e+06 5.849738e+03 1.119591e+05
+#&gt; 8.160000e-01 6.280000e-01 7.380000e-01 2.903430e+02 1.567869e+05 1.932550e+02 3.290856e+03
+#&gt; 5.650000e-01 4.760000e-01 5.330000e-01 4.730000e-01 3.786976e+08 1.429655e+05 2.619945e+06
+#&gt; 8.260000e-01 5.940000e-01 7.370000e-01 7.200000e-01 4.660000e-01 2.482060e+02 3.133068e+03
+#&gt; 8.380000e-01 6.450000e-01 7.790000e-01 6.770000e-01 4.720000e-01 6.970000e-01 8.130003e+04</code></pre>
+<pre class="r test"><code>myeffd2a &lt;- getEffects(mydata)
+myeffd2a &lt;- includeEffects(myeffd2a, degPlus) 
+myeffd2a &lt;- includeEffects(myeffd2a, transTriads)
+myeffd2a &lt;- includeEffects(myeffd2a, altX, interaction1 = &quot;followers&quot;)
+(ansd2a &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd2, prevAns = ansd1))</code></pre>
+<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
+save(ansd2a, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_cov2a_twit&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                      Estimate   Standard   Convergence 
+#&gt;                                                   Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1    1.5839  ( 0.4501   )             
+#&gt;   0.2      Rate parameter period 2    3.0342  ( 0.6894   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)          -2.1672  ( 0.3634   )   -0.0302   
+#&gt;   2.  eval transitive triads          1.2493  ( 0.2045   )   -0.0728   
+#&gt;   3.  eval degree act+pop             0.0364  ( 0.0338   )   -0.0589   
+#&gt;   4.  eval same gender               -0.0479  ( 0.2018   )   -0.0240   
+#&gt;   5.  eval followers alter            0.0001  ( 0.0002   )    0.0400   
+#&gt;   6.  eval same dutch                -0.0512  ( 0.2106   )   -0.0042   
+#&gt;   7.  eval pub_first abs. difference -0.0149  ( 0.0129   )   -0.0224   
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.1002 
+#&gt; 
+#&gt; 
+#&gt; Total of 2550 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.132        0.005       -0.009       -0.018        0.000       -0.024       -0.001
+#&gt;        0.062        0.042       -0.002       -0.002        0.000        0.002        0.000
+#&gt;       -0.731       -0.352        0.001        0.000        0.000        0.000        0.000
+#&gt;       -0.247       -0.040       -0.047        0.041        0.000       -0.006        0.000
+#&gt;        0.092       -0.043       -0.021        0.008        0.000        0.000        0.000
+#&gt;       -0.309        0.041        0.003       -0.130       -0.152        0.044        0.000
+#&gt;       -0.242       -0.094       -0.105        0.022        0.012       -0.016        0.000
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt;       96.531       65.789     2839.712      112.867    -4842.483      110.775     1965.492
+#&gt;       77.118      142.962     3251.003       96.731     2215.733       87.019     1722.012
+#&gt;     1030.492     1013.667    37502.201     1223.689   -37335.738     1167.769    21929.612
+#&gt;       59.222       46.474     1805.745      117.852    -2814.642       73.933     1221.061
+#&gt;    -1194.085    -2509.622   -67897.343    -2850.939 46620940.978     4265.552   -41353.423
+#&gt;       55.536       37.332     1614.020       70.144      283.875      108.627     1142.546
+#&gt;     1011.237      824.404    31397.759     1168.527   -75090.257     1177.215    32379.889
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt;      149.657      201.565     5702.601      179.999     -820.434      168.054     3161.682
+#&gt;        0.727      513.089    10646.119      262.786     1762.386      225.856     4598.609
+#&gt;        0.898        0.906   269378.473     7033.376   -55771.999     6317.264   125009.746
+#&gt;        0.834        0.658        0.768      311.300    -4753.790      212.387     3819.499
+#&gt;       -0.007        0.008       -0.011       -0.027 99222419.672     3133.059  -100343.441
+#&gt;        0.829        0.602        0.734        0.726        0.019      274.634     3593.342
+#&gt;        0.865        0.680        0.806        0.725       -0.034        0.726    89196.126</code></pre>
+<pre class="r test"><code>myeffd2 &lt;- getEffects(mydata)
+myeffd2 &lt;- includeEffects(myeffd2, degPlus) 
+myeffd2 &lt;- includeEffects(myeffd2, transTriads)
+myeffd2 &lt;- includeEffects(myeffd2, altX, interaction1 = &quot;followers&quot;)
+myeffd2 &lt;- includeEffects(myeffd2, sameX, interaction1 = &quot;dutch&quot;)
+myeffd2 &lt;- includeEffects(myeffd2, absDiffX, interaction1 = &quot;pub_first&quot;)
+#myeffd2 &lt;- includeEffects(myeffd2, sameX, interaction1 = &quot;twitter_dum&quot;)
+myeffd2 &lt;- includeEffects(myeffd2, sameX, interaction1 = &quot;gender&quot;)
+(ansd2 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd2, prevAns = ansd1))</code></pre>
+<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
+save(ansd2, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_cov2_twit&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                      Estimate   Standard   Convergence 
+#&gt;                                                   Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1    1.5603  ( 0.4058   )             
+#&gt;   0.2      Rate parameter period 2    3.0125  ( 0.6737   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)          -2.1450  ( 0.3680   )    0.0551   
+#&gt;   2.  eval transitive triads          1.2515  ( 0.2246   )    0.0130   
+#&gt;   3.  eval degree act+pop             0.0362  ( 0.0347   )    0.0311   
+#&gt;   4.  eval same gender               -0.0548  ( 0.2077   )   -0.0160   
+#&gt;   5.  eval followers alter            0.0001  ( 0.0002   )   -0.0121   
+#&gt;   6.  eval same dutch                -0.0650  ( 0.2015   )    0.0213   
+#&gt;   7.  eval pub_first abs. difference -0.0152  ( 0.0123   )    0.0544   
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.1298 
+#&gt; 
+#&gt; 
+#&gt; Total of 2581 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.135        0.000       -0.009       -0.023        0.000       -0.022       -0.001
+#&gt;       -0.005        0.050       -0.003       -0.001        0.000        0.005        0.000
+#&gt;       -0.717       -0.369        0.001        0.000        0.000        0.000        0.000
+#&gt;       -0.303       -0.020       -0.033        0.043        0.000       -0.001        0.000
+#&gt;       -0.015        0.039       -0.013        0.027        0.000        0.000        0.000
+#&gt;       -0.302        0.119       -0.012       -0.029       -0.082        0.041        0.000
+#&gt;       -0.197       -0.014       -0.106        0.054        0.141       -0.138        0.000
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt;       84.171       51.346     2402.453       96.072    -4967.099       98.418     1696.755
+#&gt;       68.536      122.314     2827.317       83.713    -1694.635       75.314     1453.673
+#&gt;      910.780      880.514    33037.362     1054.028   -30173.021     1047.369    19293.264
+#&gt;       50.471       34.201     1464.750      105.509    -4088.447       62.394     1005.662
+#&gt;     -354.689    -3640.509   -47601.636    -1147.868 39942504.726     2037.584  -114080.782
+#&gt;       47.358       26.061     1307.595       57.640     -982.981      101.096      997.217
+#&gt;      840.540      588.008    25571.317      951.528  -162536.299     1035.655    30237.141
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt;      136.490      185.109     5253.190      162.255     1906.494      153.062     2860.421
+#&gt;        0.728      473.669     9881.528      235.749     6551.129      206.929     4094.380
+#&gt;        0.899        0.908   250126.502     6343.140   174637.788     5814.775   114835.946
+#&gt;        0.812        0.634        0.742      292.269      181.565      194.131     3420.492
+#&gt;        0.017        0.031        0.036        0.001 93457572.299     5367.309  -214395.557
+#&gt;        0.823        0.597        0.730        0.713        0.035      253.706     3212.630
+#&gt;        0.837        0.643        0.785        0.684       -0.076        0.689    85609.460</code></pre>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBTaWVuYSIKYXV0aG9yOiAiQW51c2Noa2EgUGVlbGVuIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDogCiAgaHRtbF9kb2N1bWVudDoKICAgICBjb2RlX2ZvbGRpbmc6ICJoaWRlIgplZGl0b3Jfb3B0aW9uczogCiAgbWFya2Rvd246IAogICAgd3JhcDogNzIKLS0tCgpgYGB7ciB3YXJuaW5nPUZBTFNFLCBnbG9iYWxzZXR0aW5ncywgZWNobz1GQUxTRSwgcmVzdWx0cz0naGlkZSd9CmxpYnJhcnkoa25pdHIpCgprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCm9wdHNfY2h1bmskc2V0KHRpZHkub3B0cz1saXN0KHdpZHRoLmN1dG9mZj0xMDApLHRpZHk9VFJVRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0UsY29tbWVudCA9ICIjPiIsIGNhY2hlPVRSVUUsIGNsYXNzLnNvdXJjZT1jKCJ0ZXN0IiksIGNsYXNzLm91dHB1dD1jKCJ0ZXN0MiIpKQpvcHRpb25zKHdpZHRoID0gMTAwKQpyZ2w6OnNldHVwS25pdHIoKQoKCgpjb2xvcml6ZSA8LSBmdW5jdGlvbih4LCBjb2xvcikge3NwcmludGYoIjxzcGFuIHN0eWxlPSdjb2xvcjogJXM7Jz4lczwvc3Bhbj4iLCBjb2xvciwgeCkgfQpgYGAKCmBgYHtyIGtsaXBweSwgZWNobz1GQUxTRSwgaW5jbHVkZT1UUlVFfQprbGlwcHk6OmtsaXBweShwb3NpdGlvbiA9IGMoJ3RvcCcsICdyaWdodCcpKQoja2xpcHB5OjprbGlwcHkoY29sb3IgPSAnZGFya3JlZCcpCiNrbGlwcHk6OmtsaXBweSh0b29sdGlwX21lc3NhZ2UgPSAnQ2xpY2sgdG8gY29weScsIHRvb2x0aXBfc3VjY2VzcyA9ICdEb25lJykKYGBgCgpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsaWJyYXJ5KFJTaWVuYSkKbGlicmFyeSh0aWR5dmVyc2UpCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFfbmV0X2FycmF5LlJEYXRhIikKbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvc29jZGVmX25ldF9hcnJheS5SRGF0YSIpCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL3NvY2RlZl9kZi5SRGF0YSIpCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFkZWZfZGYuUkRhdGEiKQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvZGF0YS9zb2NfdHdpdHRlcmluZm8uUkRhdGEiKQpgYGAKCiMgRXN0aW1hdGUgYSBtb2RlbCBmb3Igc29jaW9sb2d5CgoKCgpgYGB7cn0Kc2F2ZShzb2NkZWZfZGYsIGZpbGU9Ii9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL3NvY2RlZl9kZi5SRGF0YSIpCmBgYAoKCmBgYHtyLCBldmFsPUZBTFNFfQojZGVwZW5kZW50CnNuZXQgPC0gc2llbmFEZXBlbmRlbnQoc29jX25ldF9hcnJheSkKCiMjIyBTdGVwIDE6IGRlZmluZSBkYXRhCiNnZW5kZXIKZ2VuZGVyIDwtIGFzLm51bWVyaWMoc29jZGVmX2RmJGdlbmRlcj09ImZlbWFsZSIpCmdlbmRlciA8LSBjb0NvdmFyKGdlbmRlcikKCiNLYXJkYXNoaWFuIEluZGV4CiNraSA8LSBhcy5udW1lcmljKHNvY2RlZl9kZiRraSkKI2tpIDwtIGNvQ292YXIoa2kpCgojRXRobmljaXR5CmR1dGNoIDwtIGFzLm51bWVyaWMoc29jZGVmX2RmJGR1dGNoKQpkdXRjaCA8LSBjb0NvdmFyKGR1dGNoKQoKI1R3aXR0ZXIgZHVtbXkgYXMgY29udHJvbCB2YXJpYWJsZQp0d2l0dGVyX2R1bSA8LSAoc29jZGVmX2RmJHR3aXR0ZXJfZHVtKQp0d2l0dGVyX2R1bSA8LSBjb0NvdmFyKHR3aXR0ZXJfZHVtKQoKI1R3aXR0ZXIgZm9sbG93ZXJjb3VudApmb2xsb3dlcnMgPC0gYXMubnVtZXJpYyhzb2NkZWZfZGYkZm9sbG93ZXJzKQpmb2xsb3dlcnMgPC0gY29Db3Zhcihmb2xsb3dlcnMpCgoKCiN5ZWFyIGZpcnN0IHB1YgojIHNvY19zdGFmZl9jaXQgJT4lIGdyb3VwX2J5KGdzX2lkKSAlPiUKIyAgIG11dGF0ZShwdWJfZmlyc3QgPSBtaW4oeWVhcikpICU+JSAKIyAgIHNlbGVjdChjKCJnc19pZCIsICJwdWJfZmlyc3QiKSkgJT4lCiMgICBkaXN0aW5jdChnc19pZCwgcHViX2ZpcnN0LCAua2VlcF9hbGwgPSBUUlVFKSAtPiBmaXJzdHB1Yl9kZgojIAojIHNvY2RlZl9kZiA8LSBsZWZ0X2pvaW4oc29jZGVmX2RmLCBmaXJzdHB1Yl9kZikKIyAKIyAjaWYgbm8gcHVibGljYXRpb24geWV0LCBzZXQgcHViX2ZpcnN0IG9wIDIwMjMKIyBzb2NkZWZfZGYgJT4lIG11dGF0ZShwdWJfZmlyc3QgPSByZXBsYWNlX25hKHB1Yl9maXJzdCwgMjAyMykpIC0+IHNvY2RlZl9kZgoKcHViX2ZpcnN0IDwtICBjb0NvdmFyKHNvY2RlZl9kZiRwdWJfZmlyc3QpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9Cm15ZGF0YSA8LSBzaWVuYURhdGFDcmVhdGUoc25ldCwgZ2VuZGVyLCBkdXRjaCwgcHViX2ZpcnN0LCB0d2l0dGVyX2R1bSwgZm9sbG93ZXJzKQpgYGAKCmBgYHtyLGV2YWw9RkFMU0V9CiMjIyBTdGVwIDI6IGNyZWF0ZSBlZmZlY3RzIHN0cnVjdHVyZQpteWVmZnMgPC0gZ2V0RWZmZWN0cyhteWRhdGEpCmVmZmVjdHNEb2N1bWVudGF0aW9uKG15ZWZmcykKIyMjIFN0ZXAgMzogZ2V0IGluaXRpYWwgZGVzY3JpcHRpb24KcHJpbnQwMVJlcG9ydChteWRhdGEsIG1vZGVsbmFtZSA9ICIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9zb2NfcmVwb3J0X3R3aXQiKQpgYGAKCgpgYGB7cixldmFsPUZBTFNFfQojIyMgU3RlcDQ6IHNwZWNpZnkgbW9kZWwgd2l0aCBzdHJ1Y3R1cmFsIGVmZmVjdHMKbXllZmZzIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmcywgZGVnUGx1cykgI3NvbWUgcHVibGlzaCBhIGxvdCwgc29tZSBub3QuIChpbnRlcnByZXRhdGlvbjogdGFsZW50L2x1Y2s/ICkKbXllZmZzIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmcywgdHJhbnNUcmlhZHMpCm15ZWZmcyA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAiZm9sbG93ZXJzIikKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KIyMjIFN0ZXA1IGVzdGltYXRlCm15QWxnb3JpdGhtIDwtIHNpZW5hQWxnb3JpdGhtQ3JlYXRlKHByb2puYW1lID0gInNvY19yZXBvcnRfdHdpdCIpCihhbnMgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmcykpCiMgKHRoZSBvdXRlciBwYXJlbnRoZXNlcyBsZWFkIHRvIHByaW50aW5nIHRoZSBvYnRhaW5lZCByZXN1bHQgb24gdGhlIHNjcmVlbikgaWYgbmVjZXNzYXJ5LCBlc3RpbWF0ZQojIGZ1cnRoZXIKKGFucyA8LSBzaWVuYTA3KG15QWxnb3JpdGhtLCBkYXRhID0gbXlkYXRhLCBlZmZlY3RzID0gbXllZmZzLCBwcmV2QW5zID0gYW5zKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9zb2NfbW9kZWxfc3RydWNfdHdpdCIpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL3NvY19tb2RlbF9zdHJ1Y190d2l0IikKc3VtbWFyeShhbnMpCmBgYAoKU2ltaWxhciBlZmZlY3QgYmMgb2YgY291cnNlIHdlIGRpZCBub3QgYWRkIHRoZSBjb3ZhcmlhdGVzIHlldC4gQWxsIHN0cnVjdHVyYWwgZWZmZWN0cyBhcmUgc2lnbmlmaWNhbnQuIAoKYGBge3IsZXZhbD1GQUxTRX0KbXllZmZzMSA8LSBnZXRFZmZlY3RzKG15ZGF0YSkKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBkZWdQbHVzKSAKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCB0cmFuc1RyaWFkcykKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBhYnNEaWZmWCwgaW50ZXJhY3Rpb24xID0gImZvbGxvd2VycyIpCm15ZWZmczEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMSwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJkdXRjaCIpCm15ZWZmczEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMSwgYWJzRGlmZlgsIGludGVyYWN0aW9uMSA9ICJwdWJfZmlyc3QiKQojbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gInR3aXR0ZXJfZHVtIikKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImdlbmRlciIpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CihhbnMxIDwtIHNpZW5hMDcobXlBbGdvcml0aG0sIGRhdGEgPSBteWRhdGEsIGVmZmVjdHMgPSBteWVmZnMxLCBwcmV2QW5zID0gYW5zKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zMSwgZmlsZT0iL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX2NvdjFfdHdpdCIpCmBgYAoKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9zb2NfbW9kZWxfY292MV90d2l0IikKc3VtbWFyeShhbnMxKQpgYGAKCgoKYGBge3IsZXZhbD1GQUxTRX0KbXllZmZzMiA8LSBnZXRFZmZlY3RzKG15ZGF0YSkKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBkZWdQbHVzKSAKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCB0cmFuc1RyaWFkcykKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBhbHRYLCBpbnRlcmFjdGlvbjEgPSAiZm9sbG93ZXJzIikKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImR1dGNoIikKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBhYnNEaWZmWCwgaW50ZXJhY3Rpb24xID0gInB1Yl9maXJzdCIpCiNteWVmZnMyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczIsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAidHdpdHRlcl9kdW0iKQpteWVmZnMyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczIsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAiZ2VuZGVyIikKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KKGFuczIgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmczIsIHByZXZBbnMgPSBhbnMxKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zMiwgZmlsZT0iL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX2NvdjJfdHdpdCIpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL3NvY19tb2RlbF9jb3YyX3R3aXQiKQpzdW1tYXJ5KGFuczIpCmBgYAoKCiMgUlNpZW5hIERhdGEgU2NpZW5jZQoKCmBgYHtyfQpybShsaXN0PWxzKCkpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFfbmV0X2FycmF5LlJEYXRhIikKbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvZGF0YWRlZl9kZi5SRGF0YSIpCmBgYAoKCmBgYHtyfQpzYXZlKGRhdGFkZWZfZGYsIGZpbGU9Ii9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFkZWZfZGYuUkRhdGEiKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojZGVwZW5kZW50CmRuZXQgPC0gc2llbmFEZXBlbmRlbnQoZG5ldF9hcnJheSkKCiMjIyBTdGVwIDE6IGRlZmluZSBkYXRhCiNnZW5kZXIKZ2VuZGVyIDwtIGFzLm51bWVyaWMoZGF0YWRlZl9kZiRnZW5kZXI9PSJmZW1hbGUiKQpnZW5kZXIgPC0gY29Db3ZhcihnZW5kZXIpCgojS2FyZGFzaGlhbiBJbmRleAoja2kgPC0gYXMubnVtZXJpYyhkYXRhZGVmX2RmJGtpKQoja2kgPC0gY29Db3ZhcihraSkKCiNFdGhuaWNpdHkKZHV0Y2ggPC0gYXMubnVtZXJpYyhkYXRhZGVmX2RmJGR1dGNoKQpkdXRjaCA8LSBjb0NvdmFyKGR1dGNoKQoKI1R3aXR0ZXIgZHVtbXkgYXMgY29udHJvbCB2YXJpYWJsZQp0d2l0dGVyX2R1bSA8LSAoZGF0YWRlZl9kZiR0d2l0dGVyX2R1bSkKdHdpdHRlcl9kdW0gPC0gY29Db3Zhcih0d2l0dGVyX2R1bSkKCiNUd2l0dGVyIGZvbGxvd2Vycwpmb2xsb3dlcnMgPC0gYXMubnVtZXJpYyhkYXRhZGVmX2RmJGZvbGxvd2VycykKZm9sbG93ZXJzIDwtIGNvQ292YXIoZm9sbG93ZXJzKQoKIyAjeWVhciBmaXJzdCBwdWIKIyBkYXRhX3N0YWZmX2NpdCAlPiUgZ3JvdXBfYnkoZ3NfaWQpICU+JQojICAgbXV0YXRlKHB1Yl9maXJzdCA9IG1pbih5ZWFyKSkgJT4lIAojICAgc2VsZWN0KGMoImdzX2lkIiwgInB1Yl9maXJzdCIpKSAlPiUKIyAgIGRpc3RpbmN0KGdzX2lkLCBwdWJfZmlyc3QsIC5rZWVwX2FsbCA9IFRSVUUpIC0+IGZpcnN0cHViX2RmMQojIAojIGRhdGFkZWZfZGYgPC0gbGVmdF9qb2luKGRhdGFkZWZfZGYsIGZpcnN0cHViX2RmMSkKIyAKIyAjaWYgbm8gcHVibGljYXRpb24geWV0LCBzZXQgcHViX2ZpcnN0IG9wIDIwMjMKIyBkYXRhZGVmX2RmICU+JSBtdXRhdGUocHViX2ZpcnN0ID0gcmVwbGFjZV9uYShwdWJfZmlyc3QsIDIwMjMpKSAtPiBkYXRhZGVmX2RmCgpwdWJfZmlyc3QgPC0gIGNvQ292YXIoZGF0YWRlZl9kZiRwdWJfZmlyc3QpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9Cm15ZGF0YSA8LSBzaWVuYURhdGFDcmVhdGUoZG5ldCwgZ2VuZGVyLCBmb2xsb3dlcnMsIGR1dGNoLCBwdWJfZmlyc3QsIHR3aXR0ZXJfZHVtKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojIyMgU3RlcCAyOiBjcmVhdGUgZWZmZWN0cyBzdHJ1Y3R1cmUKbXllZmYgPC0gZ2V0RWZmZWN0cyhteWRhdGEpCmVmZmVjdHNEb2N1bWVudGF0aW9uKG15ZWZmKQojIyMgU3RlcCAzOiBnZXQgaW5pdGlhbCBkZXNjcmlwdGlvbgpwcmludDAxUmVwb3J0KG15ZGF0YSwgbW9kZWxuYW1lID0gIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL2RhdGFfcmVwb3J0X3R3aXQiKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojIyMgU3RlcDQ6IHNwZWNpZnkgbW9kZWwKbXllZmYgPC0gaW5jbHVkZUVmZmVjdHMobXllZmYsIGRlZ1BsdXMpIApteWVmZiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZiwgdHJhbnNUcmlhZHMpCm15ZWZmIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmLCBhYnNEaWZmWCwgaW50ZXJhY3Rpb24xID0gImZvbGxvd2VycyIpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiMjIyBTdGVwNSBlc3RpbWF0ZQpteUFsZ29yaXRobSA8LSBzaWVuYUFsZ29yaXRobUNyZWF0ZShwcm9qbmFtZSA9ICJkYXRhX3JlcG9ydF90d2l0IikKKGFucyA8LSBzaWVuYTA3KG15QWxnb3JpdGhtLCBkYXRhID0gbXlkYXRhLCBlZmZlY3RzID0gbXllZmYpKQojICh0aGUgb3V0ZXIgcGFyZW50aGVzZXMgbGVhZCB0byBwcmludGluZyB0aGUgb2J0YWluZWQgcmVzdWx0IG9uIHRoZSBzY3JlZW4pIGlmIG5lY2Vzc2FyeSwgZXN0aW1hdGUKIyBmdXJ0aGVyCiMoYW5zIDwtIHNpZW5hMDcobXlBbGdvcml0aG0sIGRhdGEgPSBteWRhdGEsIGVmZmVjdHMgPSBteWVmZiwgcHJldkFucyA9IGFucykpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CnNhdmUoYW5zLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX3N0cnVjX3R3aXQiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX3N0cnVjX3R3aXQiKQpzdW1tYXJ5KGFucykKYGBgCgpgYGB7cixldmFsPUZBTFNFfQpteWVmZmQxIDwtIGdldEVmZmVjdHMobXlkYXRhKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIGRlZ1BsdXMpICNzb21lIHB1Ymxpc2ggYSBsb3QsIHNvbWUgbm90LiAoaW50ZXJwcmV0YXRpb246IHRhbGVudC9sdWNrPyApCm15ZWZmZDEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMSwgdHJhbnNUcmlhZHMpCm15ZWZmZDEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMSwgYWJzRGlmZlgsIGludGVyYWN0aW9uMSA9ICJmb2xsb3dlcnMiKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAiZHV0Y2giKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAicHViX2ZpcnN0IikKI215ZWZmZDEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMSwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJ0d2l0dGVyX2R1bSIpCm15ZWZmZDEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMSwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJnZW5kZXIiKQooYW5zZDEgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmZDEsIHByZXZBbnMgPSBhbnMpKQpgYGAKCgpgYGB7ciwgZXZhbD1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zZDEsIGZpbGU9Ii9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL2RhdGFfbW9kZWxfY292MV90d2l0IikKYGBgCgpgYGB7ciwgZWNobz1GQUxTRX0KbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvZGF0YV9tb2RlbF9jb3YxX3R3aXQiKQpzdW1tYXJ5KGFuc2QxKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQpteWVmZmQyYSA8LSBnZXRFZmZlY3RzKG15ZGF0YSkKbXllZmZkMmEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMmEsIGRlZ1BsdXMpIApteWVmZmQyYSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQyYSwgdHJhbnNUcmlhZHMpCm15ZWZmZDJhIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDJhLCBhbHRYLCBpbnRlcmFjdGlvbjEgPSAiZm9sbG93ZXJzIikKKGFuc2QyYSA8LSBzaWVuYTA3KG15QWxnb3JpdGhtLCBkYXRhID0gbXlkYXRhLCBlZmZlY3RzID0gbXllZmZkMiwgcHJldkFucyA9IGFuc2QxKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zZDJhLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjJhX3R3aXQiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjJhX3R3aXQiKQpzdW1tYXJ5KGFuc2QyYSkKYGBgCgpgYGB7cixldmFsPUZBTFNFfQpteWVmZmQyIDwtIGdldEVmZmVjdHMobXlkYXRhKQpteWVmZmQyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDIsIGRlZ1BsdXMpIApteWVmZmQyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDIsIHRyYW5zVHJpYWRzKQpteWVmZmQyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDIsIGFsdFgsIGludGVyYWN0aW9uMSA9ICJmb2xsb3dlcnMiKQpteWVmZmQyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDIsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAiZHV0Y2giKQpteWVmZmQyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDIsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAicHViX2ZpcnN0IikKI215ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJ0d2l0dGVyX2R1bSIpCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJnZW5kZXIiKQooYW5zZDIgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmZDIsIHByZXZBbnMgPSBhbnNkMSkpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiNTYXZlIHRoZSBsYXN0IG1vZGVsIHNpbmNlIGl0IGhhcyB0aGUgbG93ZXN0IG1heGltdW0gY29udmVyZ2VuY2UgcmF0aW8uIApzYXZlKGFuc2QyLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjJfdHdpdCIpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL2RhdGFfbW9kZWxfY292Ml90d2l0IikKc3VtbWFyeShhbnNkMikKYGBgCgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("rsiena_results_twit.Rmd");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Anuschka Peelen" />
 
-<meta name="date" content="2022-10-18" />
+<meta name="date" content="2022-10-28" />
 
 <title>Descriptive Statistics</title>
 
@@ -43,6 +43,13 @@
 <link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
 <link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
 <script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -373,7 +380,10 @@ div.tocify {
       <a href="scrapingtwitter.html">Week 3 - Twitter scraping</a>
     </li>
     <li>
-      <a href="Rsienatutorial.html">Week 4</a>
+      <a href="Rsienatutorial.html">Week 4 - RSiena</a>
+    </li>
+    <li>
+      <a href="rsiena_mymovez.html">Week 4 - MyMovez tutorial</a>
     </li>
   </ul>
 </li>
@@ -406,10 +416,25 @@ div.tocify {
       <a href="final_theory.html">Theory</a>
     </li>
     <li>
+      <a href="final_data.html">Data</a>
+    </li>
+    <li>
       <a href="descriptives.html">Descriptives</a>
     </li>
     <li>
       <a href="rsiena_results.html">RSiena results</a>
+    </li>
+    <li>
+      <a href="conclusion.html">Conclusion</a>
+    </li>
+    <li>
+      <a href="rsiena_results_twit.html">Appendix A</a>
+    </li>
+    <li>
+      <a href="appendixb.html">Appendix B</a>
+    </li>
+    <li>
+      <a></a>
     </li>
   </ul>
 </li>
@@ -442,7 +467,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Descriptive Statistics</h1>
 <h4 class="author">Anuschka Peelen</h4>
-<h4 class="date">2022-10-18</h4>
+<h4 class="date">2022-10-28</h4>
 
 </div>
 
@@ -451,40 +476,86 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<pre class="r test"><code>#start with clean workspace 
-rm(list=ls())
-getwd()</code></pre>
-<pre class="test2"><code>#&gt; [1] &quot;/Users/anuschka/Documents/labjournal&quot;</code></pre>
-<div id="packages" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> packages</h1>
-</div>
-<div id="data" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Data</h1>
-<pre class="r test"><code>snet1 &lt;- soc_net_array[ ,, 1]
-snet2 &lt;- soc_net_array[ ,, 2]
-snet3 &lt;- soc_net_array[ ,, 3]</code></pre>
-<pre class="r test"><code>diag(snet1) &lt;- 0
-diag(snet2) &lt;- 0
-diag(snet3) &lt;- 0</code></pre>
-</div>
-<div id="descriptives-of-sociology-network-2016-2017"
-class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Descriptives of
-sociology network 2016-2017</h1>
+<div id="sociology" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Sociology</h1>
+<div id="plots-of-the-sociology-department" class="section level2"
+number="1.1">
+<h2><span class="header-section-number">1.1</span> Plots of the
+Sociology department</h2>
 <pre class="r test"><code>snet1_g &lt;- igraph::graph_from_adjacency_matrix(snet1, mode = c(&quot;undirected&quot;))
-plot(snet1_g)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-6-1.png" width="672" />
-In the plot above we see that there are quite a lot of copublications
-within the network of Sociology, but also that about half of the staff
-did not publish with others of the department yet. These are probably
-the younger staff that did not work (or just started working) at the
-department yet and thus did not copublish. We can also see that node 14
-is the most “productive” in the sense of copublishing with the other
-staff. This could be an older staff member who had more opportunities to
-publish with many individuals of the staff.</p>
+snet2_g &lt;- igraph::graph_from_adjacency_matrix(snet2, mode = c(&quot;undirected&quot;))
+snet3_g &lt;- igraph::graph_from_adjacency_matrix(snet3, mode = c(&quot;undirected&quot;))
+
+socdef_df$twitter_dum[socdef_df$id==36]&lt;- 1
+socdef_df$twitcol &lt;- ifelse(socdef_df$twitter_dum == 0, &quot;#56B4E9&quot;, &quot;#66ff99&quot;)
+
+#Dit zou ik nog even moeten checken of dit klopt, want er lijken ineens ties weg te vallen door die coördinaten toe te voegen?
+l &lt;- igraph::layout_with_mds(snet1_g)
+l[14,1] &lt;- 0
+l1 &lt;- igraph::layout_with_mds(snet2_g)
+l1[14,1] &lt;- 0
+l2 &lt;- igraph::layout_with_mds(snet3_g)
+l2[14,1] &lt;- 0
+
+#Wat wil ik met de nummers in de plot, moet ik die nog veranderen in namen? Maar wil het graag anoniem houden.
+plot(snet1_g, vertex.color = socdef_df$twitcol, vertex.size=socdef_df$ki,  vertex.size = 10, vertex.frame.color = &quot;gray&quot;,
+    vertex.label.color = &quot;black&quot;, vertex.label.family = &quot;Helvetica&quot;, vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5, layout=l)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r test"><code>plot(snet2_g, vertex.color = socdef_df$twitcol, vertex.size=socdef_df$ki,  vertex.size = 10, vertex.frame.color = &quot;gray&quot;,
+    vertex.label.color = &quot;black&quot;, vertex.label.family = &quot;Helvetica&quot;, vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5, layout=l1)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r test"><code>plot(snet3_g, vertex.color = socdef_df$twitcol, vertex.size=socdef_df$ki,  vertex.size = 10, vertex.frame.color = &quot;gray&quot;,
+    vertex.label.color = &quot;black&quot;, vertex.label.family = &quot;Helvetica&quot;, vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5, layout=l2)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-5-3.png" width="672" /></p>
+<p>From the plots of the Sociology department it’s visible that there
+are quite a lot of co-publications within the network of Sociology. The
+first plot (of the year 2016-2017) shows that many scientists did not
+co-publish yet, but this increased over the years. This can be explained
+by the fact that a number of (younger) scientists did not yet work at
+the department in e.g. 2016, which results in no co-publication tie.
+Since node 14 is the most “productive” in the sense of co-publishing
+with others, I have put this node central in all the plots to show the
+evolution. This is an older scientist who has had more opportunities to
+publish with other individuals of the staff.</p>
+<p>Another conclusion that can be drawn from the plot, is that
+individuals with a higher k-index do not have more co-publication ties.
+As I based the vertex size on the k-index, a higher k-index results in a
+larger vertex in the plot. It is visible that node 28 and 30 have the
+highest k-index, but this did not result in co-publications for node 30.
+For node 28, there is an increase of 3 co-publication ties when
+comparing the latter 2 plots. This could signal that this scientist is
+attractive to others because of the k-index, but this conclusion cannot
+be drawn yet from this plot alone. Therefore, this plot does not hint at
+selection effects based on k-index.</p>
+</div>
+<div id="descriptives-of-the-sociology-network" class="section level2"
+number="1.2">
+<h2><span class="header-section-number">1.2</span> Descriptives of the
+Sociology network</h2>
 <pre class="r test"><code>sdegree &lt;- igraph::degree(snet1_g)
-hist(sdegree)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+sdegree2 &lt;- igraph::degree(snet2_g)
+sdegree3 &lt;- igraph::degree(snet3_g)
+
+
+#par(mfrow=c(3,1))
+hist(sdegree, col=&quot;#99d6ff&quot;)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r test"><code>hist(sdegree2, col=&quot;#99d6ff&quot;)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r test"><code>hist(sdegree3, col=&quot;#99d6ff&quot;)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
+<p>In the histograms above it is shown that the degree of the network is
+right-skewed. This means that most scientists in the network don’t have
+many other scientists within the department they co-published with. This
+is strongest for first the histogram, showing the first wave
+(2016-2017). In the following year, there still is a right-skewed
+distribution of the degrees, but there are a little more staff members
+in the tail of the distribution, meaning that these scientists have
+quite a lot of copublication ties. This occurs the most strongly in the
+histogram of the last years (2020 until now).</p>
 <pre class="r test"><code>igraph::dyad.census(snet1_g)</code></pre>
 <pre class="test2"><code>#&gt; $mut
 #&gt; [1] 26
@@ -498,30 +569,6 @@ hist(sdegree)</code></pre>
 <pre class="test2"><code>#&gt;  [1] 4750    0  616    0    0    0    0    0    0    0   80    0    0    0    0   10</code></pre>
 <pre class="r test"><code>igraph::edge_density(snet1_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.04924242</code></pre>
-<p>In the histogram above we see that the degree of the network at that
-moment was right-skewed. This means that most people in the network
-don’t have very many individuals they copublished with (and because it
-is an undirected network, this applies vice versa for the other person
-connected with the tie)</p>
-<p>We see that there are 26 dyads in the network. The edge density is
-0.049, which means that the number of edges existing in the network is
-relatively low as part of the maximum number there could possibly
-be.</p>
-</div>
-<div id="descriptives-of-the-sociology-network-2018-2019"
-class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Descriptives of the
-sociology network 2018-2019</h1>
-<pre class="r test"><code>snet2_g &lt;- igraph::graph_from_adjacency_matrix(snet2, mode = c(&quot;undirected&quot;))
-plot(snet2_g)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-8-1.png" width="672" />
-The plot from the following 2 years is actually quite similar to the one
-above. Again about half of the staff did not copublish yet. Node 14
-still seems to have the most copublication ties, although node 7 has now
-also become more central in the network.</p>
-<pre class="r test"><code>sdegree2 &lt;- igraph::degree(snet2_g)
-hist(sdegree2)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r test"><code>igraph::dyad.census(snet2_g)</code></pre>
 <pre class="test2"><code>#&gt; $mut
 #&gt; [1] 27
@@ -535,29 +582,6 @@ hist(sdegree2)</code></pre>
 <pre class="test2"><code>#&gt;  [1] 4715    0  656    0    0    0    0    0    0    0   74    0    0    0    0   11</code></pre>
 <pre class="r test"><code>igraph::edge_density(snet2_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.05113636</code></pre>
-<p>We also still observe a right-skewed distribution of the degrees, but
-now we can see that there are a little more staff members in the tail of
-the distribution, meaning that there are a few staff members that have
-quite a lot of copublication ties. Regarding the dyad census we can see
-that the network now has one dyad more than before (27). Also, the edge
-density has increased a little bit, as the number is now 0.051.</p>
-</div>
-<div id="descriptives-of-the-sociology-network-2020-2022"
-class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Descriptives of the
-sociology network 2020-2022</h1>
-<pre class="r test"><code>snet3_g &lt;- igraph::graph_from_adjacency_matrix(snet3, mode = c(&quot;undirected&quot;))
-plot(snet3_g)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-10-1.png" width="672" />
-In the most recent plot of the network (2020 up until now), we can see
-that there has been an increase in copublications. Now “only” 10 members
-still don’t have a copublication with the other members of the staff.
-Furthermore, we see an increasing number of staff members (not only node
-14 and 7) that have several copublications. This would mean that the
-degree distribution has also become less skewed.</p>
-<pre class="r test"><code>sdegree3 &lt;- igraph::degree(snet3_g)
-hist(sdegree3)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <pre class="r test"><code>igraph::dyad.census(snet3_g)</code></pre>
 <pre class="test2"><code>#&gt; $mut
 #&gt; [1] 38
@@ -571,49 +595,54 @@ hist(sdegree3)</code></pre>
 <pre class="test2"><code>#&gt;  [1] 4398    0  949    0    0    0    0    0    0    0   98    0    0    0    0   11</code></pre>
 <pre class="r test"><code>igraph::edge_density(snet3_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.0719697</code></pre>
-<p>And indeed, we see that the degree distribution still is
-right-skewed, but that it is a little less skewed than before. More and
-more staff have several copublications now. However, most of the staff
-members still have little copublications with other staff members. We
-see that there are now 38 dyads and that the edge density has increased
-to 0.072.</p>
+<p>Regarding density and dyads in the network, there are 26 dyads in the
+first wave. The edge density is 0.049, which means that the number of
+edges existing in the network is relatively low compared to the the
+maximum number of edges there could possibly be. In the second wave,
+there is an increase of 1 dyad, and the edge density also has increased
+slightly towards a number of 0.051. In the last wave, there are 38 dyads
+and the edge density has increased to 0.072. All in all, the
+co-publications within the network of sociology have increased, and over
+the years, the scientists at the department have used more of their
+opportunities to collaborate with members within the network.</p>
 <pre class="r test"><code>igraph::transitivity(snet1_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.2727273</code></pre>
 <pre class="r test"><code>igraph::transitivity(snet2_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.3084112</code></pre>
 <pre class="r test"><code>igraph::transitivity(snet3_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.2519084</code></pre>
-<p>Last but not least, we can see the transitivity within the network.
-Here we see that there is no linear change. In the oldest network, there
-is a transitivity number of 0.27. If one staff member A is connected to
-staff member B and staff member C, the probability is 0.27 that staff
-member B and C will also copublish. In the second network, we see that
-this probability has even increased to 0.308. In the last wave, the
-transitivity number is the lowest. This could be explained by the fact
-that there are now more members in the network so there is also more
-chance to copublish with others, not depending on the authors you
-already copublished with?</p>
+<p>Last but not least, the transitivity effect shows whether co-authors
+of co-authors become co-authors. For this network, no linear change can
+be observed. In the first wave, there is a transitivity number of 0.27.
+If one staff member A is connected to staff member B and staff member C,
+the probability is 0.27 that staff member B and C will also co-publish.
+In the second wave, we see that this probability has even increased to
+0.308. In the last wave, the transitivity number is the lowest.
+Possibly, the fact that there are more mebers in the networks could
+increase the opportunities to co-publish with others, not depending on
+co-authors of co-authors.</p>
 </div>
-<div id="explaining-variables" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Explaining
-variables</h1>
-<pre class="r test"><code>hist(socdef_df$ki,col=&quot;lightblue&quot;)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-14-1.png" width="672" />
-When we first have a look at the Kardashian Index of the sociology
-staff, we see that there again is a right-skewed distribution. There are
-a few staff members with a high index, but most of them have a KI
-between 0 and 2. This is of course also because some staff members do
-not have twitter. When we only filter out the individuals that do have
-Twitter, the distribution looks as follows:</p>
+<div id="k-index-at-the-sociology-department" class="section level2"
+number="1.3">
+<h2><span class="header-section-number">1.3</span> K-index at the
+Sociology department</h2>
+<pre class="r test"><code>twsocbar &lt;- ggplot2:::ggplot(socdef_df, aes(factor(twitter_dum), fill = factor(twitter_dum))) + geom_bar()
+twsocbar &lt;- twsocbar + scale_fill_manual(values=c(&quot;#56B4E9&quot;, &quot;#66ff99&quot;))
+ggplotly(twsocbar)</code></pre>
+<div id="htmlwidget-4225f36f5db48f27a39b" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4225f36f5db48f27a39b">{"x":{"data":[{"orientation":"v","width":0.9,"base":0,"x":[1],"y":[14],"text":"count: 14<br />factor(twitter_dum): 0<br />factor(twitter_dum): 0","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(86,180,233,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"0","legendgroup":"0","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[2],"y":[19],"text":"count: 19<br />factor(twitter_dum): 1<br />factor(twitter_dum): 1","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(102,255,153,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"1","legendgroup":"1","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":37.2602739726027},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,2.6],"tickmode":"array","ticktext":["0","1"],"tickvals":[1,2],"categoryorder":"array","categoryarray":["0","1"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"factor(twitter_dum)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.95,19.95],"tickmode":"array","ticktext":["0","5","10","15"],"tickvals":[0,5,10,15],"categoryorder":"array","categoryarray":["0","5","10","15"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"factor(twitter_dum)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"ced12df7731f":{"x":{},"fill":{},"type":"bar"}},"cur_data":"ced12df7731f","visdat":{"ced12df7731f":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>Before diving into the k-index, it is insightful to see how many of
+the scientist at the department of Sociology have Twitter. In the above
+(interactive) graph, it is shown that 13 scientist do not have Twitter,
+while 20 scientists do have Twitter.</p>
 <pre class="r test"><code>sel &lt;- socdef_df$twitter_dum==1
 hist(socdef_df$ki[sel], col=&quot;lightblue&quot;, border=&quot;darkblue&quot;)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-15-1.png" width="672" />
-Here we can see that the distribution is still skewed, but that there
-are now a lower number of staff members with a low KI, given that they
-have Twitter. Still, most of the staff members have a low KI, but some
-staff members do have a KI that is categorized as ‘Kardashian Scientist’
-(&gt;5)(Hall, 2014)</p>
-<p>Now let’s see how this ki is predicted by several factors.</p>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>The above histogram shows the distribution of the k-index of
+scientists at the Sociology department. The distribution is
+right-skewed: Most scientists have a k-index between 0 and 2, and a few
+scientists have a high index. A few staff members have a k-index that
+would be categorized as “Kardashian Scientist” (Hall, 2014)</p>
 <pre class="r test"><code>modelki &lt;- lm(ki ~ gender + dutch + pub_first, data=socdef_df)
 summary(modelki)</code></pre>
 <pre class="test2"><code>#&gt; 
@@ -636,39 +665,102 @@ summary(modelki)</code></pre>
 #&gt; Residual standard error: 1.896 on 29 degrees of freedom
 #&gt; Multiple R-squared:  0.4394, Adjusted R-squared:  0.3814 
 #&gt; F-statistic: 7.577 on 3 and 29 DF,  p-value: 0.0006882</code></pre>
-<p>The regression shows us that male staff members of sociology have a
-significantly higher KI than female staff members. We also see that
-Dutch staff members have a significantly lower KI than non-Dutch staff
-members. Lastly, age is significantly related to the KI: as age
-decreases, the KI increases. Younger individuals thus have a higher KI
-than older individuals.</p>
+<p>Lastly, it is insightful to see to what extent the k-index is
+predicted by other factors. The above linear regression teaches us that
+male scientist of Sociology have a significantly higher k-index than
+female staff members. It is also visible that Dutch scientists have a
+significantly lower k-index than non-Dutch scientists. Lastly, age is
+significantly related to the k-index: as age decreases, the k-index
+increases. Younger individuals thus have a higher k-index than older
+individuals. These effects can also be seen in the (interactive) graph
+below.</p>
+<pre class="r test"><code>regplotsoc &lt;- ggplot(socdef_df, mapping = aes(x = pub_first, y = ki, color=gender)) +
+    geom_line() 
+ 
+ggplotly(regplotsoc)</code></pre>
+<div id="htmlwidget-c2b4c18515094bd610bf" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c2b4c18515094bd610bf">{"x":{"data":[{"x":[2007,2008,2009,2012,2012,2014,2016,2016,2017,2017,2018,2018,2018,2019,2019,2021,2023],"y":[0,0,0,0,0.8065945,0.05176934,0,0,2.61778369,0,1.83666584,0,0.43078614,1.70617118,0,6.86777886,0],"text":["pub_first: 2007<br />ki:  0.00000000<br />gender: female","pub_first: 2008<br />ki:  0.00000000<br />gender: female","pub_first: 2009<br />ki:  0.00000000<br />gender: female","pub_first: 2012<br />ki:  0.00000000<br />gender: female","pub_first: 2012<br />ki:  0.80659450<br />gender: female","pub_first: 2014<br />ki:  0.05176934<br />gender: female","pub_first: 2016<br />ki:  0.00000000<br />gender: female","pub_first: 2016<br />ki:  0.00000000<br />gender: female","pub_first: 2017<br />ki:  2.61778369<br />gender: female","pub_first: 2017<br />ki:  0.00000000<br />gender: female","pub_first: 2018<br />ki:  1.83666584<br />gender: female","pub_first: 2018<br />ki:  0.00000000<br />gender: female","pub_first: 2018<br />ki:  0.43078614<br />gender: female","pub_first: 2019<br />ki:  1.70617118<br />gender: female","pub_first: 2019<br />ki:  0.00000000<br />gender: female","pub_first: 2021<br />ki:  6.86777886<br />gender: female","pub_first: 2023<br />ki:  0.00000000<br />gender: female"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"female","legendgroup":"female","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1991,1994,1999,1999,1999,2005,2008,2009,2010,2011,2011,2013,2014,2016,2021,2023],"y":[0,0.01570387,0,0.00126787,0,0.05503699,0.2627394,0.07364756,2.41918067,1.33148086,3.51832592,0,5.1112986,0,0.46860423,11.1302538],"text":["pub_first: 1991<br />ki:  0.00000000<br />gender: male","pub_first: 1994<br />ki:  0.01570387<br />gender: male","pub_first: 1999<br />ki:  0.00000000<br />gender: male","pub_first: 1999<br />ki:  0.00126787<br />gender: male","pub_first: 1999<br />ki:  0.00000000<br />gender: male","pub_first: 2005<br />ki:  0.05503699<br />gender: male","pub_first: 2008<br />ki:  0.26273940<br />gender: male","pub_first: 2009<br />ki:  0.07364756<br />gender: male","pub_first: 2010<br />ki:  2.41918067<br />gender: male","pub_first: 2011<br />ki:  1.33148086<br />gender: male","pub_first: 2011<br />ki:  3.51832592<br />gender: male","pub_first: 2013<br />ki:  0.00000000<br />gender: male","pub_first: 2014<br />ki:  5.11129860<br />gender: male","pub_first: 2016<br />ki:  0.00000000<br />gender: male","pub_first: 2021<br />ki:  0.46860423<br />gender: male","pub_first: 2023<br />ki: 11.13025380<br />gender: male"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"male","legendgroup":"male","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":31.4155251141553},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1989.4,2024.6],"tickmode":"array","ticktext":["1990","2000","2010","2020"],"tickvals":[1990,2000,2010,2020],"categoryorder":"array","categoryarray":["1990","2000","2010","2020"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"pub_first","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.55651269,11.68676649],"tickmode":"array","ticktext":["0","3","6","9"],"tickvals":[0,3,6,9],"categoryorder":"array","categoryarray":["0","3","6","9"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"ki","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"gender","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"ced14224ed91":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"ced14224ed91","visdat":{"ced14224ed91":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="data-science" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Data science</h1>
 </div>
-<div id="section" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> </h1>
+<div id="data-science" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Data science</h1>
 <pre class="r test"><code>dnet1 &lt;- dnet_array[ ,, 1]
 dnet2 &lt;- dnet_array[ ,, 2]
 dnet3 &lt;- dnet_array[ ,, 3]</code></pre>
 <pre class="r test"><code>diag(dnet1) &lt;- 0
 diag(dnet2) &lt;- 0
 diag(dnet3) &lt;- 0</code></pre>
-</div>
-<div id="descriptives-of-data-science-network-2016-2017"
-class="section level1" number="9">
-<h1><span class="header-section-number">9</span> Descriptives of data
-science network 2016-2017</h1>
+<div id="plots-of-the-data-science-department" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Plots of the Data
+Science department</h2>
 <pre class="r test"><code>dnet1_g &lt;- igraph::graph_from_adjacency_matrix(dnet1, mode = c(&quot;undirected&quot;))
-plot(dnet1_g)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-20-1.png" width="672" />
-Apparently, the data science department has a lot of staff members that
-either do not collaborate, but more likely did not work at the
-department yet in 2016-2017. We see that only a few staff members have
-copublished an article.</p>
+dnet2_g &lt;- igraph::graph_from_adjacency_matrix(dnet2, mode = c(&quot;undirected&quot;))
+dnet3_g &lt;- igraph::graph_from_adjacency_matrix(dnet3, mode = c(&quot;undirected&quot;))
+
+datadef_df$twitcol &lt;- ifelse(datadef_df$twitter_dum == 0, &quot;#56B4E9&quot;, &quot;#66ff99&quot;)
+
+#Dit zou ik nog even moeten checken of dit klopt, want er lijken ineens ties weg te vallen door die coördinaten toe te voegen?
+# l &lt;- igraph::layout_with_mds(snet1_g)
+# l[14,1] &lt;- 0
+# l1 &lt;- igraph::layout_with_mds(snet2_g)
+# l1[14,1] &lt;- 0
+# l2 &lt;- igraph::layout_with_mds(snet3_g)
+# l2[14,1] &lt;- 0
+
+#Wat wil ik met de nummers in de plot, moet ik die nog veranderen in namen? Maar wil het graag anoniem houden.
+plot(dnet1_g, vertex.color = datadef_df$twitcol, vertex.size=datadef_df$ki,  vertex.size = 10, vertex.frame.color = &quot;gray&quot;,
+    vertex.label.color = &quot;black&quot;, vertex.label.family = &quot;Helvetica&quot;, vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r test"><code>plot(dnet2_g, vertex.color = datadef_df$twitcol, vertex.size=datadef_df$ki,  vertex.size = 10, vertex.frame.color = &quot;gray&quot;,
+    vertex.label.color = &quot;black&quot;, vertex.label.family = &quot;Helvetica&quot;, vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<pre class="r test"><code>plot(dnet3_g, vertex.color = datadef_df$twitcol, vertex.size=datadef_df$ki,  vertex.size = 10, vertex.frame.color = &quot;gray&quot;,
+    vertex.label.color = &quot;black&quot;, vertex.label.family = &quot;Helvetica&quot;, vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-17-3.png" width="672" /></p>
+<p>In the network plots of Data Science, it shows that during the year
+2016-2017 there were not many co-publications. Just like at the
+Sociology department, it is likely that a high number of scientists did
+not work at the department yet. In the years 2018-2019, there is a
+strong increase in the co-publications of the staff members of Data
+Science. Node 1, 3 and 5 seem to have a central role in the network,
+with the highest number of edges, and thus the most co-pulications with
+other scientists within the department. In the last plot, again an
+increase in co-publications is visible. Node 1, 3 and 5 still have a
+central role in the network, but there now are other nodes with a
+relative high number of co-publications as well.Similarly to the
+Sociology department, there are only a few nodes with a high k-index
+(shown by the largest vertex size), and it does not seem as if these
+scientists are especially attractive to others to co-publish an
+article.</p>
+</div>
+<div id="descriptives-of-the-data-science-network"
+class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Descriptives of the
+Data Science network</h2>
 <pre class="r test"><code>ddegree1 &lt;- igraph::degree(dnet1_g)
 hist(ddegree1, col=&quot;purple&quot;)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r test"><code>ddegree2 &lt;- igraph::degree(dnet2_g)
+hist(ddegree2, col=&quot;purple&quot;)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<pre class="r test"><code>ddegree3 &lt;- igraph::degree(dnet3_g)
+hist(ddegree3, col=&quot;purple&quot;)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-18-3.png" width="672" />
+Similarly to Sociology, the Data Science department shows a right-skewed
+distribution of the degrees. In the first wave, most scientists had not
+co-published, or only little. In the histogram of the second wave, it
+can be observed that the degrees remain skewed to the right.
+Furthermore, it is visible that one scientist has more than 8
+copublications, and that in general, the number of outdegrees increased.
+However, most individuals still have no co-publications. In the last
+histogram, more scientists are in the tail, as also observed at the
+Sociology department. Furthermore, there are even staff scientist with
+10-11 copublications. This is a higher number of copublications than
+observed at the Sociology department.</p>
 <pre class="r test"><code>igraph::dyad.census(dnet1_g)</code></pre>
 <pre class="test2"><code>#&gt; $mut
 #&gt; [1] 22
@@ -682,27 +774,6 @@ hist(ddegree1, col=&quot;purple&quot;)</code></pre>
 <pre class="test2"><code>#&gt;  [1] 14245     0   909     0     0     0     0     0     0     0    19     0     0     0     0     7</code></pre>
 <pre class="r test"><code>igraph::edge_density(dnet1_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.02125604</code></pre>
-<p>We see that the data science department also has a right-skewed
-distribution of the degrees. Most staff members have not co-published,
-or only little. We also see that there are 22 dyads in the network and
-an edge density of 0.0212. This is lower than that of the sociology
-staff.</p>
-</div>
-<div id="descriptives-of-data-science-2018-2019" class="section level1"
-number="10">
-<h1><span class="header-section-number">10</span> Descriptives of data
-science 2018-2019</h1>
-<pre class="r test"><code>dnet2_g &lt;- igraph::graph_from_adjacency_matrix(dnet2, mode = c(&quot;undirected&quot;))
-plot(dnet2_g)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-22-1.png" width="672" />
-In the plot we see that in the 2 years after, there is a strong increase
-in copublications of the staff members of data science. We can also see
-that there are some nodes central in the network: node 1, 3 and 5 seem
-to have the most edges, and thus the most copublications with others of
-the data science staff.</p>
-<pre class="r test"><code>ddegree2 &lt;- igraph::degree(dnet2_g)
-hist(ddegree2, col=&quot;purple&quot;)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <pre class="r test"><code>igraph::dyad.census(dnet2_g)</code></pre>
 <pre class="test2"><code>#&gt; $mut
 #&gt; [1] 38
@@ -716,27 +787,6 @@ hist(ddegree2, col=&quot;purple&quot;)</code></pre>
 <pre class="test2"><code>#&gt;  [1] 13611     0  1484     0     0     0     0     0     0     0    67     0     0     0     0    18</code></pre>
 <pre class="r test"><code>igraph::edge_density(dnet2_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.03671498</code></pre>
-<p>In the histogram we observe that the outdegrees remain skewed to the
-right. We can see that one member even has more than 8 copublications.
-We also see that more people than in the year before have more
-copublications. However, most individuals still have no copublications.
-We see that the number of dyads has increased to 38 and that the edge
-density has increased a little bit to 0.037. This is still lower than
-the edge density within the sociology department in the same years.</p>
-</div>
-<div id="descriptives-of-data-science-2020-2022" class="section level1"
-number="11">
-<h1><span class="header-section-number">11</span> Descriptives of data
-science 2020-2022</h1>
-<pre class="r test"><code>dnet3_g &lt;- igraph::graph_from_adjacency_matrix(dnet3, mode = c(&quot;undirected&quot;))
-plot(dnet3_g)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-24-1.png" width="672" />
-In the last plot, we again see an increase in copublications. Node 1, 3
-and 5 still have a central role in the network, but there now are other
-nodes with a relative high number of copublications as well.</p>
-<pre class="r test"><code>ddegree3 &lt;- igraph::degree(dnet3_g)
-hist(ddegree3, col=&quot;purple&quot;)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <pre class="r test"><code>igraph::dyad.census(dnet3_g)</code></pre>
 <pre class="test2"><code>#&gt; $mut
 #&gt; [1] 70
@@ -750,47 +800,53 @@ hist(ddegree3, col=&quot;purple&quot;)</code></pre>
 <pre class="test2"><code>#&gt;  [1] 12395     0  2537     0     0     0     0     0     0     0   201     0     0     0     0    47</code></pre>
 <pre class="r test"><code>igraph::edge_density(dnet3_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.06763285</code></pre>
-<p>In the histogram we observe that staff members are now also more in
-the tail, just like we observed at the sociology department.
-Furthermore, there are even staff members with 10-11 copublications.
-This is a higher number of copublications than observed at the sociology
-department. We also observe that there are now 70 dyads and that the
-edge density has increased towards a number of 0.068. This remains a
-little lower than the edge density of sociology at that time.</p>
+<p>Looking at the dyad census and density, the number of dyads in
+2016-2017 counts 22. The edge density is 0.0212. Both of these numbers
+are lower than at the Sociology department. In 2018-2019, the number of
+dyads has increased to 38 and the edge density has increased to 0.037.
+This is still lower than the edge density within the sociology
+department in the same years. In the last years, there are 70 dyads and
+the edge density increased towards a number of 0.068. This remains a
+little lower than the edge density of the Sociology department at that
+time.</p>
 <pre class="r test"><code>igraph::transitivity(dnet1_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.525</code></pre>
 <pre class="r test"><code>igraph::transitivity(dnet2_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.446281</code></pre>
 <pre class="r test"><code>igraph::transitivity(dnet3_g)</code></pre>
 <pre class="test2"><code>#&gt; [1] 0.4122807</code></pre>
-<p>We can see that the transitivity of data science has decreased over
-the years. In the first period, the probability that B and C - both as
-connections of A - would copublish was 0.52. In the next year, this
-decreased to a 45% chance, while in the last year this chance is 41,2%.
-Still, this is a higher number than observed at the sociology
-department. Also, there is a linear decrease at the department of data
-science, while at the sociology department no linear trend could be
-observed. In conclusion, staff members at data science are more likely
-to copublish with staff members they got to know by copublishing with an
-author than at sociology.</p>
+<p>Regarding the transitivity, this has decreased at Data Science over
+the years. In the first period, the probability that scientist B and C -
+both as co-authors of scientist A - would co-publish was 0.52. In the
+next year, this decreased to a 45% chance, while in the last year this
+chance is 41,2%. Still, this is a higher number than observed at the
+Sociology department. Also, there is a linear decrease at the department
+of Data Science, while at the Sociology department no linear trend could
+be observed. In conclusion, staff members at Data Science are more
+likely to co-publish with co-authors of their co-authors than at
+Sociology.</p>
 </div>
-<div id="explaining-variables-data-science" class="section level1"
-number="12">
-<h1><span class="header-section-number">12</span> Explaining variables
-Data Science</h1>
-<pre class="r test"><code>hist(datadef_df$ki,col=&quot;red&quot;)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-28-1.png" width="672" />
-We see that at the data science department, there is a very right-skewed
-distribution of the KI; most staff members have a KI between 0 and
-1.</p>
+<div id="k-index-at-the-department-of-data-science"
+class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> K-index at the
+department of Data Science</h2>
+<pre class="r test"><code>twdatbar &lt;- ggplot2:::ggplot(datadef_df, aes(factor(twitter_dum), fill = factor(twitter_dum))) + geom_bar()
+twdatbar &lt;- twdatbar + scale_fill_manual(values=c(&quot;#56B4E9&quot;, &quot;#66ff99&quot;))
+ggplotly(twdatbar)</code></pre>
+<div id="htmlwidget-0e9249f2ce23a0a6b65b" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0e9249f2ce23a0a6b65b">{"x":{"data":[{"orientation":"v","width":0.9,"base":0,"x":[1],"y":[16],"text":"count: 16<br />factor(twitter_dum): 0<br />factor(twitter_dum): 0","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(86,180,233,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"0","legendgroup":"0","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[2],"y":[30],"text":"count: 30<br />factor(twitter_dum): 1<br />factor(twitter_dum): 1","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(102,255,153,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"1","legendgroup":"1","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":37.2602739726027},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,2.6],"tickmode":"array","ticktext":["0","1"],"tickvals":[1,2],"categoryorder":"array","categoryarray":["0","1"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"factor(twitter_dum)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-1.5,31.5],"tickmode":"array","ticktext":["0","10","20","30"],"tickvals":[0,10,20,30],"categoryorder":"array","categoryarray":["0","10","20","30"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"factor(twitter_dum)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"ced134881a97":{"x":{},"fill":{},"type":"bar"}},"cur_data":"ced134881a97","visdat":{"ced134881a97":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>At the Data Science department, the majority of scientist has a
+Twitter account: 30 scientists have a Twitter account while 16 do not
+have one.</p>
 <pre class="r test"><code>sel2 &lt;- datadef_df$twitter_dum==1
-hist(datadef_df$ki[sel2], col=&quot;red&quot;, border=&quot;darkblue&quot;)</code></pre>
-<p><img src="descriptives_files/figure-html/unnamed-chunk-29-1.png" width="672" />
-We also observe this pattern when only selecting the individuals with
-twitter, although the frequency of individuals with a KI between 0 and 1
-is now a bit lower. We also observe some staff members with a high KI.
-Compared to sociology, the KI at the data science department is even
-more skewed.</p>
+hist(datadef_df$ki[sel2], col=&quot;red&quot;)</code></pre>
+<p><img src="descriptives_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+The histogram shows that at the Data Science department, the
+distribution of the k-index is even more skewed than at the Sociology
+department. Most scientist have a k-index between 0 and 1, while only a
+few scientists have a k-index higher than that. Approximately two
+scientist would be categorized as “Kardashian Scientists” by Hall
+(2014)</p>
 <pre class="r test"><code>modelki2 &lt;- lm(ki ~ gender + dutch + pub_first, data=datadef_df)
 summary(modelki2)</code></pre>
 <pre class="test2"><code>#&gt; 
@@ -799,41 +855,71 @@ summary(modelki2)</code></pre>
 #&gt; 
 #&gt; Residuals:
 #&gt;     Min      1Q  Median      3Q     Max 
-#&gt; -1.7216 -0.9906 -0.3667  0.3305 11.5805 
+#&gt; -1.5814 -0.9685 -0.4150  0.2484 11.7131 
 #&gt; 
 #&gt; Coefficients:
 #&gt;               Estimate Std. Error t value Pr(&gt;|t|)  
-#&gt; (Intercept) -135.23778   62.93785  -2.149   0.0378 *
-#&gt; gendermale     0.05798    0.72647   0.080   0.9368  
-#&gt; dutch         -0.08276    0.73897  -0.112   0.9114  
-#&gt; pub_first      0.06771    0.03129   2.164   0.0365 *
+#&gt; (Intercept) -127.56740   61.00338  -2.091   0.0426 *
+#&gt; gendermale    -0.01333    0.70774  -0.019   0.9851  
+#&gt; dutch         -0.14260    0.72191  -0.198   0.8444  
+#&gt; pub_first      0.06392    0.03033   2.107   0.0411 *
 #&gt; ---
 #&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 #&gt; 
-#&gt; Residual standard error: 2.153 on 40 degrees of freedom
-#&gt;   (2 observations deleted due to missingness)
-#&gt; Multiple R-squared:  0.1063, Adjusted R-squared:  0.03929 
-#&gt; F-statistic: 1.586 on 3 and 40 DF,  p-value: 0.2078</code></pre>
-<p>At the data science department, we see that the KI is predicted way
-differently than at the sociology department. The effect of gender and
-ethnicity are not significant, but age is a significant predictor of a
-KI. The younger, the higher the KI.</p>
+#&gt; Residual standard error: 2.116 on 42 degrees of freedom
+#&gt; Multiple R-squared:  0.09806,    Adjusted R-squared:  0.03364 
+#&gt; F-statistic: 1.522 on 3 and 42 DF,  p-value: 0.2227</code></pre>
+<p>At the Data Science department, the k-index is predicted differently
+than at the Sociology department when looking at the linear regression
+above. For the Data Science department, the effect of gender and
+ethnicity are not significant. Age is a significant predictor of the
+k-index. The younger the scientist, the higher the k-index. In the
+(interactive) plot below, it is also visible that gender and age are
+lesser determinants of the k-index than at the Sociology department.</p>
+<pre class="r test"><code># Dit nog bij assigning gender neerzetten (webscraping)
+datadef_df$gender[datadef_df$id==261] &lt;- &quot;male&quot;
+datadef_df$gender[datadef_df$id==273] &lt;- &quot;male&quot;
+
+regplotdat &lt;- ggplot(datadef_df, mapping = aes(x = pub_first, y = ki, color=gender)) +
+    geom_line() 
+ 
+ggplotly(regplotdat)</code></pre>
+<div id="htmlwidget-a8a7a6b739f9963b772c" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a8a7a6b739f9963b772c">{"x":{"data":[{"x":[1985,1994,2003,2008,2010,2014,2016,2017,2017,2018,2019,2020,2021],"y":[0,0.15251728,0.02297884,0.039949,0,1.50501672,0,0.00446429,0.57391304,3,0,0,6.11111111],"text":["pub_first: 1985<br />ki:  0.00000000<br />gender: female","pub_first: 1994<br />ki:  0.15251728<br />gender: female","pub_first: 2003<br />ki:  0.02297884<br />gender: female","pub_first: 2008<br />ki:  0.03994900<br />gender: female","pub_first: 2010<br />ki:  0.00000000<br />gender: female","pub_first: 2014<br />ki:  1.50501672<br />gender: female","pub_first: 2016<br />ki:  0.00000000<br />gender: female","pub_first: 2017<br />ki:  0.00446429<br />gender: female","pub_first: 2017<br />ki:  0.57391304<br />gender: female","pub_first: 2018<br />ki:  3.00000000<br />gender: female","pub_first: 2019<br />ki:  0.00000000<br />gender: female","pub_first: 2020<br />ki:  0.00000000<br />gender: female","pub_first: 2021<br />ki:  6.11111111<br />gender: female"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"female","legendgroup":"female","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1983,1991,1993,1994,1994,1996,1997,1998,2000,2000,2002,2008,2010,2011,2011,2012,2012,2014,2014,2014,2015,2015,2015,2016,2016,2017,2017,2017,2017,2018,2019,2021,2023],"y":[0,0,0.00823388,0.13038054,0.04219601,0,0.03643725,0.17101902,0.00603482,0.04233227,0.00664452,0.49772682,0,0.42047026,0,0,0.01522843,0.0748731,0.52796421,0.01983846,1.96551724,0,0,0.14909091,1.70967742,0.28306937,0,1.36144578,0.76086957,0.08695652,1.08641975,13.1666667,0],"text":["pub_first: 1983<br />ki:  0.00000000<br />gender: male","pub_first: 1991<br />ki:  0.00000000<br />gender: male","pub_first: 1993<br />ki:  0.00823388<br />gender: male","pub_first: 1994<br />ki:  0.13038054<br />gender: male","pub_first: 1994<br />ki:  0.04219601<br />gender: male","pub_first: 1996<br />ki:  0.00000000<br />gender: male","pub_first: 1997<br />ki:  0.03643725<br />gender: male","pub_first: 1998<br />ki:  0.17101902<br />gender: male","pub_first: 2000<br />ki:  0.00603482<br />gender: male","pub_first: 2000<br />ki:  0.04233227<br />gender: male","pub_first: 2002<br />ki:  0.00664452<br />gender: male","pub_first: 2008<br />ki:  0.49772682<br />gender: male","pub_first: 2010<br />ki:  0.00000000<br />gender: male","pub_first: 2011<br />ki:  0.42047026<br />gender: male","pub_first: 2011<br />ki:  0.00000000<br />gender: male","pub_first: 2012<br />ki:  0.00000000<br />gender: male","pub_first: 2012<br />ki:  0.01522843<br />gender: male","pub_first: 2014<br />ki:  0.07487310<br />gender: male","pub_first: 2014<br />ki:  0.52796421<br />gender: male","pub_first: 2014<br />ki:  0.01983846<br />gender: male","pub_first: 2015<br />ki:  1.96551724<br />gender: male","pub_first: 2015<br />ki:  0.00000000<br />gender: male","pub_first: 2015<br />ki:  0.00000000<br />gender: male","pub_first: 2016<br />ki:  0.14909091<br />gender: male","pub_first: 2016<br />ki:  1.70967742<br />gender: male","pub_first: 2017<br />ki:  0.28306937<br />gender: male","pub_first: 2017<br />ki:  0.00000000<br />gender: male","pub_first: 2017<br />ki:  1.36144578<br />gender: male","pub_first: 2017<br />ki:  0.76086957<br />gender: male","pub_first: 2018<br />ki:  0.08695652<br />gender: male","pub_first: 2019<br />ki:  1.08641975<br />gender: male","pub_first: 2021<br />ki: 13.16666670<br />gender: male","pub_first: 2023<br />ki:  0.00000000<br />gender: male"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"male","legendgroup":"male","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":37.2602739726027},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1981,2025],"tickmode":"array","ticktext":["1990","2000","2010","2020"],"tickvals":[1990,2000,2010,2020],"categoryorder":"array","categoryarray":["1990","2000","2010","2020"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"pub_first","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.658333335,13.825000035],"tickmode":"array","ticktext":["0","5","10"],"tickvals":[0,5,10],"categoryorder":"array","categoryarray":["0","5","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"ki","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"gender","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"ced12003f1f4":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"ced12003f1f4","visdat":{"ced12003f1f4":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="comparing-the-two-departments" class="section level1"
-number="13">
-<h1><span class="header-section-number">13</span> Comparing the two
+</div>
+<div id="comparison-of-the-two-departments" class="section level1"
+number="3">
+<h1><span class="header-section-number">3</span> Comparison of the two
 departments</h1>
-<p>Summarizing the two departments, we see that the density of the
-copublication network of sociology is higher than the density of data
-science. On the other hand, the transitivity is much higher within data
-science than within sociology. May this have to do with divisions within
-several theoretical topics, in which people within sociology could
-collaborate to a lesser extent? In terms of productivity (no network
-characteristic), we see that the data science department has copublished
-more than sociology.</p>
+<p>When comparing the two departments, there are some things worth
+noting. Regarding the network structure, the density of the
+co-publication network of Sociology is higher than that of the Data
+Science department. Within Sociology, scientists thus co-publish more
+with others of the same department, but at both cases the density is
+low. This shows that at both departments the co-publication network is
+rather sparse. This is not strange, as within academia it is not always
+possible to co-publish with any scientist in the network, as they might
+have different research interests. The transitivity differs as well
+between the two departments. The transitivity is higher at Data Science
+than at Sociology. This signals that it is more common among Data
+Scientists to publish articles with co-authors of co-authors.</p>
+<p>With regard to Twitter and the k-index, the descriptives show that at
+both departments, the majority has a Twitter account. At the Data
+Science department, most scientists have a very low k-index with some
+exceptions, while at the Sociology department there are a few more
+scientists with a k-index above 1. This could show that for
+Sociologists, Twitter activity may be considered as more important than
+for Data Scientists, and for Sociologists the actual scientific output
+in terms of articles might be less important. Possibly, this could be
+explained by the fact that Sociologists would like to engage with
+society to share their research, as this society is often the research
+topic. However, for both departments, there are no clear hints that
+these scientists with a high k-index have more or less co-publications
+than scientists with a lower k-index.</p>
 </div>
 
-<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkRlc2NyaXB0aXZlIFN0YXRpc3RpY3MiCmF1dGhvcjogIkFudXNjaGthIFBlZWxlbiIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6IGh0bWxfZG9jdW1lbnQKZWRpdG9yX29wdGlvbnM6IAogIG1hcmtkb3duOiAKICAgIHdyYXA6IDcyCi0tLQoKYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9CmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKYGBgCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgpjb2xvcml6ZSA8LSBmdW5jdGlvbih4LCBjb2xvcikge3NwcmludGYoIjxzcGFuIHN0eWxlPSdjb2xvcjogJXM7Jz4lczwvc3Bhbj4iLCBjb2xvciwgeCkgfQpgYGAKCmBgYHtyIGtsaXBweSwgZWNobz1GQUxTRSwgaW5jbHVkZT1UUlVFfQprbGlwcHk6OmtsaXBweShwb3NpdGlvbiA9IGMoJ3RvcCcsICdyaWdodCcpKQoja2xpcHB5OjprbGlwcHkoY29sb3IgPSAnZGFya3JlZCcpCiNrbGlwcHk6OmtsaXBweSh0b29sdGlwX21lc3NhZ2UgPSAnQ2xpY2sgdG8gY29weScsIHRvb2x0aXBfc3VjY2VzcyA9ICdEb25lJykKYGBgCgoKYGBge3J9CiNzdGFydCB3aXRoIGNsZWFuIHdvcmtzcGFjZSAKcm0obGlzdD1scygpKQpnZXR3ZCgpCmBgYAoKIyBwYWNrYWdlcwoKYGBge3IsIGVjaG89RkFMU0V9CmxpYnJhcnkoZGF0YS50YWJsZSkgCmxpYnJhcnkodGlkeXZlcnNlKSAKcmVxdWlyZShzdHJpbmdpKQpyZXF1aXJlKFJzaWVuYSkKcmVxdWlyZShpZ3JhcGgpCgpgYGAKCiMgRGF0YQoKYGBge3IsIGVjaG89RkFMU0V9CiNsb2FkIGRhdGFvYmplY3RzCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL3NvY2RlZl9uZXRfYXJyYXkuUkRhdGEiKQpgYGAKCgpgYGB7cn0Kc25ldDEgPC0gc29jX25ldF9hcnJheVsgLCwgMV0Kc25ldDIgPC0gc29jX25ldF9hcnJheVsgLCwgMl0Kc25ldDMgPC0gc29jX25ldF9hcnJheVsgLCwgM10KYGBgCgpgYGB7cn0KZGlhZyhzbmV0MSkgPC0gMApkaWFnKHNuZXQyKSA8LSAwCmRpYWcoc25ldDMpIDwtIDAKCmBgYAoKCiMgRGVzY3JpcHRpdmVzIG9mIHNvY2lvbG9neSBuZXR3b3JrIDIwMTYtMjAxNwpgYGB7cn0Kc25ldDFfZyA8LSBpZ3JhcGg6OmdyYXBoX2Zyb21fYWRqYWNlbmN5X21hdHJpeChzbmV0MSwgbW9kZSA9IGMoInVuZGlyZWN0ZWQiKSkKcGxvdChzbmV0MV9nKQoKYGBgCkluIHRoZSBwbG90IGFib3ZlIHdlIHNlZSB0aGF0IHRoZXJlIGFyZSBxdWl0ZSBhIGxvdCBvZiBjb3B1YmxpY2F0aW9ucyB3aXRoaW4gdGhlIG5ldHdvcmsgb2YgU29jaW9sb2d5LCBidXQgYWxzbyB0aGF0IGFib3V0IGhhbGYgb2YgdGhlIHN0YWZmIGRpZCBub3QgcHVibGlzaCB3aXRoIG90aGVycyBvZiB0aGUgZGVwYXJ0bWVudCB5ZXQuIFRoZXNlIGFyZSBwcm9iYWJseSB0aGUgeW91bmdlciBzdGFmZiB0aGF0IGRpZCBub3Qgd29yayAob3IganVzdCBzdGFydGVkIHdvcmtpbmcpIGF0IHRoZSBkZXBhcnRtZW50IHlldCBhbmQgdGh1cyBkaWQgbm90IGNvcHVibGlzaC4gV2UgY2FuIGFsc28gc2VlIHRoYXQgbm9kZSAxNCBpcyB0aGUgbW9zdCAicHJvZHVjdGl2ZSIgaW4gdGhlIHNlbnNlIG9mIGNvcHVibGlzaGluZyB3aXRoIHRoZSBvdGhlciBzdGFmZi4gVGhpcyBjb3VsZCBiZSBhbiBvbGRlciBzdGFmZiBtZW1iZXIgd2hvIGhhZCBtb3JlIG9wcG9ydHVuaXRpZXMgdG8gcHVibGlzaCB3aXRoIG1hbnkgaW5kaXZpZHVhbHMgb2YgdGhlIHN0YWZmLiAKCgpgYGB7cn0Kc2RlZ3JlZSA8LSBpZ3JhcGg6OmRlZ3JlZShzbmV0MV9nKQpoaXN0KHNkZWdyZWUpCmlncmFwaDo6ZHlhZC5jZW5zdXMoc25ldDFfZykKaWdyYXBoOjp0cmlhZC5jZW5zdXMoc25ldDFfZykKaWdyYXBoOjplZGdlX2RlbnNpdHkoc25ldDFfZykKCmBgYApJbiB0aGUgaGlzdG9ncmFtIGFib3ZlIHdlIHNlZSB0aGF0IHRoZSBkZWdyZWUgb2YgdGhlIG5ldHdvcmsgYXQgdGhhdCBtb21lbnQgd2FzIHJpZ2h0LXNrZXdlZC4gVGhpcyBtZWFucyB0aGF0IG1vc3QgcGVvcGxlIGluIHRoZSBuZXR3b3JrIGRvbid0IGhhdmUgdmVyeSBtYW55IGluZGl2aWR1YWxzIHRoZXkgY29wdWJsaXNoZWQgd2l0aCAoYW5kIGJlY2F1c2UgaXQgaXMgYW4gdW5kaXJlY3RlZCBuZXR3b3JrLCB0aGlzIGFwcGxpZXMgdmljZSB2ZXJzYSBmb3IgdGhlIG90aGVyIHBlcnNvbiBjb25uZWN0ZWQgd2l0aCB0aGUgdGllKQoKV2Ugc2VlIHRoYXQgdGhlcmUgYXJlIDI2IGR5YWRzIGluIHRoZSBuZXR3b3JrLiBUaGUgZWRnZSBkZW5zaXR5IGlzIDAuMDQ5LCB3aGljaCBtZWFucyB0aGF0IHRoZSBudW1iZXIgb2YgZWRnZXMgZXhpc3RpbmcgaW4gdGhlIG5ldHdvcmsgaXMgcmVsYXRpdmVseSBsb3cgYXMgcGFydCBvZiB0aGUgbWF4aW11bSBudW1iZXIgdGhlcmUgY291bGQgcG9zc2libHkgYmUuIAoKIyBEZXNjcmlwdGl2ZXMgb2YgdGhlIHNvY2lvbG9neSBuZXR3b3JrIDIwMTgtMjAxOQoKYGBge3J9CnNuZXQyX2cgPC0gaWdyYXBoOjpncmFwaF9mcm9tX2FkamFjZW5jeV9tYXRyaXgoc25ldDIsIG1vZGUgPSBjKCJ1bmRpcmVjdGVkIikpCnBsb3Qoc25ldDJfZykKYGBgClRoZSBwbG90IGZyb20gdGhlIGZvbGxvd2luZyAyIHllYXJzIGlzIGFjdHVhbGx5IHF1aXRlIHNpbWlsYXIgdG8gdGhlIG9uZSBhYm92ZS4gQWdhaW4gYWJvdXQgaGFsZiBvZiB0aGUgc3RhZmYgZGlkIG5vdCBjb3B1Ymxpc2ggeWV0LiBOb2RlIDE0IHN0aWxsIHNlZW1zIHRvIGhhdmUgdGhlIG1vc3QgY29wdWJsaWNhdGlvbiB0aWVzLCBhbHRob3VnaCBub2RlIDcgaGFzIG5vdyBhbHNvIGJlY29tZSBtb3JlIGNlbnRyYWwgaW4gdGhlIG5ldHdvcmsuIAoKYGBge3J9CnNkZWdyZWUyIDwtIGlncmFwaDo6ZGVncmVlKHNuZXQyX2cpCmhpc3Qoc2RlZ3JlZTIpCmlncmFwaDo6ZHlhZC5jZW5zdXMoc25ldDJfZykKaWdyYXBoOjp0cmlhZC5jZW5zdXMoc25ldDJfZykKaWdyYXBoOjplZGdlX2RlbnNpdHkoc25ldDJfZykKCmBgYApXZSBhbHNvIHN0aWxsIG9ic2VydmUgYSByaWdodC1za2V3ZWQgZGlzdHJpYnV0aW9uIG9mIHRoZSBkZWdyZWVzLCBidXQgbm93IHdlIGNhbiBzZWUgdGhhdCB0aGVyZSBhcmUgYSBsaXR0bGUgbW9yZSBzdGFmZiBtZW1iZXJzIGluIHRoZSB0YWlsIG9mIHRoZSBkaXN0cmlidXRpb24sIG1lYW5pbmcgdGhhdCB0aGVyZSBhcmUgYSBmZXcgc3RhZmYgbWVtYmVycyB0aGF0IGhhdmUgcXVpdGUgYSBsb3Qgb2YgY29wdWJsaWNhdGlvbiB0aWVzLiAKUmVnYXJkaW5nIHRoZSBkeWFkIGNlbnN1cyB3ZSBjYW4gc2VlIHRoYXQgdGhlIG5ldHdvcmsgbm93IGhhcyBvbmUgZHlhZCBtb3JlIHRoYW4gYmVmb3JlICgyNykuIEFsc28sIHRoZSBlZGdlIGRlbnNpdHkgaGFzIGluY3JlYXNlZCBhIGxpdHRsZSBiaXQsIGFzIHRoZSBudW1iZXIgaXMgbm93IDAuMDUxLiAKCiMgRGVzY3JpcHRpdmVzIG9mIHRoZSBzb2Npb2xvZ3kgbmV0d29yayAyMDIwLTIwMjIKCmBgYHtyfQpzbmV0M19nIDwtIGlncmFwaDo6Z3JhcGhfZnJvbV9hZGphY2VuY3lfbWF0cml4KHNuZXQzLCBtb2RlID0gYygidW5kaXJlY3RlZCIpKQpwbG90KHNuZXQzX2cpCmBgYApJbiB0aGUgbW9zdCByZWNlbnQgcGxvdCBvZiB0aGUgbmV0d29yayAoMjAyMCB1cCB1bnRpbCBub3cpLCB3ZSBjYW4gc2VlIHRoYXQgdGhlcmUgaGFzIGJlZW4gYW4gaW5jcmVhc2UgaW4gY29wdWJsaWNhdGlvbnMuIE5vdyAib25seSIgMTAgbWVtYmVycyBzdGlsbCBkb24ndCBoYXZlIGEgY29wdWJsaWNhdGlvbiB3aXRoIHRoZSBvdGhlciBtZW1iZXJzIG9mIHRoZSBzdGFmZi4gRnVydGhlcm1vcmUsIHdlIHNlZSBhbiBpbmNyZWFzaW5nIG51bWJlciBvZiBzdGFmZiBtZW1iZXJzIChub3Qgb25seSBub2RlIDE0IGFuZCA3KSB0aGF0IGhhdmUgc2V2ZXJhbCBjb3B1YmxpY2F0aW9ucy4gVGhpcyB3b3VsZCBtZWFuIHRoYXQgdGhlIGRlZ3JlZSBkaXN0cmlidXRpb24gaGFzIGFsc28gYmVjb21lIGxlc3Mgc2tld2VkLiAKCmBgYHtyfQpzZGVncmVlMyA8LSBpZ3JhcGg6OmRlZ3JlZShzbmV0M19nKQpoaXN0KHNkZWdyZWUzKQppZ3JhcGg6OmR5YWQuY2Vuc3VzKHNuZXQzX2cpCmlncmFwaDo6dHJpYWQuY2Vuc3VzKHNuZXQzX2cpCmlncmFwaDo6ZWRnZV9kZW5zaXR5KHNuZXQzX2cpCgpgYGAKQW5kIGluZGVlZCwgd2Ugc2VlIHRoYXQgdGhlIGRlZ3JlZSBkaXN0cmlidXRpb24gc3RpbGwgaXMgcmlnaHQtc2tld2VkLCBidXQgdGhhdCBpdCBpcyBhIGxpdHRsZSBsZXNzIHNrZXdlZCB0aGFuIGJlZm9yZS4gTW9yZSBhbmQgbW9yZSBzdGFmZiBoYXZlIHNldmVyYWwgY29wdWJsaWNhdGlvbnMgbm93LiBIb3dldmVyLCBtb3N0IG9mIHRoZSBzdGFmZiBtZW1iZXJzIHN0aWxsIGhhdmUgbGl0dGxlIGNvcHVibGljYXRpb25zIHdpdGggb3RoZXIgc3RhZmYgbWVtYmVycy4gCldlIHNlZSB0aGF0IHRoZXJlIGFyZSBub3cgMzggZHlhZHMgYW5kIHRoYXQgdGhlIGVkZ2UgZGVuc2l0eSBoYXMgaW5jcmVhc2VkIHRvIDAuMDcyLiAKCmBgYHtyfQppZ3JhcGg6OnRyYW5zaXRpdml0eShzbmV0MV9nKQppZ3JhcGg6OnRyYW5zaXRpdml0eShzbmV0Ml9nKQppZ3JhcGg6OnRyYW5zaXRpdml0eShzbmV0M19nKQpgYGAKTGFzdCBidXQgbm90IGxlYXN0LCB3ZSBjYW4gc2VlIHRoZSB0cmFuc2l0aXZpdHkgd2l0aGluIHRoZSBuZXR3b3JrLiBIZXJlIHdlIHNlZSB0aGF0IHRoZXJlIGlzIG5vIGxpbmVhciBjaGFuZ2UuIEluIHRoZSBvbGRlc3QgbmV0d29yaywgdGhlcmUgaXMgYSB0cmFuc2l0aXZpdHkgbnVtYmVyIG9mIDAuMjcuIElmIG9uZSBzdGFmZiBtZW1iZXIgQSBpcyBjb25uZWN0ZWQgdG8gc3RhZmYgbWVtYmVyIEIgYW5kIHN0YWZmIG1lbWJlciBDLCB0aGUgcHJvYmFiaWxpdHkgaXMgMC4yNyB0aGF0IHN0YWZmIG1lbWJlciBCIGFuZCBDIHdpbGwgYWxzbyBjb3B1Ymxpc2guIEluIHRoZSBzZWNvbmQgbmV0d29yaywgd2Ugc2VlIHRoYXQgdGhpcyBwcm9iYWJpbGl0eSBoYXMgZXZlbiBpbmNyZWFzZWQgdG8gMC4zMDguIEluIHRoZSBsYXN0IHdhdmUsIHRoZSB0cmFuc2l0aXZpdHkgbnVtYmVyIGlzIHRoZSBsb3dlc3QuIFRoaXMgY291bGQgYmUgZXhwbGFpbmVkIGJ5IHRoZSBmYWN0IHRoYXQgdGhlcmUgYXJlIG5vdyBtb3JlIG1lbWJlcnMgaW4gdGhlIG5ldHdvcmsgc28gdGhlcmUgaXMgYWxzbyBtb3JlIGNoYW5jZSB0byBjb3B1Ymxpc2ggd2l0aCBvdGhlcnMsIG5vdCBkZXBlbmRpbmcgb24gdGhlIGF1dGhvcnMgeW91IGFscmVhZHkgY29wdWJsaXNoZWQgd2l0aD8KCiMgRXhwbGFpbmluZyB2YXJpYWJsZXMgCgpgYGB7ciwgZWNobz1GQUxTRX0KbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvc29jZGVmX2RmLlJEYXRhIikKYGBgCgpgYGB7cn0KaGlzdChzb2NkZWZfZGYka2ksY29sPSJsaWdodGJsdWUiKQpgYGAKV2hlbiB3ZSBmaXJzdCBoYXZlIGEgbG9vayBhdCB0aGUgS2FyZGFzaGlhbiBJbmRleCBvZiB0aGUgc29jaW9sb2d5IHN0YWZmLCB3ZSBzZWUgdGhhdCB0aGVyZSBhZ2FpbiBpcyBhIHJpZ2h0LXNrZXdlZCBkaXN0cmlidXRpb24uIFRoZXJlIGFyZSBhIGZldyBzdGFmZiBtZW1iZXJzIHdpdGggYSBoaWdoIGluZGV4LCBidXQgbW9zdCBvZiB0aGVtIGhhdmUgYSBLSSBiZXR3ZWVuIDAgYW5kIDIuIFRoaXMgaXMgb2YgY291cnNlIGFsc28gYmVjYXVzZSBzb21lIHN0YWZmIG1lbWJlcnMgZG8gbm90IGhhdmUgdHdpdHRlci4gV2hlbiB3ZSBvbmx5IGZpbHRlciBvdXQgdGhlIGluZGl2aWR1YWxzIHRoYXQgZG8gaGF2ZSBUd2l0dGVyLCB0aGUgZGlzdHJpYnV0aW9uIGxvb2tzIGFzIGZvbGxvd3M6IApgYGB7cn0Kc2VsIDwtIHNvY2RlZl9kZiR0d2l0dGVyX2R1bT09MQpoaXN0KHNvY2RlZl9kZiRraVtzZWxdLCBjb2w9ImxpZ2h0Ymx1ZSIsIGJvcmRlcj0iZGFya2JsdWUiKQpgYGAKSGVyZSB3ZSBjYW4gc2VlIHRoYXQgdGhlIGRpc3RyaWJ1dGlvbiBpcyBzdGlsbCBza2V3ZWQsIGJ1dCB0aGF0IHRoZXJlIGFyZSBub3cgYSBsb3dlciBudW1iZXIgb2Ygc3RhZmYgbWVtYmVycyB3aXRoIGEgbG93IEtJLCBnaXZlbiB0aGF0IHRoZXkgaGF2ZSBUd2l0dGVyLiBTdGlsbCwgbW9zdCBvZiB0aGUgc3RhZmYgbWVtYmVycyBoYXZlIGEgbG93IEtJLCBidXQgc29tZSBzdGFmZiBtZW1iZXJzIGRvIGhhdmUgYSBLSSB0aGF0IGlzIGNhdGVnb3JpemVkIGFzICdLYXJkYXNoaWFuIFNjaWVudGlzdCcgKD41KShIYWxsLCAyMDE0KQoKTm93IGxldCdzIHNlZSBob3cgdGhpcyBraSBpcyBwcmVkaWN0ZWQgYnkgc2V2ZXJhbCBmYWN0b3JzLiAKYGBge3J9Cm1vZGVsa2kgPC0gbG0oa2kgfiBnZW5kZXIgKyBkdXRjaCArIHB1Yl9maXJzdCwgZGF0YT1zb2NkZWZfZGYpCnN1bW1hcnkobW9kZWxraSkKYGBgClRoZSByZWdyZXNzaW9uIHNob3dzIHVzIHRoYXQgbWFsZSBzdGFmZiBtZW1iZXJzIG9mIHNvY2lvbG9neSBoYXZlIGEgc2lnbmlmaWNhbnRseSBoaWdoZXIgS0kgdGhhbiBmZW1hbGUgc3RhZmYgbWVtYmVycy4gV2UgYWxzbyBzZWUgdGhhdCBEdXRjaCBzdGFmZiBtZW1iZXJzIGhhdmUgYSBzaWduaWZpY2FudGx5IGxvd2VyIEtJIHRoYW4gbm9uLUR1dGNoIHN0YWZmIG1lbWJlcnMuIExhc3RseSwgYWdlIGlzIHNpZ25pZmljYW50bHkgcmVsYXRlZCB0byB0aGUgS0k6IGFzIGFnZSBkZWNyZWFzZXMsIHRoZSBLSSBpbmNyZWFzZXMuIFlvdW5nZXIgaW5kaXZpZHVhbHMgdGh1cyBoYXZlIGEgaGlnaGVyIEtJIHRoYW4gb2xkZXIgaW5kaXZpZHVhbHMuIAoKIyBEYXRhIHNjaWVuY2UKIyAKCmBgYHtyLCBlY2hvPUZBTFNFfQojbG9hZCBkYXRhb2JqZWN0cwpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvZGF0YS9kYXRhX25ldF9hcnJheS5SRGF0YSIpCmBgYAoKCmBgYHtyfQpkbmV0MSA8LSBkbmV0X2FycmF5WyAsLCAxXQpkbmV0MiA8LSBkbmV0X2FycmF5WyAsLCAyXQpkbmV0MyA8LSBkbmV0X2FycmF5WyAsLCAzXQpgYGAKCmBgYHtyfQpkaWFnKGRuZXQxKSA8LSAwCmRpYWcoZG5ldDIpIDwtIDAKZGlhZyhkbmV0MykgPC0gMApgYGAKCiMgRGVzY3JpcHRpdmVzIG9mIGRhdGEgc2NpZW5jZSBuZXR3b3JrIDIwMTYtMjAxNwpgYGB7cn0KZG5ldDFfZyA8LSBpZ3JhcGg6OmdyYXBoX2Zyb21fYWRqYWNlbmN5X21hdHJpeChkbmV0MSwgbW9kZSA9IGMoInVuZGlyZWN0ZWQiKSkKcGxvdChkbmV0MV9nKQoKYGBgCkFwcGFyZW50bHksIHRoZSBkYXRhIHNjaWVuY2UgZGVwYXJ0bWVudCBoYXMgYSBsb3Qgb2Ygc3RhZmYgbWVtYmVycyB0aGF0IGVpdGhlciBkbyBub3QgY29sbGFib3JhdGUsIGJ1dCBtb3JlIGxpa2VseSBkaWQgbm90IHdvcmsgYXQgdGhlIGRlcGFydG1lbnQgeWV0IGluIDIwMTYtMjAxNy4gV2Ugc2VlIHRoYXQgb25seSBhIGZldyBzdGFmZiBtZW1iZXJzIGhhdmUgY29wdWJsaXNoZWQgYW4gYXJ0aWNsZS4gCgpgYGB7cn0KZGRlZ3JlZTEgPC0gaWdyYXBoOjpkZWdyZWUoZG5ldDFfZykKaGlzdChkZGVncmVlMSwgY29sPSJwdXJwbGUiKQppZ3JhcGg6OmR5YWQuY2Vuc3VzKGRuZXQxX2cpCmlncmFwaDo6dHJpYWQuY2Vuc3VzKGRuZXQxX2cpCmlncmFwaDo6ZWRnZV9kZW5zaXR5KGRuZXQxX2cpCgpgYGAKV2Ugc2VlIHRoYXQgdGhlIGRhdGEgc2NpZW5jZSBkZXBhcnRtZW50IGFsc28gaGFzIGEgcmlnaHQtc2tld2VkIGRpc3RyaWJ1dGlvbiBvZiB0aGUgZGVncmVlcy4gTW9zdCBzdGFmZiBtZW1iZXJzIGhhdmUgbm90IGNvLXB1Ymxpc2hlZCwgb3Igb25seSBsaXR0bGUuIFdlIGFsc28gc2VlIHRoYXQgdGhlcmUgYXJlIDIyIGR5YWRzIGluIHRoZSBuZXR3b3JrIGFuZCBhbiBlZGdlIGRlbnNpdHkgb2YgMC4wMjEyLiBUaGlzIGlzIGxvd2VyIHRoYW4gdGhhdCBvZiB0aGUgc29jaW9sb2d5IHN0YWZmLiAKCiMgRGVzY3JpcHRpdmVzIG9mIGRhdGEgc2NpZW5jZSAyMDE4LTIwMTkKYGBge3J9CmRuZXQyX2cgPC0gaWdyYXBoOjpncmFwaF9mcm9tX2FkamFjZW5jeV9tYXRyaXgoZG5ldDIsIG1vZGUgPSBjKCJ1bmRpcmVjdGVkIikpCnBsb3QoZG5ldDJfZykKCmBgYApJbiB0aGUgcGxvdCB3ZSBzZWUgdGhhdCBpbiB0aGUgMiB5ZWFycyBhZnRlciwgdGhlcmUgaXMgYSBzdHJvbmcgaW5jcmVhc2UgaW4gY29wdWJsaWNhdGlvbnMgb2YgdGhlIHN0YWZmIG1lbWJlcnMgb2YgZGF0YSBzY2llbmNlLiBXZSBjYW4gYWxzbyBzZWUgdGhhdCB0aGVyZSBhcmUgc29tZSBub2RlcyBjZW50cmFsIGluIHRoZSBuZXR3b3JrOiBub2RlIDEsIDMgYW5kIDUgc2VlbSB0byBoYXZlIHRoZSBtb3N0IGVkZ2VzLCBhbmQgdGh1cyB0aGUgbW9zdCBjb3B1YmxpY2F0aW9ucyB3aXRoIG90aGVycyBvZiB0aGUgZGF0YSBzY2llbmNlIHN0YWZmLiAKCmBgYHtyfQpkZGVncmVlMiA8LSBpZ3JhcGg6OmRlZ3JlZShkbmV0Ml9nKQpoaXN0KGRkZWdyZWUyLCBjb2w9InB1cnBsZSIpCmlncmFwaDo6ZHlhZC5jZW5zdXMoZG5ldDJfZykKaWdyYXBoOjp0cmlhZC5jZW5zdXMoZG5ldDJfZykKaWdyYXBoOjplZGdlX2RlbnNpdHkoZG5ldDJfZykKCmBgYApJbiB0aGUgaGlzdG9ncmFtIHdlIG9ic2VydmUgdGhhdCB0aGUgb3V0ZGVncmVlcyByZW1haW4gc2tld2VkIHRvIHRoZSByaWdodC4gV2UgY2FuIHNlZSB0aGF0IG9uZSBtZW1iZXIgZXZlbiBoYXMgbW9yZSB0aGFuIDggY29wdWJsaWNhdGlvbnMuIFdlIGFsc28gc2VlIHRoYXQgbW9yZSBwZW9wbGUgdGhhbiBpbiB0aGUgeWVhciBiZWZvcmUgaGF2ZSBtb3JlIGNvcHVibGljYXRpb25zLiBIb3dldmVyLCBtb3N0IGluZGl2aWR1YWxzIHN0aWxsIGhhdmUgbm8gY29wdWJsaWNhdGlvbnMuIFdlIHNlZSB0aGF0IHRoZSBudW1iZXIgb2YgZHlhZHMgaGFzIGluY3JlYXNlZCB0byAzOCBhbmQgdGhhdCB0aGUgZWRnZSBkZW5zaXR5IGhhcyBpbmNyZWFzZWQgYSBsaXR0bGUgYml0IHRvIDAuMDM3LiBUaGlzIGlzIHN0aWxsIGxvd2VyIHRoYW4gdGhlIGVkZ2UgZGVuc2l0eSB3aXRoaW4gdGhlIHNvY2lvbG9neSBkZXBhcnRtZW50IGluIHRoZSBzYW1lIHllYXJzLiAKCiMgRGVzY3JpcHRpdmVzIG9mIGRhdGEgc2NpZW5jZSAyMDIwLTIwMjIKYGBge3J9CmRuZXQzX2cgPC0gaWdyYXBoOjpncmFwaF9mcm9tX2FkamFjZW5jeV9tYXRyaXgoZG5ldDMsIG1vZGUgPSBjKCJ1bmRpcmVjdGVkIikpCnBsb3QoZG5ldDNfZykKCmBgYApJbiB0aGUgbGFzdCBwbG90LCB3ZSBhZ2FpbiBzZWUgYW4gaW5jcmVhc2UgaW4gY29wdWJsaWNhdGlvbnMuIE5vZGUgMSwgMyBhbmQgNSBzdGlsbCBoYXZlIGEgY2VudHJhbCByb2xlIGluIHRoZSBuZXR3b3JrLCBidXQgdGhlcmUgbm93IGFyZSBvdGhlciBub2RlcyB3aXRoIGEgcmVsYXRpdmUgaGlnaCBudW1iZXIgb2YgY29wdWJsaWNhdGlvbnMgYXMgd2VsbC4gCgpgYGB7cn0KZGRlZ3JlZTMgPC0gaWdyYXBoOjpkZWdyZWUoZG5ldDNfZykKaGlzdChkZGVncmVlMywgY29sPSJwdXJwbGUiKQppZ3JhcGg6OmR5YWQuY2Vuc3VzKGRuZXQzX2cpCmlncmFwaDo6dHJpYWQuY2Vuc3VzKGRuZXQzX2cpCmlncmFwaDo6ZWRnZV9kZW5zaXR5KGRuZXQzX2cpCgpgYGAKSW4gdGhlIGhpc3RvZ3JhbSB3ZSBvYnNlcnZlIHRoYXQgc3RhZmYgbWVtYmVycyBhcmUgbm93IGFsc28gbW9yZSBpbiB0aGUgdGFpbCwganVzdCBsaWtlIHdlIG9ic2VydmVkIGF0IHRoZSBzb2Npb2xvZ3kgZGVwYXJ0bWVudC4gRnVydGhlcm1vcmUsIHRoZXJlIGFyZSBldmVuIHN0YWZmIG1lbWJlcnMgd2l0aCAxMC0xMSBjb3B1YmxpY2F0aW9ucy4gVGhpcyBpcyBhIGhpZ2hlciBudW1iZXIgb2YgY29wdWJsaWNhdGlvbnMgdGhhbiBvYnNlcnZlZCBhdCB0aGUgc29jaW9sb2d5IGRlcGFydG1lbnQuIFdlIGFsc28gb2JzZXJ2ZSB0aGF0IHRoZXJlIGFyZSBub3cgNzAgZHlhZHMgYW5kIHRoYXQgdGhlIGVkZ2UgZGVuc2l0eSBoYXMgaW5jcmVhc2VkIHRvd2FyZHMgYSBudW1iZXIgb2YgMC4wNjguIFRoaXMgcmVtYWlucyBhIGxpdHRsZSBsb3dlciB0aGFuIHRoZSBlZGdlIGRlbnNpdHkgb2Ygc29jaW9sb2d5IGF0IHRoYXQgdGltZS4gCgpgYGB7cn0KaWdyYXBoOjp0cmFuc2l0aXZpdHkoZG5ldDFfZykKaWdyYXBoOjp0cmFuc2l0aXZpdHkoZG5ldDJfZykKaWdyYXBoOjp0cmFuc2l0aXZpdHkoZG5ldDNfZykKYGBgCgpXZSBjYW4gc2VlIHRoYXQgdGhlIHRyYW5zaXRpdml0eSBvZiBkYXRhIHNjaWVuY2UgaGFzIGRlY3JlYXNlZCBvdmVyIHRoZSB5ZWFycy4gSW4gdGhlIGZpcnN0IHBlcmlvZCwgdGhlIHByb2JhYmlsaXR5IHRoYXQgQiBhbmQgQyAtIGJvdGggYXMgY29ubmVjdGlvbnMgb2YgQSAtIHdvdWxkIGNvcHVibGlzaCB3YXMgMC41Mi4gSW4gdGhlIG5leHQgeWVhciwgdGhpcyBkZWNyZWFzZWQgdG8gYSA0NSUgY2hhbmNlLCB3aGlsZSBpbiB0aGUgbGFzdCB5ZWFyIHRoaXMgY2hhbmNlIGlzIDQxLDIlLiBTdGlsbCwgdGhpcyBpcyBhIGhpZ2hlciBudW1iZXIgdGhhbiBvYnNlcnZlZCBhdCB0aGUgc29jaW9sb2d5IGRlcGFydG1lbnQuIEFsc28sIHRoZXJlIGlzIGEgbGluZWFyIGRlY3JlYXNlIGF0IHRoZSBkZXBhcnRtZW50IG9mIGRhdGEgc2NpZW5jZSwgd2hpbGUgYXQgdGhlIHNvY2lvbG9neSBkZXBhcnRtZW50IG5vIGxpbmVhciB0cmVuZCBjb3VsZCBiZSBvYnNlcnZlZC4gSW4gY29uY2x1c2lvbiwgc3RhZmYgbWVtYmVycyBhdCBkYXRhIHNjaWVuY2UgYXJlIG1vcmUgbGlrZWx5IHRvIGNvcHVibGlzaCB3aXRoIHN0YWZmIG1lbWJlcnMgdGhleSBnb3QgdG8ga25vdyBieSBjb3B1Ymxpc2hpbmcgd2l0aCBhbiBhdXRob3IgdGhhbiBhdCBzb2Npb2xvZ3kuIAoKCiMgRXhwbGFpbmluZyB2YXJpYWJsZXMgRGF0YSBTY2llbmNlCgpgYGB7ciwgZWNobz1GQUxTRX0KbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvZGF0YWRlZl9kZi5SRGF0YSIpCmBgYAoKYGBge3J9Cmhpc3QoZGF0YWRlZl9kZiRraSxjb2w9InJlZCIpCmBgYApXZSBzZWUgdGhhdCBhdCB0aGUgZGF0YSBzY2llbmNlIGRlcGFydG1lbnQsIHRoZXJlIGlzIGEgdmVyeSByaWdodC1za2V3ZWQgZGlzdHJpYnV0aW9uIG9mIHRoZSBLSTsgbW9zdCBzdGFmZiBtZW1iZXJzIGhhdmUgYSBLSSBiZXR3ZWVuIDAgYW5kIDEuIAoKYGBge3J9CnNlbDIgPC0gZGF0YWRlZl9kZiR0d2l0dGVyX2R1bT09MQpoaXN0KGRhdGFkZWZfZGYka2lbc2VsMl0sIGNvbD0icmVkIiwgYm9yZGVyPSJkYXJrYmx1ZSIpCmBgYApXZSBhbHNvIG9ic2VydmUgdGhpcyBwYXR0ZXJuIHdoZW4gb25seSBzZWxlY3RpbmcgdGhlIGluZGl2aWR1YWxzIHdpdGggdHdpdHRlciwgYWx0aG91Z2ggdGhlIGZyZXF1ZW5jeSBvZiBpbmRpdmlkdWFscyB3aXRoIGEgS0kgYmV0d2VlbiAwIGFuZCAxIGlzIG5vdyBhIGJpdCBsb3dlci4gV2UgYWxzbyBvYnNlcnZlIHNvbWUgc3RhZmYgbWVtYmVycyB3aXRoIGEgaGlnaCBLSS4gQ29tcGFyZWQgdG8gc29jaW9sb2d5LCB0aGUgS0kgYXQgdGhlIGRhdGEgc2NpZW5jZSBkZXBhcnRtZW50IGlzIGV2ZW4gbW9yZSBza2V3ZWQuIAoKYGBge3J9Cm1vZGVsa2kyIDwtIGxtKGtpIH4gZ2VuZGVyICsgZHV0Y2ggKyBwdWJfZmlyc3QsIGRhdGE9ZGF0YWRlZl9kZikKc3VtbWFyeShtb2RlbGtpMikKYGBgCkF0IHRoZSBkYXRhIHNjaWVuY2UgZGVwYXJ0bWVudCwgd2Ugc2VlIHRoYXQgdGhlIEtJIGlzIHByZWRpY3RlZCB3YXkgZGlmZmVyZW50bHkgdGhhbiBhdCB0aGUgc29jaW9sb2d5IGRlcGFydG1lbnQuIFRoZSBlZmZlY3Qgb2YgZ2VuZGVyIGFuZCBldGhuaWNpdHkgYXJlIG5vdCBzaWduaWZpY2FudCwgYnV0IGFnZSBpcyBhIHNpZ25pZmljYW50IHByZWRpY3RvciBvZiBhIEtJLiBUaGUgeW91bmdlciwgdGhlIGhpZ2hlciB0aGUgS0kuIAoKIyBDb21wYXJpbmcgdGhlIHR3byBkZXBhcnRtZW50cwpTdW1tYXJpemluZyB0aGUgdHdvIGRlcGFydG1lbnRzLCB3ZSBzZWUgdGhhdCB0aGUgZGVuc2l0eSBvZiB0aGUgY29wdWJsaWNhdGlvbiBuZXR3b3JrIG9mIHNvY2lvbG9neSBpcyBoaWdoZXIgdGhhbiB0aGUgZGVuc2l0eSBvZiBkYXRhIHNjaWVuY2UuIE9uIHRoZSBvdGhlciBoYW5kLCB0aGUgdHJhbnNpdGl2aXR5IGlzIG11Y2ggaGlnaGVyIHdpdGhpbiBkYXRhIHNjaWVuY2UgdGhhbiB3aXRoaW4gc29jaW9sb2d5LiBNYXkgdGhpcyBoYXZlIHRvIGRvIHdpdGggZGl2aXNpb25zIHdpdGhpbiBzZXZlcmFsIHRoZW9yZXRpY2FsIHRvcGljcywgaW4gd2hpY2ggcGVvcGxlIHdpdGhpbiBzb2Npb2xvZ3kgY291bGQgY29sbGFib3JhdGUgdG8gYSBsZXNzZXIgZXh0ZW50PyBJbiB0ZXJtcyBvZiBwcm9kdWN0aXZpdHkgKG5vIG5ldHdvcmsgY2hhcmFjdGVyaXN0aWMpLCB3ZSBzZWUgdGhhdCB0aGUgZGF0YSBzY2llbmNlIGRlcGFydG1lbnQgaGFzIGNvcHVibGlzaGVkIG1vcmUgdGhhbiBzb2Npb2xvZ3kuIAoKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGVzY3JpcHRpdmUgU3RhdGlzdGljcyIKYXV0aG9yOiAiQW51c2Noa2EgUGVlbGVuIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDogCiAgaHRtbF9kb2N1bWVudDoKICAgICBjb2RlX2ZvbGRpbmc6ICJoaWRlIgplZGl0b3Jfb3B0aW9uczogCiAgbWFya2Rvd246IAogICAgd3JhcDogNzIKLS0tCgpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpgYGAKCmBgYHtyLCBnbG9iYWxzZXR0aW5ncywgZWNobz1GQUxTRSwgd2FybmluZz1GQUxTRSwgcmVzdWx0cz0naGlkZSd9CmxpYnJhcnkoa25pdHIpCgprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCm9wdHNfY2h1bmskc2V0KHRpZHkub3B0cz1saXN0KHdpZHRoLmN1dG9mZj0xMDApLHRpZHk9VFJVRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0UsY29tbWVudCA9ICIjPiIsIGNhY2hlPVRSVUUsIGNsYXNzLnNvdXJjZT1jKCJ0ZXN0IiksIGNsYXNzLm91dHB1dD1jKCJ0ZXN0MiIpKQpvcHRpb25zKHdpZHRoID0gMTAwKQpyZ2w6OnNldHVwS25pdHIoKQoKCmNvbG9yaXplIDwtIGZ1bmN0aW9uKHgsIGNvbG9yKSB7c3ByaW50ZigiPHNwYW4gc3R5bGU9J2NvbG9yOiAlczsnPiVzPC9zcGFuPiIsIGNvbG9yLCB4KSB9CmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFLCByZXN1bHRzPSdoaWRlJ30KI3N0YXJ0IHdpdGggY2xlYW4gd29ya3NwYWNlIApybShsaXN0PWxzKCkpCmdldHdkKCkKYGBgCgpgYGB7ciwgZWNobz1GQUxTRX0KbGlicmFyeShkYXRhLnRhYmxlKSAKbGlicmFyeSh0aWR5dmVyc2UpIApyZXF1aXJlKHN0cmluZ2kpCnJlcXVpcmUoUnNpZW5hKQpyZXF1aXJlKGlncmFwaCkKbGlicmFyeShnZ3Bsb3QyKQoKI2luc3RhbGwucGFja2FnZXMoInBsb3RseSIpCmxpYnJhcnkocGxvdGx5KQoKYGBgCgpgYGB7ciwgZWNobz1GQUxTRX0KI2xvYWQgZGF0YW9iamVjdHMKbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvc29jZGVmX25ldF9hcnJheS5SRGF0YSIpCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL3NvY2RlZl9kZi5SRGF0YSIpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CnNuZXQxIDwtIHNvY19uZXRfYXJyYXlbICwsIDFdCnNuZXQyIDwtIHNvY19uZXRfYXJyYXlbICwsIDJdCnNuZXQzIDwtIHNvY19uZXRfYXJyYXlbICwsIDNdCgpkaWFnKHNuZXQxKSA8LSAwCmRpYWcoc25ldDIpIDwtIDAKZGlhZyhzbmV0MykgPC0gMApgYGAKCiMgU29jaW9sb2d5CgojIyBQbG90cyBvZiB0aGUgU29jaW9sb2d5IGRlcGFydG1lbnQgCmBgYHtyfQpzbmV0MV9nIDwtIGlncmFwaDo6Z3JhcGhfZnJvbV9hZGphY2VuY3lfbWF0cml4KHNuZXQxLCBtb2RlID0gYygidW5kaXJlY3RlZCIpKQpzbmV0Ml9nIDwtIGlncmFwaDo6Z3JhcGhfZnJvbV9hZGphY2VuY3lfbWF0cml4KHNuZXQyLCBtb2RlID0gYygidW5kaXJlY3RlZCIpKQpzbmV0M19nIDwtIGlncmFwaDo6Z3JhcGhfZnJvbV9hZGphY2VuY3lfbWF0cml4KHNuZXQzLCBtb2RlID0gYygidW5kaXJlY3RlZCIpKQoKc29jZGVmX2RmJHR3aXR0ZXJfZHVtW3NvY2RlZl9kZiRpZD09MzZdPC0gMQpzb2NkZWZfZGYkdHdpdGNvbCA8LSBpZmVsc2Uoc29jZGVmX2RmJHR3aXR0ZXJfZHVtID09IDAsICIjNTZCNEU5IiwgIiM2NmZmOTkiKQoKI0RpdCB6b3UgaWsgbm9nIGV2ZW4gbW9ldGVuIGNoZWNrZW4gb2YgZGl0IGtsb3B0LCB3YW50IGVyIGxpamtlbiBpbmVlbnMgdGllcyB3ZWcgdGUgdmFsbGVuIGRvb3IgZGllIGNvw7ZyZGluYXRlbiB0b2UgdGUgdm9lZ2VuPwpsIDwtIGlncmFwaDo6bGF5b3V0X3dpdGhfbWRzKHNuZXQxX2cpCmxbMTQsMV0gPC0gMApsMSA8LSBpZ3JhcGg6OmxheW91dF93aXRoX21kcyhzbmV0Ml9nKQpsMVsxNCwxXSA8LSAwCmwyIDwtIGlncmFwaDo6bGF5b3V0X3dpdGhfbWRzKHNuZXQzX2cpCmwyWzE0LDFdIDwtIDAKCiNXYXQgd2lsIGlrIG1ldCBkZSBudW1tZXJzIGluIGRlIHBsb3QsIG1vZXQgaWsgZGllIG5vZyB2ZXJhbmRlcmVuIGluIG5hbWVuPyBNYWFyIHdpbCBoZXQgZ3JhYWcgYW5vbmllbSBob3VkZW4uCnBsb3Qoc25ldDFfZywgdmVydGV4LmNvbG9yID0gc29jZGVmX2RmJHR3aXRjb2wsIHZlcnRleC5zaXplPXNvY2RlZl9kZiRraSwgIHZlcnRleC5zaXplID0gMTAsIHZlcnRleC5mcmFtZS5jb2xvciA9ICJncmF5IiwKICAgIHZlcnRleC5sYWJlbC5jb2xvciA9ICJibGFjayIsIHZlcnRleC5sYWJlbC5mYW1pbHkgPSAiSGVsdmV0aWNhIiwgdmVydGV4LmxhYmVsLmNleCA9IDAuNywgdmVydGV4LmxhYmVsLmRpc3QgPSAwLjgsCiAgICBlZGdlLmN1cnZlZCA9IDAuMiwgZWRnZS5hcnJvdy5zaXplID0gMC41LCBsYXlvdXQ9bCkKcGxvdChzbmV0Ml9nLCB2ZXJ0ZXguY29sb3IgPSBzb2NkZWZfZGYkdHdpdGNvbCwgdmVydGV4LnNpemU9c29jZGVmX2RmJGtpLCAgdmVydGV4LnNpemUgPSAxMCwgdmVydGV4LmZyYW1lLmNvbG9yID0gImdyYXkiLAogICAgdmVydGV4LmxhYmVsLmNvbG9yID0gImJsYWNrIiwgdmVydGV4LmxhYmVsLmZhbWlseSA9ICJIZWx2ZXRpY2EiLCB2ZXJ0ZXgubGFiZWwuY2V4ID0gMC43LCB2ZXJ0ZXgubGFiZWwuZGlzdCA9IDAuOCwKICAgIGVkZ2UuY3VydmVkID0gMC4yLCBlZGdlLmFycm93LnNpemUgPSAwLjUsIGxheW91dD1sMSkKcGxvdChzbmV0M19nLCB2ZXJ0ZXguY29sb3IgPSBzb2NkZWZfZGYkdHdpdGNvbCwgdmVydGV4LnNpemU9c29jZGVmX2RmJGtpLCAgdmVydGV4LnNpemUgPSAxMCwgdmVydGV4LmZyYW1lLmNvbG9yID0gImdyYXkiLAogICAgdmVydGV4LmxhYmVsLmNvbG9yID0gImJsYWNrIiwgdmVydGV4LmxhYmVsLmZhbWlseSA9ICJIZWx2ZXRpY2EiLCB2ZXJ0ZXgubGFiZWwuY2V4ID0gMC43LCB2ZXJ0ZXgubGFiZWwuZGlzdCA9IDAuOCwKICAgIGVkZ2UuY3VydmVkID0gMC4yLCBlZGdlLmFycm93LnNpemUgPSAwLjUsIGxheW91dD1sMikKCmBgYAoKCkZyb20gdGhlIHBsb3RzIG9mIHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudCBpdCdzIHZpc2libGUgdGhhdCB0aGVyZSBhcmUgcXVpdGUgYSBsb3Qgb2YgY28tcHVibGljYXRpb25zIHdpdGhpbiB0aGUgbmV0d29yayBvZiBTb2Npb2xvZ3kuIFRoZSBmaXJzdCBwbG90IChvZiB0aGUgeWVhciAyMDE2LTIwMTcpIHNob3dzIHRoYXQgbWFueSBzY2llbnRpc3RzIGRpZCBub3QgY28tcHVibGlzaCB5ZXQsIGJ1dCB0aGlzIGluY3JlYXNlZCBvdmVyIHRoZSB5ZWFycy4gVGhpcyBjYW4gYmUgZXhwbGFpbmVkIGJ5IHRoZSBmYWN0IHRoYXQgYSBudW1iZXIgb2YgKHlvdW5nZXIpIHNjaWVudGlzdHMgZGlkIG5vdCB5ZXQgd29yayBhdCB0aGUgZGVwYXJ0bWVudCBpbiBlLmcuIDIwMTYsIHdoaWNoIHJlc3VsdHMgaW4gbm8gY28tcHVibGljYXRpb24gdGllLiBTaW5jZSBub2RlIDE0IGlzIHRoZSBtb3N0ICJwcm9kdWN0aXZlIiBpbiB0aGUgc2Vuc2Ugb2YgY28tcHVibGlzaGluZyB3aXRoIG90aGVycywgSSBoYXZlIHB1dCB0aGlzIG5vZGUgY2VudHJhbCBpbiBhbGwgdGhlIHBsb3RzIHRvIHNob3cgdGhlIGV2b2x1dGlvbi4gVGhpcyBpcyBhbiBvbGRlciBzY2llbnRpc3Qgd2hvIGhhcyBoYWQgbW9yZSBvcHBvcnR1bml0aWVzIHRvIHB1Ymxpc2ggd2l0aCBvdGhlciBpbmRpdmlkdWFscyBvZiB0aGUgc3RhZmYuICAgCgpBbm90aGVyIGNvbmNsdXNpb24gdGhhdCBjYW4gYmUgZHJhd24gZnJvbSB0aGUgcGxvdCwgaXMgdGhhdCBpbmRpdmlkdWFscyB3aXRoIGEgaGlnaGVyIGstaW5kZXggZG8gbm90IGhhdmUgbW9yZSBjby1wdWJsaWNhdGlvbiB0aWVzLiBBcyBJIGJhc2VkIHRoZSB2ZXJ0ZXggc2l6ZSBvbiB0aGUgay1pbmRleCwgYSBoaWdoZXIgay1pbmRleCByZXN1bHRzIGluIGEgbGFyZ2VyIHZlcnRleCBpbiB0aGUgcGxvdC4gSXQgaXMgdmlzaWJsZSB0aGF0IG5vZGUgMjggYW5kIDMwIGhhdmUgdGhlIGhpZ2hlc3Qgay1pbmRleCwgYnV0IHRoaXMgZGlkIG5vdCByZXN1bHQgaW4gY28tcHVibGljYXRpb25zIGZvciBub2RlIDMwLiBGb3Igbm9kZSAyOCwgdGhlcmUgaXMgYW4gaW5jcmVhc2Ugb2YgMyBjby1wdWJsaWNhdGlvbiB0aWVzIHdoZW4gY29tcGFyaW5nIHRoZSBsYXR0ZXIgMiBwbG90cy4gVGhpcyBjb3VsZCBzaWduYWwgdGhhdCB0aGlzIHNjaWVudGlzdCBpcyBhdHRyYWN0aXZlIHRvIG90aGVycyBiZWNhdXNlIG9mIHRoZSBrLWluZGV4LCBidXQgdGhpcyBjb25jbHVzaW9uIGNhbm5vdCBiZSBkcmF3biB5ZXQgZnJvbSB0aGlzIHBsb3QgYWxvbmUuIFRoZXJlZm9yZSwgdGhpcyBwbG90IGRvZXMgbm90IGhpbnQgYXQgc2VsZWN0aW9uIGVmZmVjdHMgYmFzZWQgb24gay1pbmRleC4gIAoKIyMgRGVzY3JpcHRpdmVzIG9mIHRoZSBTb2Npb2xvZ3kgbmV0d29yawoKYGBge3J9CnNkZWdyZWUgPC0gaWdyYXBoOjpkZWdyZWUoc25ldDFfZykKc2RlZ3JlZTIgPC0gaWdyYXBoOjpkZWdyZWUoc25ldDJfZykKc2RlZ3JlZTMgPC0gaWdyYXBoOjpkZWdyZWUoc25ldDNfZykKCgojcGFyKG1mcm93PWMoMywxKSkKaGlzdChzZGVncmVlLCBjb2w9IiM5OWQ2ZmYiKQpoaXN0KHNkZWdyZWUyLCBjb2w9IiM5OWQ2ZmYiKQpoaXN0KHNkZWdyZWUzLCBjb2w9IiM5OWQ2ZmYiKQpgYGAKCkluIHRoZSBoaXN0b2dyYW1zIGFib3ZlIGl0IGlzIHNob3duIHRoYXQgdGhlIGRlZ3JlZSBvZiB0aGUgbmV0d29yayBpcyByaWdodC1za2V3ZWQuIFRoaXMgbWVhbnMgdGhhdCBtb3N0IHNjaWVudGlzdHMgaW4gdGhlIG5ldHdvcmsgZG9uJ3QgaGF2ZSBtYW55IG90aGVyIHNjaWVudGlzdHMgd2l0aGluIHRoZSBkZXBhcnRtZW50IHRoZXkgY28tcHVibGlzaGVkIHdpdGguIApUaGlzIGlzIHN0cm9uZ2VzdCBmb3IgZmlyc3QgdGhlIGhpc3RvZ3JhbSwgc2hvd2luZyB0aGUgZmlyc3Qgd2F2ZSAoMjAxNi0yMDE3KS4gSW4gdGhlIGZvbGxvd2luZyB5ZWFyLCB0aGVyZSBzdGlsbCBpcyBhIHJpZ2h0LXNrZXdlZCBkaXN0cmlidXRpb24gb2YgdGhlIGRlZ3JlZXMsIGJ1dCB0aGVyZSBhcmUgYSBsaXR0bGUgbW9yZSBzdGFmZiBtZW1iZXJzIGluIHRoZSB0YWlsIG9mIHRoZSBkaXN0cmlidXRpb24sIG1lYW5pbmcgdGhhdCB0aGVzZSBzY2llbnRpc3RzIGhhdmUgcXVpdGUgYSBsb3Qgb2YgY29wdWJsaWNhdGlvbiB0aWVzLiBUaGlzIG9jY3VycyB0aGUgbW9zdCBzdHJvbmdseSBpbiB0aGUgaGlzdG9ncmFtIG9mIHRoZSBsYXN0IHllYXJzICgyMDIwIHVudGlsIG5vdykuIAoKCmBgYHtyfQppZ3JhcGg6OmR5YWQuY2Vuc3VzKHNuZXQxX2cpCmlncmFwaDo6dHJpYWQuY2Vuc3VzKHNuZXQxX2cpCmlncmFwaDo6ZWRnZV9kZW5zaXR5KHNuZXQxX2cpCgoKaWdyYXBoOjpkeWFkLmNlbnN1cyhzbmV0Ml9nKQppZ3JhcGg6OnRyaWFkLmNlbnN1cyhzbmV0Ml9nKQppZ3JhcGg6OmVkZ2VfZGVuc2l0eShzbmV0Ml9nKQoKaWdyYXBoOjpkeWFkLmNlbnN1cyhzbmV0M19nKQppZ3JhcGg6OnRyaWFkLmNlbnN1cyhzbmV0M19nKQppZ3JhcGg6OmVkZ2VfZGVuc2l0eShzbmV0M19nKQpgYGAKClJlZ2FyZGluZyBkZW5zaXR5IGFuZCBkeWFkcyBpbiB0aGUgbmV0d29yaywgdGhlcmUgYXJlIDI2IGR5YWRzIGluIHRoZSBmaXJzdCB3YXZlLiBUaGUgZWRnZSBkZW5zaXR5IGlzCjAuMDQ5LCB3aGljaCBtZWFucyB0aGF0IHRoZSBudW1iZXIgb2YgZWRnZXMgZXhpc3RpbmcgaW4gdGhlIG5ldHdvcmsgaXMKcmVsYXRpdmVseSBsb3cgY29tcGFyZWQgdG8gdGhlIHRoZSBtYXhpbXVtIG51bWJlciBvZiBlZGdlcyB0aGVyZSBjb3VsZCBwb3NzaWJseSBiZS4KSW4gdGhlIHNlY29uZCB3YXZlLCB0aGVyZSBpcyBhbiBpbmNyZWFzZSBvZiAxIGR5YWQsIGFuZCB0aGUgZWRnZSBkZW5zaXR5IGFsc28gaGFzIGluY3JlYXNlZCBzbGlnaHRseSB0b3dhcmRzIGEgbnVtYmVyIG9mIDAuMDUxLiBJbiB0aGUgbGFzdCB3YXZlLCB0aGVyZSBhcmUgMzggZHlhZHMgYW5kIHRoZSBlZGdlIGRlbnNpdHkgaGFzIGluY3JlYXNlZCB0byAwLjA3Mi4gCkFsbCBpbiBhbGwsIHRoZSBjby1wdWJsaWNhdGlvbnMgd2l0aGluIHRoZSBuZXR3b3JrIG9mIHNvY2lvbG9neSBoYXZlIGluY3JlYXNlZCwgYW5kIG92ZXIgdGhlIHllYXJzLCB0aGUgc2NpZW50aXN0cyBhdCB0aGUgZGVwYXJ0bWVudCBoYXZlIHVzZWQgbW9yZSBvZiB0aGVpciBvcHBvcnR1bml0aWVzIHRvIGNvbGxhYm9yYXRlIHdpdGggbWVtYmVycyB3aXRoaW4gdGhlIG5ldHdvcmsuIAoKYGBge3J9CmlncmFwaDo6dHJhbnNpdGl2aXR5KHNuZXQxX2cpCmlncmFwaDo6dHJhbnNpdGl2aXR5KHNuZXQyX2cpCmlncmFwaDo6dHJhbnNpdGl2aXR5KHNuZXQzX2cpCmBgYAoKTGFzdCBidXQgbm90IGxlYXN0LCB0aGUgdHJhbnNpdGl2aXR5IGVmZmVjdCBzaG93cyB3aGV0aGVyIGNvLWF1dGhvcnMgb2YgY28tYXV0aG9ycyBiZWNvbWUgY28tYXV0aG9ycy4gCkZvciB0aGlzIG5ldHdvcmssIG5vIGxpbmVhciBjaGFuZ2UgY2FuIGJlIG9ic2VydmVkLiAKSW4gdGhlIGZpcnN0IHdhdmUsIHRoZXJlIGlzIGEKdHJhbnNpdGl2aXR5IG51bWJlciBvZiAwLjI3LiBJZiBvbmUgc3RhZmYgbWVtYmVyIEEgaXMgY29ubmVjdGVkIHRvIHN0YWZmCm1lbWJlciBCIGFuZCBzdGFmZiBtZW1iZXIgQywgdGhlIHByb2JhYmlsaXR5IGlzIDAuMjcgdGhhdCBzdGFmZiBtZW1iZXIgQgphbmQgQyB3aWxsIGFsc28gY28tcHVibGlzaC4gSW4gdGhlIHNlY29uZCB3YXZlLCB3ZSBzZWUgdGhhdCB0aGlzCnByb2JhYmlsaXR5IGhhcyBldmVuIGluY3JlYXNlZCB0byAwLjMwOC4gSW4gdGhlIGxhc3Qgd2F2ZSwgdGhlCnRyYW5zaXRpdml0eSBudW1iZXIgaXMgdGhlIGxvd2VzdC4gUG9zc2libHksIHRoZSBmYWN0IHRoYXQgdGhlcmUgYXJlIG1vcmUgbWViZXJzIGluIHRoZSBuZXR3b3JrcyBjb3VsZCBpbmNyZWFzZSB0aGUgb3Bwb3J0dW5pdGllcyB0byBjby1wdWJsaXNoIHdpdGggb3RoZXJzLCBub3QgZGVwZW5kaW5nIG9uIGNvLWF1dGhvcnMgb2YgY28tYXV0aG9ycy4gCgojIyBLLWluZGV4IGF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL3NvY2RlZl9kZi5SRGF0YSIpCmBgYAoKYGBge3J9CnR3c29jYmFyIDwtIGdncGxvdDI6OjpnZ3Bsb3Qoc29jZGVmX2RmLCBhZXMoZmFjdG9yKHR3aXR0ZXJfZHVtKSwgZmlsbCA9IGZhY3Rvcih0d2l0dGVyX2R1bSkpKSArIGdlb21fYmFyKCkKdHdzb2NiYXIgPC0gdHdzb2NiYXIgKyBzY2FsZV9maWxsX21hbnVhbCh2YWx1ZXM9YygiIzU2QjRFOSIsICIjNjZmZjk5IikpCmdncGxvdGx5KHR3c29jYmFyKQpgYGAKQmVmb3JlIGRpdmluZyBpbnRvIHRoZSBrLWluZGV4LCBpdCBpcyBpbnNpZ2h0ZnVsIHRvIHNlZSBob3cgbWFueSBvZiB0aGUgc2NpZW50aXN0IGF0IHRoZSBkZXBhcnRtZW50IG9mIFNvY2lvbG9neSBoYXZlIFR3aXR0ZXIuIEluIHRoZSBhYm92ZSAoaW50ZXJhY3RpdmUpIGdyYXBoLCBpdCBpcyBzaG93biB0aGF0IDEzIHNjaWVudGlzdCBkbyBub3QgaGF2ZSBUd2l0dGVyLCB3aGlsZSAyMCBzY2llbnRpc3RzIGRvIGhhdmUgVHdpdHRlci4gCgpgYGB7cn0Kc2VsIDwtIHNvY2RlZl9kZiR0d2l0dGVyX2R1bT09MQpoaXN0KHNvY2RlZl9kZiRraVtzZWxdLCBjb2w9ImxpZ2h0Ymx1ZSIsIGJvcmRlcj0iZGFya2JsdWUiKQpgYGAKClRoZSBhYm92ZSBoaXN0b2dyYW0gc2hvd3MgdGhlIGRpc3RyaWJ1dGlvbiBvZiB0aGUgay1pbmRleCBvZiBzY2llbnRpc3RzIGF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudC4gVGhlIGRpc3RyaWJ1dGlvbiBpcyByaWdodC1za2V3ZWQ6IE1vc3Qgc2NpZW50aXN0cyBoYXZlIGEgay1pbmRleCBiZXR3ZWVuIDAgYW5kIDIsIGFuZCBhIGZldyBzY2llbnRpc3RzIGhhdmUgYSBoaWdoIGluZGV4LiBBIGZldyBzdGFmZiBtZW1iZXJzIGhhdmUgYSBrLWluZGV4IHRoYXQgd291bGQgYmUgY2F0ZWdvcml6ZWQgYXMgIkthcmRhc2hpYW4gU2NpZW50aXN0IiAoSGFsbCwgMjAxNCkKCmBgYHtyfQptb2RlbGtpIDwtIGxtKGtpIH4gZ2VuZGVyICsgZHV0Y2ggKyBwdWJfZmlyc3QsIGRhdGE9c29jZGVmX2RmKQpzdW1tYXJ5KG1vZGVsa2kpCmBgYApMYXN0bHksIGl0IGlzIGluc2lnaHRmdWwgdG8gc2VlIHRvIHdoYXQgZXh0ZW50IHRoZSBrLWluZGV4IGlzIHByZWRpY3RlZCBieSBvdGhlciBmYWN0b3JzLiBUaGUgYWJvdmUgbGluZWFyIHJlZ3Jlc3Npb24gdGVhY2hlcyB1cyB0aGF0IG1hbGUgc2NpZW50aXN0IG9mIFNvY2lvbG9neSBoYXZlIGEKc2lnbmlmaWNhbnRseSBoaWdoZXIgay1pbmRleCB0aGFuIGZlbWFsZSBzdGFmZiBtZW1iZXJzLiBJdCBpcyBhbHNvIHZpc2libGUgdGhhdApEdXRjaCBzY2llbnRpc3RzIGhhdmUgYSBzaWduaWZpY2FudGx5IGxvd2VyIGstaW5kZXggdGhhbiBub24tRHV0Y2ggc2NpZW50aXN0cy4gTGFzdGx5LCBhZ2UgaXMgc2lnbmlmaWNhbnRseSByZWxhdGVkIHRvIHRoZSBrLWluZGV4OiBhcyBhZ2UKZGVjcmVhc2VzLCB0aGUgay1pbmRleCBpbmNyZWFzZXMuIFlvdW5nZXIgaW5kaXZpZHVhbHMgdGh1cyBoYXZlIGEgaGlnaGVyIGstaW5kZXgKdGhhbiBvbGRlciBpbmRpdmlkdWFscy4gVGhlc2UgZWZmZWN0cyBjYW4gYWxzbyBiZSBzZWVuIGluIHRoZSAoaW50ZXJhY3RpdmUpIGdyYXBoIGJlbG93LiAKCmBgYHtyfQpyZWdwbG90c29jIDwtIGdncGxvdChzb2NkZWZfZGYsIG1hcHBpbmcgPSBhZXMoeCA9IHB1Yl9maXJzdCwgeSA9IGtpLCBjb2xvcj1nZW5kZXIpKSArCiAgICBnZW9tX2xpbmUoKSAKIApnZ3Bsb3RseShyZWdwbG90c29jKQpgYGAKCiMgRGF0YSBzY2llbmNlCgpgYGB7ciwgZWNobz1GQUxTRX0KI2xvYWQgZGF0YW9iamVjdHMKbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvZGF0YV9uZXRfYXJyYXkuUkRhdGEiKQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvZGF0YS9kYXRhZGVmX2RmLlJEYXRhIikKYGBgCgpgYGB7cn0KZG5ldDEgPC0gZG5ldF9hcnJheVsgLCwgMV0KZG5ldDIgPC0gZG5ldF9hcnJheVsgLCwgMl0KZG5ldDMgPC0gZG5ldF9hcnJheVsgLCwgM10KYGBgCgpgYGB7cn0KZGlhZyhkbmV0MSkgPC0gMApkaWFnKGRuZXQyKSA8LSAwCmRpYWcoZG5ldDMpIDwtIDAKYGBgCgojIyBQbG90cyBvZiB0aGUgRGF0YSBTY2llbmNlIGRlcGFydG1lbnQKCmBgYHtyfQpkbmV0MV9nIDwtIGlncmFwaDo6Z3JhcGhfZnJvbV9hZGphY2VuY3lfbWF0cml4KGRuZXQxLCBtb2RlID0gYygidW5kaXJlY3RlZCIpKQpkbmV0Ml9nIDwtIGlncmFwaDo6Z3JhcGhfZnJvbV9hZGphY2VuY3lfbWF0cml4KGRuZXQyLCBtb2RlID0gYygidW5kaXJlY3RlZCIpKQpkbmV0M19nIDwtIGlncmFwaDo6Z3JhcGhfZnJvbV9hZGphY2VuY3lfbWF0cml4KGRuZXQzLCBtb2RlID0gYygidW5kaXJlY3RlZCIpKQoKZGF0YWRlZl9kZiR0d2l0Y29sIDwtIGlmZWxzZShkYXRhZGVmX2RmJHR3aXR0ZXJfZHVtID09IDAsICIjNTZCNEU5IiwgIiM2NmZmOTkiKQoKI0RpdCB6b3UgaWsgbm9nIGV2ZW4gbW9ldGVuIGNoZWNrZW4gb2YgZGl0IGtsb3B0LCB3YW50IGVyIGxpamtlbiBpbmVlbnMgdGllcyB3ZWcgdGUgdmFsbGVuIGRvb3IgZGllIGNvw7ZyZGluYXRlbiB0b2UgdGUgdm9lZ2VuPwojIGwgPC0gaWdyYXBoOjpsYXlvdXRfd2l0aF9tZHMoc25ldDFfZykKIyBsWzE0LDFdIDwtIDAKIyBsMSA8LSBpZ3JhcGg6OmxheW91dF93aXRoX21kcyhzbmV0Ml9nKQojIGwxWzE0LDFdIDwtIDAKIyBsMiA8LSBpZ3JhcGg6OmxheW91dF93aXRoX21kcyhzbmV0M19nKQojIGwyWzE0LDFdIDwtIDAKCiNXYXQgd2lsIGlrIG1ldCBkZSBudW1tZXJzIGluIGRlIHBsb3QsIG1vZXQgaWsgZGllIG5vZyB2ZXJhbmRlcmVuIGluIG5hbWVuPyBNYWFyIHdpbCBoZXQgZ3JhYWcgYW5vbmllbSBob3VkZW4uCnBsb3QoZG5ldDFfZywgdmVydGV4LmNvbG9yID0gZGF0YWRlZl9kZiR0d2l0Y29sLCB2ZXJ0ZXguc2l6ZT1kYXRhZGVmX2RmJGtpLCAgdmVydGV4LnNpemUgPSAxMCwgdmVydGV4LmZyYW1lLmNvbG9yID0gImdyYXkiLAogICAgdmVydGV4LmxhYmVsLmNvbG9yID0gImJsYWNrIiwgdmVydGV4LmxhYmVsLmZhbWlseSA9ICJIZWx2ZXRpY2EiLCB2ZXJ0ZXgubGFiZWwuY2V4ID0gMC43LCB2ZXJ0ZXgubGFiZWwuZGlzdCA9IDAuOCwKICAgIGVkZ2UuY3VydmVkID0gMC4yLCBlZGdlLmFycm93LnNpemUgPSAwLjUpCnBsb3QoZG5ldDJfZywgdmVydGV4LmNvbG9yID0gZGF0YWRlZl9kZiR0d2l0Y29sLCB2ZXJ0ZXguc2l6ZT1kYXRhZGVmX2RmJGtpLCAgdmVydGV4LnNpemUgPSAxMCwgdmVydGV4LmZyYW1lLmNvbG9yID0gImdyYXkiLAogICAgdmVydGV4LmxhYmVsLmNvbG9yID0gImJsYWNrIiwgdmVydGV4LmxhYmVsLmZhbWlseSA9ICJIZWx2ZXRpY2EiLCB2ZXJ0ZXgubGFiZWwuY2V4ID0gMC43LCB2ZXJ0ZXgubGFiZWwuZGlzdCA9IDAuOCwKICAgIGVkZ2UuY3VydmVkID0gMC4yLCBlZGdlLmFycm93LnNpemUgPSAwLjUpCnBsb3QoZG5ldDNfZywgdmVydGV4LmNvbG9yID0gZGF0YWRlZl9kZiR0d2l0Y29sLCB2ZXJ0ZXguc2l6ZT1kYXRhZGVmX2RmJGtpLCAgdmVydGV4LnNpemUgPSAxMCwgdmVydGV4LmZyYW1lLmNvbG9yID0gImdyYXkiLAogICAgdmVydGV4LmxhYmVsLmNvbG9yID0gImJsYWNrIiwgdmVydGV4LmxhYmVsLmZhbWlseSA9ICJIZWx2ZXRpY2EiLCB2ZXJ0ZXgubGFiZWwuY2V4ID0gMC43LCB2ZXJ0ZXgubGFiZWwuZGlzdCA9IDAuOCwKICAgIGVkZ2UuY3VydmVkID0gMC4yLCBlZGdlLmFycm93LnNpemUgPSAwLjUpCgpgYGAKCkluIHRoZSBuZXR3b3JrIHBsb3RzIG9mIERhdGEgU2NpZW5jZSwgaXQgc2hvd3MgdGhhdCBkdXJpbmcgdGhlIHllYXIgMjAxNi0yMDE3IHRoZXJlIHdlcmUgbm90IG1hbnkgY28tcHVibGljYXRpb25zLiBKdXN0IGxpa2UgYXQgdGhlIFNvY2lvbG9neSBkZXBhcnRtZW50LCBpdCBpcyBsaWtlbHkgdGhhdCBhIGhpZ2ggbnVtYmVyIG9mIHNjaWVudGlzdHMgZGlkIG5vdCB3b3JrIGF0IHRoZSBkZXBhcnRtZW50IHlldC4gSW4gdGhlIHllYXJzIDIwMTgtMjAxOSwgdGhlcmUgaXMgYSBzdHJvbmcgaW5jcmVhc2UgaW4gdGhlIGNvLXB1YmxpY2F0aW9ucyBvZiB0aGUgc3RhZmYgbWVtYmVycyBvZiBEYXRhIFNjaWVuY2UuIE5vZGUgMSwgMyBhbmQgNSBzZWVtIHRvIGhhdmUgYSBjZW50cmFsIHJvbGUgaW4gdGhlIG5ldHdvcmssIHdpdGggdGhlIGhpZ2hlc3QgbnVtYmVyIG9mIGVkZ2VzLCBhbmQgdGh1cyB0aGUgbW9zdCBjby1wdWxpY2F0aW9ucyB3aXRoIG90aGVyIHNjaWVudGlzdHMgd2l0aGluIHRoZSBkZXBhcnRtZW50LiAKSW4gdGhlIGxhc3QgcGxvdCwgYWdhaW4gYW4gaW5jcmVhc2UgaW4gY28tcHVibGljYXRpb25zIGlzIHZpc2libGUuIE5vZGUgMSwgMwphbmQgNSBzdGlsbCBoYXZlIGEgY2VudHJhbCByb2xlIGluIHRoZSBuZXR3b3JrLCBidXQgdGhlcmUgbm93IGFyZSBvdGhlcgpub2RlcyB3aXRoIGEgcmVsYXRpdmUgaGlnaCBudW1iZXIgb2YgY28tcHVibGljYXRpb25zIGFzIHdlbGwuU2ltaWxhcmx5IHRvIHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudCwgdGhlcmUgYXJlIG9ubHkgYSBmZXcgbm9kZXMgd2l0aCBhIGhpZ2ggay1pbmRleCAoc2hvd24gYnkgdGhlIGxhcmdlc3QgdmVydGV4IHNpemUpLCBhbmQgaXQgZG9lcyBub3Qgc2VlbSBhcyBpZiB0aGVzZSBzY2llbnRpc3RzIGFyZSBlc3BlY2lhbGx5IGF0dHJhY3RpdmUgdG8gb3RoZXJzIHRvIGNvLXB1Ymxpc2ggYW4gYXJ0aWNsZS4gCgojIyBEZXNjcmlwdGl2ZXMgb2YgdGhlIERhdGEgU2NpZW5jZSBuZXR3b3JrCmBgYHtyfQpkZGVncmVlMSA8LSBpZ3JhcGg6OmRlZ3JlZShkbmV0MV9nKQpoaXN0KGRkZWdyZWUxLCBjb2w9InB1cnBsZSIpCmRkZWdyZWUyIDwtIGlncmFwaDo6ZGVncmVlKGRuZXQyX2cpCmhpc3QoZGRlZ3JlZTIsIGNvbD0icHVycGxlIikKZGRlZ3JlZTMgPC0gaWdyYXBoOjpkZWdyZWUoZG5ldDNfZykKaGlzdChkZGVncmVlMywgY29sPSJwdXJwbGUiKQpgYGAKU2ltaWxhcmx5IHRvIFNvY2lvbG9neSwgdGhlIERhdGEgU2NpZW5jZSBkZXBhcnRtZW50IHNob3dzIGEgcmlnaHQtc2tld2VkIGRpc3RyaWJ1dGlvbiBvZiB0aGUgZGVncmVlcy4gCkluIHRoZSBmaXJzdCB3YXZlLCBtb3N0IHNjaWVudGlzdHMgaGFkIG5vdCBjby1wdWJsaXNoZWQsIG9yIG9ubHkgbGl0dGxlLiBJbiB0aGUgaGlzdG9ncmFtIG9mIHRoZSBzZWNvbmQgd2F2ZSwgaXQgY2FuIGJlIG9ic2VydmVkIHRoYXQgdGhlIGRlZ3JlZXMgcmVtYWluIHNrZXdlZCB0byB0aGUgcmlnaHQuIEZ1cnRoZXJtb3JlLCBpdCBpcyB2aXNpYmxlIHRoYXQgb25lIHNjaWVudGlzdCBoYXMgbW9yZSB0aGFuIDggY29wdWJsaWNhdGlvbnMsIGFuZCB0aGF0IGluIGdlbmVyYWwsIHRoZSBudW1iZXIgb2Ygb3V0ZGVncmVlcyBpbmNyZWFzZWQuIEhvd2V2ZXIsIG1vc3QgaW5kaXZpZHVhbHMgc3RpbGwgaGF2ZSBubyBjby1wdWJsaWNhdGlvbnMuIEluIHRoZSBsYXN0IGhpc3RvZ3JhbSwgbW9yZSBzY2llbnRpc3RzIGFyZSBpbiB0aGUgdGFpbCwgYXMgYWxzbyBvYnNlcnZlZCBhdCB0aGUgU29jaW9sb2d5IGRlcGFydG1lbnQuIEZ1cnRoZXJtb3JlLCB0aGVyZSBhcmUgZXZlbiBzdGFmZiBzY2llbnRpc3Qgd2l0aCAxMC0xMSBjb3B1YmxpY2F0aW9ucy4gVGhpcyBpcyBhIGhpZ2hlciBudW1iZXIgb2YgY29wdWJsaWNhdGlvbnMgdGhhbiBvYnNlcnZlZCBhdCB0aGUgU29jaW9sb2d5IGRlcGFydG1lbnQuCgpgYGB7cn0KaWdyYXBoOjpkeWFkLmNlbnN1cyhkbmV0MV9nKQppZ3JhcGg6OnRyaWFkLmNlbnN1cyhkbmV0MV9nKQppZ3JhcGg6OmVkZ2VfZGVuc2l0eShkbmV0MV9nKQoKaWdyYXBoOjpkeWFkLmNlbnN1cyhkbmV0Ml9nKQppZ3JhcGg6OnRyaWFkLmNlbnN1cyhkbmV0Ml9nKQppZ3JhcGg6OmVkZ2VfZGVuc2l0eShkbmV0Ml9nKQoKaWdyYXBoOjpkeWFkLmNlbnN1cyhkbmV0M19nKQppZ3JhcGg6OnRyaWFkLmNlbnN1cyhkbmV0M19nKQppZ3JhcGg6OmVkZ2VfZGVuc2l0eShkbmV0M19nKQoKYGBgCgpMb29raW5nIGF0IHRoZSBkeWFkIGNlbnN1cyBhbmQgZGVuc2l0eSwgdGhlIG51bWJlciBvZiBkeWFkcyBpbiAyMDE2LTIwMTcgY291bnRzIDIyLiBUaGUgZWRnZSBkZW5zaXR5IGlzIDAuMDIxMi4gQm90aCBvZiB0aGVzZSBudW1iZXJzIGFyZSBsb3dlciB0aGFuIGF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudC4gCkluIDIwMTgtMjAxOSwgdGhlIG51bWJlciBvZiBkeWFkcyBoYXMgaW5jcmVhc2VkIHRvIDM4IGFuZCB0aGUgZWRnZQpkZW5zaXR5IGhhcyBpbmNyZWFzZWQgdG8gMC4wMzcuIFRoaXMgaXMgc3RpbGwgbG93ZXIgdGhhbgp0aGUgZWRnZSBkZW5zaXR5IHdpdGhpbiB0aGUgc29jaW9sb2d5IGRlcGFydG1lbnQgaW4gdGhlIHNhbWUgeWVhcnMuIEluIHRoZSBsYXN0IHllYXJzLCB0aGVyZSBhcmUgNzAgZHlhZHMgYW5kIHRoZSBlZGdlIGRlbnNpdHkgaW5jcmVhc2VkIHRvd2FyZHMgYSBudW1iZXIgb2YgMC4wNjguIFRoaXMgcmVtYWlucyBhIGxpdHRsZSBsb3dlciB0aGFuIHRoZSBlZGdlIGRlbnNpdHkgb2YgdGhlIFNvY2lvbG9neSBkZXBhcnRtZW50IGF0IHRoYXQgdGltZS4gCgpgYGB7cn0KaWdyYXBoOjp0cmFuc2l0aXZpdHkoZG5ldDFfZykKaWdyYXBoOjp0cmFuc2l0aXZpdHkoZG5ldDJfZykKaWdyYXBoOjp0cmFuc2l0aXZpdHkoZG5ldDNfZykKYGBgCgpSZWdhcmRpbmcgdGhlIHRyYW5zaXRpdml0eSwgdGhpcyBoYXMgZGVjcmVhc2VkIGF0IERhdGEgU2NpZW5jZSBvdmVyIHRoZSB5ZWFycy4gCkluIHRoZSBmaXJzdCBwZXJpb2QsIHRoZSBwcm9iYWJpbGl0eSB0aGF0IHNjaWVudGlzdCBCIGFuZCBDIC0gYm90aCBhcwpjby1hdXRob3JzIG9mIHNjaWVudGlzdCBBIC0gd291bGQgY28tcHVibGlzaCB3YXMgMC41Mi4gSW4gdGhlIG5leHQgeWVhciwgdGhpcwpkZWNyZWFzZWQgdG8gYSA0NSUgY2hhbmNlLCB3aGlsZSBpbiB0aGUgbGFzdCB5ZWFyIHRoaXMgY2hhbmNlIGlzIDQxLDIlLgpTdGlsbCwgdGhpcyBpcyBhIGhpZ2hlciBudW1iZXIgdGhhbiBvYnNlcnZlZCBhdCB0aGUgU29jaW9sb2d5CmRlcGFydG1lbnQuIEFsc28sIHRoZXJlIGlzIGEgbGluZWFyIGRlY3JlYXNlIGF0IHRoZSBkZXBhcnRtZW50IG9mIERhdGEKU2NpZW5jZSwgd2hpbGUgYXQgdGhlIFNvY2lvbG9neSBkZXBhcnRtZW50IG5vIGxpbmVhciB0cmVuZCBjb3VsZCBiZQpvYnNlcnZlZC4gSW4gY29uY2x1c2lvbiwgc3RhZmYgbWVtYmVycyBhdCBEYXRhIFNjaWVuY2UgYXJlIG1vcmUgbGlrZWx5CnRvIGNvLXB1Ymxpc2ggd2l0aCBjby1hdXRob3JzIG9mIHRoZWlyIGNvLWF1dGhvcnMgdGhhbiBhdCBTb2Npb2xvZ3kuIAoKIyMgSy1pbmRleCBhdCB0aGUgZGVwYXJ0bWVudCBvZiBEYXRhIFNjaWVuY2UKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvZGF0YS9kYXRhZGVmX2RmLlJEYXRhIikKYGBgCgpgYGB7cn0KdHdkYXRiYXIgPC0gZ2dwbG90Mjo6OmdncGxvdChkYXRhZGVmX2RmLCBhZXMoZmFjdG9yKHR3aXR0ZXJfZHVtKSwgZmlsbCA9IGZhY3Rvcih0d2l0dGVyX2R1bSkpKSArIGdlb21fYmFyKCkKdHdkYXRiYXIgPC0gdHdkYXRiYXIgKyBzY2FsZV9maWxsX21hbnVhbCh2YWx1ZXM9YygiIzU2QjRFOSIsICIjNjZmZjk5IikpCmdncGxvdGx5KHR3ZGF0YmFyKQpgYGAKQXQgdGhlIERhdGEgU2NpZW5jZSBkZXBhcnRtZW50LCB0aGUgbWFqb3JpdHkgb2Ygc2NpZW50aXN0IGhhcyBhIFR3aXR0ZXIgYWNjb3VudDogMzAgc2NpZW50aXN0cyBoYXZlIGEgVHdpdHRlciBhY2NvdW50IHdoaWxlIDE2IGRvIG5vdCBoYXZlIG9uZS4gIAoKYGBge3J9CnNlbDIgPC0gZGF0YWRlZl9kZiR0d2l0dGVyX2R1bT09MQpoaXN0KGRhdGFkZWZfZGYka2lbc2VsMl0sIGNvbD0icmVkIikKYGBgClRoZSBoaXN0b2dyYW0gc2hvd3MgdGhhdCBhdCB0aGUgRGF0YSBTY2llbmNlIGRlcGFydG1lbnQsIHRoZSBkaXN0cmlidXRpb24gb2YgdGhlIGstaW5kZXggaXMgZXZlbiBtb3JlIHNrZXdlZCB0aGFuIGF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudC4gTW9zdCBzY2llbnRpc3QgaGF2ZSBhIGstaW5kZXggYmV0d2VlbiAwIGFuZCAxLCB3aGlsZSBvbmx5IGEgZmV3IHNjaWVudGlzdHMgaGF2ZSBhIGstaW5kZXggaGlnaGVyIHRoYW4gdGhhdC4gQXBwcm94aW1hdGVseSB0d28gc2NpZW50aXN0IHdvdWxkIGJlIGNhdGVnb3JpemVkIGFzICJLYXJkYXNoaWFuIFNjaWVudGlzdHMiIGJ5IEhhbGwgKDIwMTQpCgoKYGBge3J9Cm1vZGVsa2kyIDwtIGxtKGtpIH4gZ2VuZGVyICsgZHV0Y2ggKyBwdWJfZmlyc3QsIGRhdGE9ZGF0YWRlZl9kZikKc3VtbWFyeShtb2RlbGtpMikKYGBgCgpBdCB0aGUgRGF0YSBTY2llbmNlIGRlcGFydG1lbnQsIHRoZSBrLWluZGV4IGlzIHByZWRpY3RlZApkaWZmZXJlbnRseSB0aGFuIGF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudCB3aGVuIGxvb2tpbmcgYXQgdGhlIGxpbmVhciByZWdyZXNzaW9uIGFib3ZlLiAKRm9yIHRoZSBEYXRhIFNjaWVuY2UgZGVwYXJ0bWVudCwgdGhlIGVmZmVjdCBvZiBnZW5kZXIgYW5kCmV0aG5pY2l0eSBhcmUgbm90IHNpZ25pZmljYW50LiBBZ2UgaXMgYSBzaWduaWZpY2FudCBwcmVkaWN0b3Igb2YgdGhlIGstaW5kZXguIFRoZSB5b3VuZ2VyIHRoZSBzY2llbnRpc3QsIHRoZSBoaWdoZXIgdGhlIGstaW5kZXguIEluIHRoZSAoaW50ZXJhY3RpdmUpIHBsb3QgYmVsb3csIGl0IGlzIGFsc28gdmlzaWJsZSB0aGF0IGdlbmRlciBhbmQgYWdlIGFyZSBsZXNzZXIgZGV0ZXJtaW5hbnRzIG9mIHRoZSBrLWluZGV4IHRoYW4gYXQgdGhlIFNvY2lvbG9neSBkZXBhcnRtZW50LiAKCmBgYHtyfQojIERpdCBub2cgYmlqIGFzc2lnbmluZyBnZW5kZXIgbmVlcnpldHRlbiAod2Vic2NyYXBpbmcpCmRhdGFkZWZfZGYkZ2VuZGVyW2RhdGFkZWZfZGYkaWQ9PTI2MV0gPC0gIm1hbGUiCmRhdGFkZWZfZGYkZ2VuZGVyW2RhdGFkZWZfZGYkaWQ9PTI3M10gPC0gIm1hbGUiCgpyZWdwbG90ZGF0IDwtIGdncGxvdChkYXRhZGVmX2RmLCBtYXBwaW5nID0gYWVzKHggPSBwdWJfZmlyc3QsIHkgPSBraSwgY29sb3I9Z2VuZGVyKSkgKwogICAgZ2VvbV9saW5lKCkgCiAKZ2dwbG90bHkocmVncGxvdGRhdCkKYGBgCgojIENvbXBhcmlzb24gb2YgdGhlIHR3byBkZXBhcnRtZW50cwpXaGVuIGNvbXBhcmluZyB0aGUgdHdvIGRlcGFydG1lbnRzLCB0aGVyZSBhcmUgc29tZSB0aGluZ3Mgd29ydGggbm90aW5nLiBSZWdhcmRpbmcgdGhlIG5ldHdvcmsgc3RydWN0dXJlLCB0aGUgZGVuc2l0eSBvZiB0aGUgY28tcHVibGljYXRpb24gbmV0d29yayBvZiBTb2Npb2xvZ3kgaXMgaGlnaGVyIHRoYW4gdGhhdCBvZiB0aGUgRGF0YSBTY2llbmNlIGRlcGFydG1lbnQuIFdpdGhpbiBTb2Npb2xvZ3ksIHNjaWVudGlzdHMgdGh1cyBjby1wdWJsaXNoIG1vcmUgd2l0aCBvdGhlcnMgb2YgdGhlIHNhbWUgZGVwYXJ0bWVudCwgYnV0IGF0IGJvdGggY2FzZXMgdGhlIGRlbnNpdHkgaXMgbG93LiBUaGlzIHNob3dzIHRoYXQgYXQgYm90aCBkZXBhcnRtZW50cyB0aGUgY28tcHVibGljYXRpb24gbmV0d29yayBpcyByYXRoZXIgc3BhcnNlLiBUaGlzIGlzIG5vdCBzdHJhbmdlLCBhcyB3aXRoaW4gYWNhZGVtaWEgaXQgaXMgbm90IGFsd2F5cyBwb3NzaWJsZSB0byBjby1wdWJsaXNoIHdpdGggYW55IHNjaWVudGlzdCBpbiB0aGUgbmV0d29yaywgYXMgdGhleSBtaWdodCBoYXZlIGRpZmZlcmVudCByZXNlYXJjaCBpbnRlcmVzdHMuIFRoZSB0cmFuc2l0aXZpdHkgZGlmZmVycyBhcyB3ZWxsIGJldHdlZW4gdGhlIHR3byBkZXBhcnRtZW50cy4gVGhlIHRyYW5zaXRpdml0eSBpcyBoaWdoZXIgYXQgRGF0YSBTY2llbmNlIHRoYW4gYXQgU29jaW9sb2d5LiBUaGlzIHNpZ25hbHMgdGhhdCBpdCBpcyBtb3JlIGNvbW1vbiBhbW9uZyBEYXRhIFNjaWVudGlzdHMgdG8gcHVibGlzaCBhcnRpY2xlcyB3aXRoIGNvLWF1dGhvcnMgb2YgY28tYXV0aG9ycy4gCgpXaXRoIHJlZ2FyZCB0byBUd2l0dGVyIGFuZCB0aGUgay1pbmRleCwgdGhlIGRlc2NyaXB0aXZlcyBzaG93IHRoYXQgYXQgYm90aCBkZXBhcnRtZW50cywgdGhlIG1ham9yaXR5IGhhcyBhIFR3aXR0ZXIgYWNjb3VudC4gQXQgdGhlIERhdGEgU2NpZW5jZSBkZXBhcnRtZW50LCBtb3N0IHNjaWVudGlzdHMgaGF2ZSBhIHZlcnkgbG93IGstaW5kZXggd2l0aCBzb21lIGV4Y2VwdGlvbnMsIHdoaWxlIGF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudCB0aGVyZSBhcmUgYSBmZXcgbW9yZSBzY2llbnRpc3RzIHdpdGggYSBrLWluZGV4IGFib3ZlIDEuIFRoaXMgY291bGQgc2hvdyB0aGF0IGZvciBTb2Npb2xvZ2lzdHMsIFR3aXR0ZXIgYWN0aXZpdHkgbWF5IGJlIGNvbnNpZGVyZWQgYXMgbW9yZSBpbXBvcnRhbnQgdGhhbiBmb3IgRGF0YSBTY2llbnRpc3RzLCBhbmQgZm9yIFNvY2lvbG9naXN0cyB0aGUgYWN0dWFsIHNjaWVudGlmaWMgb3V0cHV0IGluIHRlcm1zIG9mIGFydGljbGVzIG1pZ2h0IGJlIGxlc3MgaW1wb3J0YW50LiBQb3NzaWJseSwgdGhpcyBjb3VsZCBiZSBleHBsYWluZWQgYnkgdGhlIGZhY3QgdGhhdCBTb2Npb2xvZ2lzdHMgd291bGQgbGlrZSB0byBlbmdhZ2Ugd2l0aCBzb2NpZXR5IHRvIHNoYXJlIHRoZWlyIHJlc2VhcmNoLCBhcyB0aGlzIHNvY2lldHkgaXMgb2Z0ZW4gdGhlIHJlc2VhcmNoIHRvcGljLiBIb3dldmVyLCBmb3IgYm90aCBkZXBhcnRtZW50cywgdGhlcmUgYXJlIG5vIGNsZWFyIGhpbnRzIHRoYXQgdGhlc2Ugc2NpZW50aXN0cyB3aXRoIGEgaGlnaCBrLWluZGV4IGhhdmUgbW9yZSBvciBsZXNzIGNvLXB1YmxpY2F0aW9ucyB0aGFuIHNjaWVudGlzdHMgd2l0aCBhIGxvd2VyIGstaW5kZXguIAo=</div>
 
 
 </div>
@@ -872,7 +958,7 @@ $(document).ready(function () {
 <script>
 $(document).ready(function () {
   window.initializeSourceEmbed("descriptives.Rmd");
-  window.initializeCodeFolding("show" === "show");
+  window.initializeCodeFolding("hide" === "show");
 });
 </script>
 

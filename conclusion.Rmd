@@ -1,0 +1,57 @@
+---
+title: "introduction"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+bibliography: references.bib
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+# Conclusion
+
+In the present study, I aimed to provide more insights into the influence that social media activity has on the collaboration – and more specifically co-publication – networks of scientists. As sometimes social media presence and activity could be at the cost of actual scientific output [@califf_perspective_2020], it is important to investigate the value that is attached to this social media activity in terms of selecting others for co-authorships. Using the Kardashian Index [@hall_kardashian_2014] and data on two university departments scraped from the Internet, I studied both descriptively and with SOAM using RSiena [@manual] whether this k-index has an influence on these co-publication networks. 
+
+Regarding the descriptive questions, I wanted to scrutinize differences within and between the co-publication networks of Sociology and Data Science. Within the Sociology network, I learned that the majority of scientists has a Twitter account. Also, as also found by Khan and colleagues [-@khan2020kardashian], most scientists have a k-index between 0 and 1, but a few scientists could be categorized as “Kardashian Scientist” [@hall_kardashian_2014]. In the Sociology network, those with a higher k-index did not seem to have a more central role with regard to co-publications. Within Data Science, I could see that most scientists have a Twitter account, and have a low k-index. Again, there are a few exceptions of scientists with a higher k-index. Furthermore, the scientists with a higher k-index did not seem to be selected more often as co-authors. 
+
+When comparing between the networks, I saw that there’s a higher variation of the k-index at Sociology than at Data Science. At the Sociology department, there are a little more scientists with a k-index above 1. Nevertheless, as stated before, in both departments the k-index did not seem to be important factors to take into account when selecting co-authors. The descriptive statistics did suggest that structural factors could play a role in collaboration. For the Sociology department, the density was higher than for the Data Science department. For the Data Science department, the transitivity was higher than for the Sociology department. Data scientists therefore seem to have a preference to publish with co-authors of their co-authors (within the network) and might find this more important than one’s k-index. 
+
+Importantly, the meaning of these findings could not be tested using these descriptive statistics. Therefore, I estimated RSiena models, as this could test the influence of the k-index and other factors while also taking into account the structure of the networks in which the scientists of both departments are embedded. In line with findings of previous research [@barabasi_evolution_2002; @block_reciprocity_2015;
+@newman_structure_2001; @wang_homophily_2014], the structure of the networks indeed seemed to matter for selecting co-authors. For the Sociology department, scientists prefer to co-publish with a co-author of a co-author and with scientists that are popular and active in terms of co-publications. For the Data Science department, it also applied that these scientists prefer to co-publish with co-authors of their co-authors, but the popularity and activity of their co-authors did not play an important role. In both networks, homophily in gender, age and ethnicity did not turn out to be important criteria for selecting co-authors. This extends on Wang & Zhu’s [-@wang_homophily_2014] findings, who concluded that there is homophily based on research interests and institutions in collaboration networks. Possibly, similarity in age, gender and ethnicity are less important. 
+
+Central to this study is of course the influence of the k-index. As was also visible in the descriptive statistics, the k-index did not seem crucial when selecting co-authors when also considering influences of age, ethnicity and gender. So, scientists at both departments do not seek homophile co-publication ties based on their k-index, nor do they feel attracted to or disapproval towards scientists with a high k-index. The same applies to the number of followers on Twitter; this seems not to be regarded by scientists at both departments. Interestingly however, the Twitter status of scientists is considered when finding authors to co-publish with. At both departments, scientists had a preference to co-publish with someone that shows similarity in terms of their Twitter account. Apparently, scientists do seek homophily in attitudes towards creating a Twitter account, but then are not concerned about their activity on social media and whether this is line with the number of citations the other scientist has. This also shows that scientists may not be critical enough to verify the status of other scientists and whether this is based on social network performance or scientific performance. 
+
+The fact that the k-index and the number of Twitter followers were not of importance to scientists, may have to do with the data and analysis. Since the network is undirected, this could skew the results. For instance, if scientist A has a k-index of 4, and scientist B has a k-index of 1, the absolute difference would be 3. However, as the tie for co-publication appears “simultaneously” it cannot be stated whether scientist A selects B for their lower k-index or the other way around. The difference is thus 3, but it cannot be concluded whether scientists prefer a higher or lower k-index, as scientist A has a preference to co-publish with a scientist with a lower k-index, while scientists B simultaneously prefers to co-publish with a scientist with a higher k-index. Therefore, repeating this study with a directed network would be better to test the direction of these influences and to really assess if the k-index is regarded and whether it is a higher or lower k-index that is preferred. 
+
+Furthermore, in future research the k-index should be included as a dynamic variable. As now the k-index was based on the number of Twitter followers and citations at one time-point (2022), it is difficult to distinguish between selection and influence. Throughout the study, it was assumed and hypothesized that scientists select other scientists because of their k-index. However, it is also possible that after scientists co-publish, they get influenced by each other in Twitter activity and their k-index. Future studies should therefore include Twitter data at several points in time and calculate the k-index dynamically, to test whether co-publication ties are shaped because of this k-index or the k-index changes because of the co-publication ties. 
+
+Important to mention, the data collection of the present study is subject to ethical considerations. Scientists who were included in this study did not give official consent to participate. However, measures were taken to collect the data in an ethical manner. First, the names were scraped from the public website of the Radboud University, and scientists have given consent to be on this website. Second, Google Scholar profiles are also created voluntarily by the scientists, meaning that they are aware that this academic information about them is available on the Internet. Third, by using Twitter’s API, freely available data were collected, for which I had to register first. Also, the current study only included whether a scientist has a Twitter account and the number of followers, which – unlike tweets – is information that every Twitter user can gather, also from private accounts.  Fourth, the sample sizes were small, not requesting too much information at once from the websites used for scraping. Fifth, for scraping gender using the Meerten’s namenbank [@databanken_meertens_instituut], I introduced myself to the server before scraping. However, I did not do this at each website, which is something that could increase the ethics even more in future research.  Lastly, although the names are publicly available on the Internet, I decided not to mention any names in the text and plots of the current paper. All in all, I believe that the ethical considerations are taken into account during this study, especially because efforts are made to increase transparency and replicability by using this website and GitHub. 
+
+The current study has aimed to increase our understanding of social network analysis, by looking at the influence of the k-index on the co-publication networks of two departments of one university. Next to the investigation of the structural influences of transitivity, homophily [@mcpherson_birds_2001], density and preferential attachment [@barabasi_evolution_2002], the influences of the k-index, (not) having a Twitter account, age, ethnicity and gender were studied. The outcome of this study, namely that the k-index is not of importance in the selection of co-authors, shows that this aspect of social media does not have an influence on inequal relations, a change in the cohesion of a network or an in- or decrease of the diversity within co-publication networks. Although performing a social network analysis influences the way data should be collected, as it is necessary to have information on ties between individuals, this was solved by scraping my own social network data from the Internet. 
+
+
+# References
+

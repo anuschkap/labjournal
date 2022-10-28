@@ -31,13 +31,13 @@ rm(list=ls())
 
 # My movez tutorial 
 
-```{r}
+```{r, eval=FALSE}
 #install.packages("sna")
 #install.packages("ape")
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 library(RSiena)
 library(sna)
 library(ape)
@@ -45,7 +45,7 @@ library(network)
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 fMoran.I <- function(x, weight, scaled = FALSE, na.rm = FALSE, alternative = "two.sided", rowstandardize = TRUE) {
     if (rowstandardize) {
         if (dim(weight)[1] != dim(weight)[2]) 
@@ -142,7 +142,7 @@ fMoran.I <- function(x, weight, scaled = FALSE, na.rm = FALSE, alternative = "tw
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 fanscsv <- function(ans = ans, filename = "ans.csv", write = TRUE) {
     ans1_mat <- matrix(NA, nrow = length(ans$effects[, 2]), ncol = 3)
     row.names(ans1_mat) <- ans$effects[, 2]
@@ -160,13 +160,13 @@ fanscsv <- function(ans = ans, filename = "ans.csv", write = TRUE) {
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 load("/Users/anuschka/Documents/labjournal/data/beh_data.RData")  #change to your working directory
 str(ExData, 1)
 str(ExData$depvars, 1)
 ```
 
-```{r}
+```{r, eval=FALSE}
 library(network)
 friend.data.w1 <- s501
 friend.data.w2 <- s502
@@ -186,7 +186,7 @@ snam1[2]  #the first order matrix is stored in second list-element
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 geodistances <- geodist(net1, count.paths = TRUE)
 geodistances <- geodistances$gdist
 
@@ -197,11 +197,11 @@ weights1 <- geodistances == 1
 ape::Moran.I(drink[, 1], scaled = FALSE, weight = weights1, na.rm = TRUE)
 ```
 
-```{r}
+```{r, eval=FALSE}
 fMoran.I(drink[, 1], scaled = FALSE, weight = weights1, na.rm = TRUE, rowstandardize = FALSE)
 ```
 
-```{r}
+```{r, eval=FALSE}
 # step 1: calculate distances
 geodistances <- geodist(net1, count.paths = TRUE)
 geodistances <- geodistances$gdist
@@ -217,7 +217,7 @@ weights2 <- exp(-geodistances)
 fMoran.I(drink[, 1], scaled = FALSE, weight = weights2, na.rm = TRUE, rowstandardize = FALSE)
 ```
 
-```{r}
+```{r, eval=FALSE}
 # step 1: calculate distances
 fnet <- ExData$depvars$friendship[, , 1]
 fnet[fnet == 10] <- 0
@@ -237,7 +237,7 @@ weights2 <- exp(-geodistances)
 fMoran.I(ExData$depvars$mvpa_y[, , 1], scaled = FALSE, weight = weights2, na.rm = TRUE, rowstandardize = TRUE)
 ```
 
-```{r}
+```{r, eval=FALSE}
 # some background info:
 nclass <- c(28, 18, 18, 18, 18, 25, 24)
 classid <- rep(1:7, times = nclass)
@@ -245,15 +245,15 @@ classid <- rep(1:7, times = nclass)
 print("Moran's I: class 1")
 ```
 
-```{r}
+```{r, eval=FALSE}
 fMoran.I(ExData$depvars$mvpa_y[, , 1][1:28], scaled = FALSE, weight = weights2[1:28, 1:28], na.rm = TRUE, 
     rowstandardize = TRUE)
 ```
 
-```{r}
+```{r, eval=FALSE}
 print("Moran's I: class 2")
 ```
-```{r}
+```{r, eval=FALSE}
 fMoran.I(ExData$depvars$mvpa_y[, , 1][29:46], scaled = FALSE, weight = weights2[29:46, 29:46], na.rm = TRUE, 
     rowstandardize = TRUE)
 ```
@@ -261,7 +261,7 @@ fMoran.I(ExData$depvars$mvpa_y[, , 1][29:46], scaled = FALSE, weight = weights2[
 From the site: "Correlations within classes are somewhat lower and/or not significant. Probably there is thus also similarity beween pupils because they are in the same class (might be due to selection and influence processes, or class/context effects of course)."
 --> why is this the conclusion when there is a lower similarity?
 
-```{r}
+```{r, eval=FALSE}
 # Step 1: DATA
 friend.data.w1 <- s501
 friend.data.w2 <- s502
@@ -313,7 +313,7 @@ myCoEvAlgorithm <- sienaAlgorithmCreate(projname = "s50CoEv_3")
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 # these are the respective class sizes.
 nclass <- c(28, 18, 18, 18, 18, 25, 24)
 classid <- rep(1:7, times = nclass)
@@ -324,7 +324,7 @@ class1 <- sienaDataCreate(test$depvars$friendship, test$depvars$advice, test$dep
     test$cCovars$sex, test$cCovars$lft, test$cCovars$primary, test$vCovars$mvpa_x)
 ```
 
-```{r}
+```{r, eval=FALSE}
 require(RSiena)
 require(xtable)  # for some html output
 
@@ -341,7 +341,7 @@ myalgorithm <- sienaAlgorithmCreate(projname = "segtest1")
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 # Step 4: set effects
 NBeff <- getEffects(mydata)
 # have a look at all possible effects effectsDocumentation(NBeff) #uncomment if you want to have a
@@ -358,41 +358,43 @@ NBeff <- getEffects(mydata)
 NBeff <- includeEffects(NBeff, inPop, transTrip, transRecTrip)
 ```
 
-```{r}
+```{r, eval=FALSE}
 # selection effects
 NBeff <- includeEffects(NBeff, egoX, altX, egoXaltX, interaction1 = "ethnicNLNA")
 ```
 
-```{r}
+```{r, eval=FALSE}
 NBeff <- includeEffects(NBeff, egoX, altX, sameX, interaction1 = "sex")
 ```
 
-```{r}
+```{r, eval=FALSE}
 NBeff <- includeEffects(NBeff, egoX, altX, absDiffX, interaction1 = "mvpa_y")
 ```
 
-```{r}
+```{r, eval=FALSE}
 # behavioral model: node effects
 NBeff <- includeEffects(NBeff, effFrom, name = "mvpa_y", interaction1 = "sex")
 ```
 
-```{r}
+```{r, eval=FALSE}
 NBeff <- includeEffects(NBeff, effFrom, name = "mvpa_y", interaction1 = "lft")
 ```
-```{r}
+
+```{r, eval=FALSE}
 NBeff <- includeEffects(NBeff, effFrom, name = "mvpa_y", interaction1 = "ethnicNLNA")
 ```
 
-```{r}
+```{r, eval=FALSE}
 # influence effects
 NBeff <- includeEffects(NBeff, totSimRecip, name = "mvpa_y", interaction1 = "friendship")
 ```
 
-```{r}
+```{r, eval=FALSE}
 # look at all effects
 NBeff
 ```
-```{r}
+
+```{r, eval=FALSE}
 # Please uncomment this section. I just don't want to reestimate the model. It does take a while.
 (ans <- siena07(myalgorithm, data = ExData, effects = NBeff)) 
 save(ans, file="/Users/anuschka/Documents/labjournal/data/ans.RData")

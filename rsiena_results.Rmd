@@ -2,7 +2,13 @@
 title: "R Siena"
 author: "Anuschka Peelen"
 date: "`r Sys.Date()`"
-output: html_document
+bibliography: references.bib
+output: 
+  html_document:
+     code_folding: "hide"
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r warning=FALSE, globalsettings, echo=FALSE, results='hide'}
@@ -29,6 +35,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, echo=FALSE}
+library(RSiena)
+library(tidyverse)
+
 load("/Users/anuschka/Documents/labjournal/data/data_net_array.RData")
 load("/Users/anuschka/Documents/labjournal/data/socdef_net_array.RData")
 load("/Users/anuschka/Documents/labjournal/data/socdef_df.RData")
@@ -36,14 +45,9 @@ load("/Users/anuschka/Documents/labjournal/data/datadef_df.RData")
 load("/Users/anuschka/Documents/labjournal/data/soc_twitterinfo.RData")
 ```
 
-# Estimate a model for sociology
+# RSiena Models for Sociology
+First, the models for the Sociology department will be estimated. Afterwards, these models will be estimated for the Data Science department. 
 
-```{r, echo=FALSE}
-#load dataobjects
-#load("./data/soc_staff_cit.RData")
-library(RSiena)
-library(tidyverse)
-```
 
 ```{r, eval=FALSE}
 #dependent
@@ -84,19 +88,21 @@ twitter_dum <- coCovar(twitter_dum)
 # socdef_df %>% mutate(pub_first = replace_na(pub_first, 2023)) -> socdef_df
 
 pub_first <-  coCovar(socdef_df$pub_first)
-```
 
-```{r, eval=FALSE}
 mydata <- sienaDataCreate(snet, gender, ki, dutch, pub_first, twitter_dum)
-```
 
-```{r,eval=FALSE}
 ### Step 2: create effects structure
 myeffs <- getEffects(mydata)
 effectsDocumentation(myeffs)
 ### Step 3: get initial description
 print01Report(mydata, modelname = "/Users/anuschka/Documents/labjournal/results/soc_report")
 ```
+
+<!---to show this file in your lab journal use the following code---> 
+
+![](results/soc_report.txt){#id .class width=100% height=200px}
+
+The report above shows - next to the descriptives of the variables included - the Jaccard Index. This is an index for stability and change in networks, as it counts the number of stable ties, new ties and dissolved ties when comparing waves. In the first change period (wave 1 and 2), the Jaccard Index of this model is 0.359. For the subsequent comparison of waves, the Jaccard Index is 0.327. When above 0.3, the values are good to estimate [@manual]
 
 ```{r,eval=FALSE}
 ### Step4: specify model with structural effects
@@ -113,17 +119,37 @@ myAlgorithm <- sienaAlgorithmCreate(projname = "soc_report")
 (ans <- siena07(myAlgorithm, data = mydata, effects = myeffs, prevAns = ans))
 ```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=FALSE}
 #Save the last model since it has the lowest maximum convergence ratio. 
 save(ans, file="/Users/anuschka/Documents/labjournal/results/soc_model_struc")
 ```
+
 
 ```{r, echo=FALSE}
 load("/Users/anuschka/Documents/labjournal/results/soc_model_struc")
 summary(ans)
 ```
 
-In the above model output, we can see that the density effect is strongly negative and significant. In the network, staff members do not have the wish to copublish with everyone (HOW CAN I INTERPRET THIS BECAUSE NOW THE EFFECT IS VERY STRONG). We also observe that within this network, there is a significant and positive transitive triads effect, meaning that staff members prefer a transitive tie rather than no transitive tie. We also learn that staff members prefer to publish together with staff members that have already published, hence the significant activity and popularity effect.
+The first model with only the structural network effects, shows that the density effect is strongly negative (b=-2.687; se=0.347) and significant. As this is the effect of the observed ties as part of all possible ties and a degree of 0 would equal the fact that 50% of possible ties would be observed, it is logic that this number is below zero. Furthermore, a significant and positive effect (b=0.599; se=0.240) of transitive triads can be observed, meaning that scientists of Sociology prefer a transitive tie rather than no transitive tie. Lastly, the activity and popularity effect (b=0.090; se=0.036) is also significant, signalling that scientists at this department prefer to co-publish with other staff members that have already co-published. 
+
+```{r, eval=FALSE}
+myeffs1a <- getEffects(mydata)
+myeffs1a <- includeEffects(myeffs1a, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffs1a <- includeEffects(myeffs1a, transTriads)
+myeffs1a <- includeEffects(myeffs1a, absDiffX, interaction1 = "ki")
+(ans1a <- siena07(myAlgorithm, data = mydata, effects = myeffs1a, prevAns = ans))
+```
+```{r, eval=FALSE, echo=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans1a, file="/Users/anuschka/Documents/labjournal/results/soc_model_cov1a")
+```
+
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/soc_model_cov1a")
+summary(ans1a)
+```
+When adding the k-index to the model, the structural network effects remain significant. The effect of the k-index is negative (b=-0.231; se=0.062) and significant, meaning that scientists at the Sociology department prefer to co-publish with someone with a lower k-index than themselves. However, as this effect shows the absolute difference, it can also be interpreted as a rather small effect, indicating a preference for similarity regarding the k-index. This could thus support the idea of homophily with regard to the k-index. 
 
 ```{r,eval=FALSE}
 myeffs1 <- getEffects(mydata)
@@ -150,9 +176,30 @@ load("/Users/anuschka/Documents/labjournal/results/soc_model_cov1")
 summary(ans1)
 ```
 
-Now apart from the network effects (which effects remain significant), the KI is now included as a covariate. We see that this effect is not signficant.This means that scientists do not prefer to co-publish with other scientist that have a similar Kardashian Index. Apparently, this is not something the staff members consider in the selection process of co-publishing. This also applies to ethnicity, age and gender, as we see that these effects are both insignificant. However, we do see that there is a significant effect of having Twitter or not. Staff members at sociology have a preference to work together with someone who is the same in terms of (not) having Twitter.
+However, when adding the control variables, the significant effect of the k-index disappears (b=-0.017; se=0.065) Thus, when taking into account not only structural network effects but also other covariates, the effect of homophily in k-index does not hold. Therefore, the hypothesis on similarity with regard to the k-index cannot be supported. Scientists at this department do not seem to consider the k-index of their possible co-authors. This also applies to ethnicity (b=0.277; se=0.366), age (b=0.007; se=0.019), and gender (b=0.000; se=0.266), as these effects are all insignificant. Interestingly, there is a significant effect of having Twitter or not (b=0.929; se=0.294). Sociologists at this department have a preference to work together with someone who is the similar in terms of (not) having Twitter.
 
-```{r,eval=FALSE}
+```{r, eval=FALSE}
+myeffs2a <- getEffects(mydata)
+myeffs2a <- includeEffects(myeffs2a, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffs2a <- includeEffects(myeffs2a, transTriads)
+myeffs2a <- includeEffects(myeffs2a, altX, interaction1 = "ki")
+(ans2a <- siena07(myAlgorithm, data = mydata, effects = myeffs2a, prevAns = ans1a))
+```
+
+```{r, eval=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans2a, file="/Users/anuschka/Documents/labjournal/results/soc_model_cov2a")
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/soc_model_cov2a")
+summary(ans2a)
+```
+
+In the model above where the effect of the k-index of the alter is included, this effect turns out to be insignificant (b=0.005; se=0.096). The k-index of the alter (regardless of one's own k-index) is thus not regarded when looking to co-publishing with others of the department. 
+
+
+```{r, eval=FALSE}
 myeffs2 <- getEffects(mydata)
 myeffs2 <- includeEffects(myeffs2, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
 myeffs2 <- includeEffects(myeffs2, transTriads)
@@ -177,9 +224,9 @@ load("/Users/anuschka/Documents/labjournal/results/soc_model_cov2")
 summary(ans2)
 ```
 
-The above model shows us that the effect of the KI of the alter is not significant. This could mean that scientists do not regard the Kardashian Index of the other, so it does not matter whether it's lower or higher than their own.
+When including the control variables, the alter effect of the k-index remains insignificant (b=0.017; se=0.100). This rejects the hypothesis on co-publication with scientists with a lower or higher k-index, as for the scientists at the Sociology department, the k-index of their co-authors does not matter. Furthermore, the effect of gender (b=-0.006; se=0.274), age (b=0.008; se=0.021), and ethnicity (b=0.285; se=0.362) are again not significant. The effect of similarity in having a Twitter account (b=0.943; se=0.301) is significant. As concluded before, scientists at this department do prefer to co-publish with other scientists that are similar in terms of their Twitter account. 
 
-# RSiena Data Science
+# RSiena models for Data Science
 
 ```{r}
 rm(list=ls())
@@ -237,9 +284,13 @@ effectsDocumentation(myeff)
 print01Report(mydata, modelname = "/Users/anuschka/Documents/labjournal/results/data_report")
 ```
 
+![](results/data_report.txt){#id .class width=100% height=200px}
+
+For Data Science, the Jaccard Index of the first comparison of waves is 0.304. For the second wave change, the index is 0.286. These are lower numbers than at the Sociology department, but they are still high enough to estimate correctly [@manual]
+
 ```{r, eval=FALSE}
 ### Step4: specify model
-myeff <- includeEffects(myeff, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeff <- includeEffects(myeff, degPlus) 
 myeff <- includeEffects(myeff, transTriads)
 ```
 
@@ -261,7 +312,27 @@ load("/Users/anuschka/Documents/labjournal/results/data_model_struc")
 summary(ans)
 ```
 
-In this model of data science we see similar effects as at the sociology department. There again is a negative density effect, albeit less strong. Data scientist have a preference for copublishing with staff members that they know from publishing with other staff members (the transitivity), and this effect is larger for this network than that of sociology. This was also visible in the transitivity effect of the descriptive statistics. The effect of activity and popularity is insignificant: Apparently data scientist do not have a preference to copublish with staff members that have already copublished a lot.
+In the first model for Data Science with structural network effects, similar effects are visible as at the Sociology department. There again is a negative density effect (b=-2.359; se=0.284), albeit less strong. The transitivity effect (b=1.254; se=0.212) is larger for this network than for the Sociology department. Data scientists prefer to co-publish with co-authors of their co-authors more than Sociologists, which is in line with the transitivity observed from the descriptive statistics. The effect of activity and popularity (b=0.034; se=0.031) is insignificant: Apparently Data scientists do not have a preference to co-publish with scientists of their department who have already co-published many times. 
+
+```{r,eval=FALSE}
+myeffd1a <- getEffects(mydata)
+myeffd1a <- includeEffects(myeffd1a, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffd1a <- includeEffects(myeffd1a, transTriads)
+myeffd1a <- includeEffects(myeffd1a, absDiffX, interaction1 = "ki")
+(ansd1a <- siena07(myAlgorithm, data = mydata, effects = myeffd1a, prevAns = ans))
+```
+
+```{r, eval=FALSE}
+#Save the last model since it has the lowest maximum convergence ratio. 
+save(ansd1a, file="/Users/anuschka/Documents/labjournal/results/data_model_cov1a")
+```
+
+```{r, echo=FALSE}
+load("/Users/anuschka/Documents/labjournal/results/data_model_cov1a")
+summary(ansd1a)
+```
+
+In contrast to the Sociology department, the effect of difference in k-index is not significant (b=-0.096; se=0.087) at the Data Science department. From the above model without control variables it can already be concluded that Data Scientists do not compare their k-index with their possible co-authors and that they do not seem to attach value to this index. 
 
 ```{r,eval=FALSE}
 myeffd1 <- getEffects(mydata)
@@ -272,11 +343,9 @@ myeffd1 <- includeEffects(myeffd1, sameX, interaction1 = "dutch")
 myeffd1 <- includeEffects(myeffd1, absDiffX, interaction1 = "pub_first")
 myeffd1 <- includeEffects(myeffd1, sameX, interaction1 = "twitter_dum")
 myeffd1 <- includeEffects(myeffd1, sameX, interaction1 = "gender")
-```
-
-```{r, eval=FALSE}
 (ansd1 <- siena07(myAlgorithm, data = mydata, effects = myeffd1, prevAns = ans))
 ```
+
 
 ```{r, eval=FALSE}
 #Save the last model since it has the lowest maximum convergence ratio. 
@@ -288,20 +357,26 @@ load("/Users/anuschka/Documents/labjournal/results/data_model_cov1")
 summary(ansd1)
 ```
 
-In the above model, the structural effects are the same as in the first model. Just like at the sociology department, the effects of the KI, ethnicity and age are not significant. These factors do not play a role in the selection effect of finding co-authors. (Not) having twitter is significant, thus the data science staff do select staff members to copublish with that have the same twitter status as themselves. (IN THIS MODEL NOT SIGNIFICANT, CHECK AGAIN WHAT HAPPENS IN BETTER FITTING MODEL)
+As expected, the k-index remains insignificant (b=-0.118; se=0.093) when adding the control variables to the model. Comparable to the Sociology department, the effects of age (b=-0.014; se=0.013), gender (b=-0.063; se=0.221) and ethnicity (b=-0.012; se=0.205) are not significant. Similarity in age, gender and ethnicity thus does not play a role in the selection of suitable co-authors. (Not) having Twitter is significant (b=0.427; se=0.208), thus the Data scientists do select scientists to co-publish with who have a similar Twitter status as themselves. 
+
+```{r, eval=FALSE}
+myeffd2a <- getEffects(mydata)
+myeffd2a <- includeEffects(myeffd2a, degPlus) 
+myeffd2a <- includeEffects(myeffd2a, transTriads)
+myeffd2a <- includeEffects(myeffd2a, altX, interaction1 = "ki")
+(ansd2 <- siena07(myAlgorithm, data = mydata, effects = myeffd2a, prevAns = ansd1))
+```
+In the above model, it turns out that the effect of the k-index of the alter (regardless of the k-index of ego) is also not significant (b=-0.109; se=0.177), which is the same at both departments. 
 
 ```{r,eval=FALSE}
 myeffd2 <- getEffects(mydata)
-myeffd2 <- includeEffects(myeffd2, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffd2 <- includeEffects(myeffd2, degPlus) 
 myeffd2 <- includeEffects(myeffd2, transTriads)
 myeffd2 <- includeEffects(myeffd2, altX, interaction1 = "ki")
 myeffd2 <- includeEffects(myeffd2, sameX, interaction1 = "dutch")
 myeffd2 <- includeEffects(myeffd2, absDiffX, interaction1 = "pub_first")
 myeffd2 <- includeEffects(myeffd2, sameX, interaction1 = "twitter_dum")
 myeffd2 <- includeEffects(myeffd2, sameX, interaction1 = "gender")
-```
-
-```{r, eval=FALSE}
 (ansd2 <- siena07(myAlgorithm, data = mydata, effects = myeffd2, prevAns = ansd1))
 ```
 
@@ -315,4 +390,11 @@ load("/Users/anuschka/Documents/labjournal/results/data_model_cov2")
 summary(ansd2)
 ```
 
-In the last model, we see that the KI of the alter again does not matter.
+In the model with the control variables added, the effect of alter's k-index remains insignificant (b=-0.183; se=0.195). The hypotheses on co-publication with scientists with a lower or higher k-index are thus also not confirmed for Data Scientists. Just like in the other models for Data Science, age (b=-0.016; se=0.012), gender (b=-0.125; se=0.223), and ethnicity (b=-0.026; se=0.213) are not of significant importance for selecting scientists to co-publish with. (Not) having a Twitter account is something that remains of importance (b=0.445; se=0.216): also in this model it shows that Data scientists prefer to co-publish with another scientists that is similar with regard to their Twitter profile. 
+
+# Robustness checks
+It is possible that the k-index is not significant throughout most models, because scientists do not regard the ratio between Twitter activity and scientific publications, but especially care about Twitter activity. In Appendix A, the same models are run as above, but then without the k-index and with the number of Twitter followers included. For both Sociology and Data Science, the effects of the number of Twitter followers are insignificant. This applies to the effects of absolute difference as well as the alter's number of followers. These effects are thus rather similar as the results of the k-index. One difference noted is that the first model for Sociology in Appendix A is insignificant, while the absolute difference between the k-index was significant for Sociology when control variables were not included. However, also the effect of the k-index became insignificant when including the control variables, and thus equal conclusions would be drawn from the models with the k-index and that with the number of twitter followers.   
+
+In Appendix B, the same models are run without the dummy for having a Twitter account. This again results in similar outcomes, meaning that the effect of having Twitter when included in the model does not take away the possible effect of the k-index. In these models without the Twitter dummy, the k-index remains insignificant. Again, the same conclusions would be drawn. Therefore, the results are rather robust. 
+
+#References 

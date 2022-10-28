@@ -1,9 +1,10 @@
-
 ---
 title: "Descriptive Statistics"
 author: "Anuschka Peelen"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document:
+     code_folding: "hide"
 editor_options: 
   markdown: 
     wrap: 72
@@ -31,14 +32,11 @@ klippy::klippy(position = c('top', 'right'))
 #klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
 ```
 
-
-```{r}
+```{r, echo=FALSE, results='hide'}
 #start with clean workspace 
 rm(list=ls())
 getwd()
 ```
-
-# packages
 
 ```{r, echo=FALSE}
 library(data.table) 
@@ -46,128 +44,164 @@ library(tidyverse)
 require(stringi)
 require(Rsiena)
 require(igraph)
+library(ggplot2)
+
+#install.packages("plotly")
+library(plotly)
 
 ```
-
-# Data
 
 ```{r, echo=FALSE}
 #load dataobjects
 load("/Users/anuschka/Documents/labjournal/data/socdef_net_array.RData")
+load("/Users/anuschka/Documents/labjournal/data/socdef_df.RData")
 ```
 
-
-```{r}
+```{r, echo=FALSE}
 snet1 <- soc_net_array[ ,, 1]
 snet2 <- soc_net_array[ ,, 2]
 snet3 <- soc_net_array[ ,, 3]
-```
 
-```{r}
 diag(snet1) <- 0
 diag(snet2) <- 0
 diag(snet3) <- 0
-
 ```
 
+# Sociology
 
-# Descriptives of sociology network 2016-2017
+## Plots of the Sociology department 
 ```{r}
 snet1_g <- igraph::graph_from_adjacency_matrix(snet1, mode = c("undirected"))
-plot(snet1_g)
+snet2_g <- igraph::graph_from_adjacency_matrix(snet2, mode = c("undirected"))
+snet3_g <- igraph::graph_from_adjacency_matrix(snet3, mode = c("undirected"))
+
+socdef_df$twitter_dum[socdef_df$id==36]<- 1
+socdef_df$twitcol <- ifelse(socdef_df$twitter_dum == 0, "#56B4E9", "#66ff99")
+
+#Dit zou ik nog even moeten checken of dit klopt, want er lijken ineens ties weg te vallen door die coördinaten toe te voegen?
+l <- igraph::layout_with_mds(snet1_g)
+l[14,1] <- 0
+l1 <- igraph::layout_with_mds(snet2_g)
+l1[14,1] <- 0
+l2 <- igraph::layout_with_mds(snet3_g)
+l2[14,1] <- 0
+
+#Wat wil ik met de nummers in de plot, moet ik die nog veranderen in namen? Maar wil het graag anoniem houden.
+plot(snet1_g, vertex.color = socdef_df$twitcol, vertex.size=socdef_df$ki,  vertex.size = 10, vertex.frame.color = "gray",
+    vertex.label.color = "black", vertex.label.family = "Helvetica", vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5, layout=l)
+plot(snet2_g, vertex.color = socdef_df$twitcol, vertex.size=socdef_df$ki,  vertex.size = 10, vertex.frame.color = "gray",
+    vertex.label.color = "black", vertex.label.family = "Helvetica", vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5, layout=l1)
+plot(snet3_g, vertex.color = socdef_df$twitcol, vertex.size=socdef_df$ki,  vertex.size = 10, vertex.frame.color = "gray",
+    vertex.label.color = "black", vertex.label.family = "Helvetica", vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5, layout=l2)
 
 ```
-In the plot above we see that there are quite a lot of copublications within the network of Sociology, but also that about half of the staff did not publish with others of the department yet. These are probably the younger staff that did not work (or just started working) at the department yet and thus did not copublish. We can also see that node 14 is the most "productive" in the sense of copublishing with the other staff. This could be an older staff member who had more opportunities to publish with many individuals of the staff. 
 
+
+From the plots of the Sociology department it's visible that there are quite a lot of co-publications within the network of Sociology. The first plot (of the year 2016-2017) shows that many scientists did not co-publish yet, but this increased over the years. This can be explained by the fact that a number of (younger) scientists did not yet work at the department in e.g. 2016, which results in no co-publication tie. Since node 14 is the most "productive" in the sense of co-publishing with others, I have put this node central in all the plots to show the evolution. This is an older scientist who has had more opportunities to publish with other individuals of the staff.   
+
+Another conclusion that can be drawn from the plot, is that individuals with a higher k-index do not have more co-publication ties. As I based the vertex size on the k-index, a higher k-index results in a larger vertex in the plot. It is visible that node 28 and 30 have the highest k-index, but this did not result in co-publications for node 30. For node 28, there is an increase of 3 co-publication ties when comparing the latter 2 plots. This could signal that this scientist is attractive to others because of the k-index, but this conclusion cannot be drawn yet from this plot alone. Therefore, this plot does not hint at selection effects based on k-index.  
+
+## Descriptives of the Sociology network
 
 ```{r}
 sdegree <- igraph::degree(snet1_g)
-hist(sdegree)
+sdegree2 <- igraph::degree(snet2_g)
+sdegree3 <- igraph::degree(snet3_g)
+
+
+#par(mfrow=c(3,1))
+hist(sdegree, col="#99d6ff")
+hist(sdegree2, col="#99d6ff")
+hist(sdegree3, col="#99d6ff")
+```
+
+In the histograms above it is shown that the degree of the network is right-skewed. This means that most scientists in the network don't have many other scientists within the department they co-published with. 
+This is strongest for first the histogram, showing the first wave (2016-2017). In the following year, there still is a right-skewed distribution of the degrees, but there are a little more staff members in the tail of the distribution, meaning that these scientists have quite a lot of copublication ties. This occurs the most strongly in the histogram of the last years (2020 until now). 
+
+
+```{r}
 igraph::dyad.census(snet1_g)
 igraph::triad.census(snet1_g)
 igraph::edge_density(snet1_g)
 
-```
-In the histogram above we see that the degree of the network at that moment was right-skewed. This means that most people in the network don't have very many individuals they copublished with (and because it is an undirected network, this applies vice versa for the other person connected with the tie)
 
-We see that there are 26 dyads in the network. The edge density is 0.049, which means that the number of edges existing in the network is relatively low as part of the maximum number there could possibly be. 
-
-# Descriptives of the sociology network 2018-2019
-
-```{r}
-snet2_g <- igraph::graph_from_adjacency_matrix(snet2, mode = c("undirected"))
-plot(snet2_g)
-```
-The plot from the following 2 years is actually quite similar to the one above. Again about half of the staff did not copublish yet. Node 14 still seems to have the most copublication ties, although node 7 has now also become more central in the network. 
-
-```{r}
-sdegree2 <- igraph::degree(snet2_g)
-hist(sdegree2)
 igraph::dyad.census(snet2_g)
 igraph::triad.census(snet2_g)
 igraph::edge_density(snet2_g)
 
-```
-We also still observe a right-skewed distribution of the degrees, but now we can see that there are a little more staff members in the tail of the distribution, meaning that there are a few staff members that have quite a lot of copublication ties. 
-Regarding the dyad census we can see that the network now has one dyad more than before (27). Also, the edge density has increased a little bit, as the number is now 0.051. 
-
-# Descriptives of the sociology network 2020-2022
-
-```{r}
-snet3_g <- igraph::graph_from_adjacency_matrix(snet3, mode = c("undirected"))
-plot(snet3_g)
-```
-In the most recent plot of the network (2020 up until now), we can see that there has been an increase in copublications. Now "only" 10 members still don't have a copublication with the other members of the staff. Furthermore, we see an increasing number of staff members (not only node 14 and 7) that have several copublications. This would mean that the degree distribution has also become less skewed. 
-
-```{r}
-sdegree3 <- igraph::degree(snet3_g)
-hist(sdegree3)
 igraph::dyad.census(snet3_g)
 igraph::triad.census(snet3_g)
 igraph::edge_density(snet3_g)
-
 ```
-And indeed, we see that the degree distribution still is right-skewed, but that it is a little less skewed than before. More and more staff have several copublications now. However, most of the staff members still have little copublications with other staff members. 
-We see that there are now 38 dyads and that the edge density has increased to 0.072. 
+
+Regarding density and dyads in the network, there are 26 dyads in the first wave. The edge density is
+0.049, which means that the number of edges existing in the network is
+relatively low compared to the the maximum number of edges there could possibly be.
+In the second wave, there is an increase of 1 dyad, and the edge density also has increased slightly towards a number of 0.051. In the last wave, there are 38 dyads and the edge density has increased to 0.072. 
+All in all, the co-publications within the network of sociology have increased, and over the years, the scientists at the department have used more of their opportunities to collaborate with members within the network. 
 
 ```{r}
 igraph::transitivity(snet1_g)
 igraph::transitivity(snet2_g)
 igraph::transitivity(snet3_g)
 ```
-Last but not least, we can see the transitivity within the network. Here we see that there is no linear change. In the oldest network, there is a transitivity number of 0.27. If one staff member A is connected to staff member B and staff member C, the probability is 0.27 that staff member B and C will also copublish. In the second network, we see that this probability has even increased to 0.308. In the last wave, the transitivity number is the lowest. This could be explained by the fact that there are now more members in the network so there is also more chance to copublish with others, not depending on the authors you already copublished with?
 
-# Explaining variables 
+Last but not least, the transitivity effect shows whether co-authors of co-authors become co-authors. 
+For this network, no linear change can be observed. 
+In the first wave, there is a
+transitivity number of 0.27. If one staff member A is connected to staff
+member B and staff member C, the probability is 0.27 that staff member B
+and C will also co-publish. In the second wave, we see that this
+probability has even increased to 0.308. In the last wave, the
+transitivity number is the lowest. Possibly, the fact that there are more mebers in the networks could increase the opportunities to co-publish with others, not depending on co-authors of co-authors. 
+
+## K-index at the Sociology department
 
 ```{r, echo=FALSE}
 load("/Users/anuschka/Documents/labjournal/data/socdef_df.RData")
 ```
 
 ```{r}
-hist(socdef_df$ki,col="lightblue")
+twsocbar <- ggplot2:::ggplot(socdef_df, aes(factor(twitter_dum), fill = factor(twitter_dum))) + geom_bar()
+twsocbar <- twsocbar + scale_fill_manual(values=c("#56B4E9", "#66ff99"))
+ggplotly(twsocbar)
 ```
-When we first have a look at the Kardashian Index of the sociology staff, we see that there again is a right-skewed distribution. There are a few staff members with a high index, but most of them have a KI between 0 and 2. This is of course also because some staff members do not have twitter. When we only filter out the individuals that do have Twitter, the distribution looks as follows: 
+Before diving into the k-index, it is insightful to see how many of the scientist at the department of Sociology have Twitter. In the above (interactive) graph, it is shown that 13 scientist do not have Twitter, while 20 scientists do have Twitter. 
+
 ```{r}
 sel <- socdef_df$twitter_dum==1
 hist(socdef_df$ki[sel], col="lightblue", border="darkblue")
 ```
-Here we can see that the distribution is still skewed, but that there are now a lower number of staff members with a low KI, given that they have Twitter. Still, most of the staff members have a low KI, but some staff members do have a KI that is categorized as 'Kardashian Scientist' (>5)(Hall, 2014)
 
-Now let's see how this ki is predicted by several factors. 
+The above histogram shows the distribution of the k-index of scientists at the Sociology department. The distribution is right-skewed: Most scientists have a k-index between 0 and 2, and a few scientists have a high index. A few staff members have a k-index that would be categorized as "Kardashian Scientist" (Hall, 2014)
+
 ```{r}
 modelki <- lm(ki ~ gender + dutch + pub_first, data=socdef_df)
 summary(modelki)
 ```
-The regression shows us that male staff members of sociology have a significantly higher KI than female staff members. We also see that Dutch staff members have a significantly lower KI than non-Dutch staff members. Lastly, age is significantly related to the KI: as age decreases, the KI increases. Younger individuals thus have a higher KI than older individuals. 
+Lastly, it is insightful to see to what extent the k-index is predicted by other factors. The above linear regression teaches us that male scientist of Sociology have a
+significantly higher k-index than female staff members. It is also visible that
+Dutch scientists have a significantly lower k-index than non-Dutch scientists. Lastly, age is significantly related to the k-index: as age
+decreases, the k-index increases. Younger individuals thus have a higher k-index
+than older individuals. These effects can also be seen in the (interactive) graph below. 
+
+```{r}
+regplotsoc <- ggplot(socdef_df, mapping = aes(x = pub_first, y = ki, color=gender)) +
+    geom_line() 
+ 
+ggplotly(regplotsoc)
+```
 
 # Data science
-# 
 
 ```{r, echo=FALSE}
 #load dataobjects
 load("/Users/anuschka/Documents/labjournal/data/data_net_array.RData")
+load("/Users/anuschka/Documents/labjournal/data/datadef_df.RData")
 ```
-
 
 ```{r}
 dnet1 <- dnet_array[ ,, 1]
@@ -181,59 +215,72 @@ diag(dnet2) <- 0
 diag(dnet3) <- 0
 ```
 
-# Descriptives of data science network 2016-2017
+## Plots of the Data Science department
+
 ```{r}
 dnet1_g <- igraph::graph_from_adjacency_matrix(dnet1, mode = c("undirected"))
-plot(dnet1_g)
+dnet2_g <- igraph::graph_from_adjacency_matrix(dnet2, mode = c("undirected"))
+dnet3_g <- igraph::graph_from_adjacency_matrix(dnet3, mode = c("undirected"))
+
+datadef_df$twitcol <- ifelse(datadef_df$twitter_dum == 0, "#56B4E9", "#66ff99")
+
+#Dit zou ik nog even moeten checken of dit klopt, want er lijken ineens ties weg te vallen door die coördinaten toe te voegen?
+# l <- igraph::layout_with_mds(snet1_g)
+# l[14,1] <- 0
+# l1 <- igraph::layout_with_mds(snet2_g)
+# l1[14,1] <- 0
+# l2 <- igraph::layout_with_mds(snet3_g)
+# l2[14,1] <- 0
+
+#Wat wil ik met de nummers in de plot, moet ik die nog veranderen in namen? Maar wil het graag anoniem houden.
+plot(dnet1_g, vertex.color = datadef_df$twitcol, vertex.size=datadef_df$ki,  vertex.size = 10, vertex.frame.color = "gray",
+    vertex.label.color = "black", vertex.label.family = "Helvetica", vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5)
+plot(dnet2_g, vertex.color = datadef_df$twitcol, vertex.size=datadef_df$ki,  vertex.size = 10, vertex.frame.color = "gray",
+    vertex.label.color = "black", vertex.label.family = "Helvetica", vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5)
+plot(dnet3_g, vertex.color = datadef_df$twitcol, vertex.size=datadef_df$ki,  vertex.size = 10, vertex.frame.color = "gray",
+    vertex.label.color = "black", vertex.label.family = "Helvetica", vertex.label.cex = 0.7, vertex.label.dist = 0.8,
+    edge.curved = 0.2, edge.arrow.size = 0.5)
 
 ```
-Apparently, the data science department has a lot of staff members that either do not collaborate, but more likely did not work at the department yet in 2016-2017. We see that only a few staff members have copublished an article. 
 
+In the network plots of Data Science, it shows that during the year 2016-2017 there were not many co-publications. Just like at the Sociology department, it is likely that a high number of scientists did not work at the department yet. In the years 2018-2019, there is a strong increase in the co-publications of the staff members of Data Science. Node 1, 3 and 5 seem to have a central role in the network, with the highest number of edges, and thus the most co-pulications with other scientists within the department. 
+In the last plot, again an increase in co-publications is visible. Node 1, 3
+and 5 still have a central role in the network, but there now are other
+nodes with a relative high number of co-publications as well.Similarly to the Sociology department, there are only a few nodes with a high k-index (shown by the largest vertex size), and it does not seem as if these scientists are especially attractive to others to co-publish an article. 
+
+## Descriptives of the Data Science network
 ```{r}
 ddegree1 <- igraph::degree(dnet1_g)
 hist(ddegree1, col="purple")
+ddegree2 <- igraph::degree(dnet2_g)
+hist(ddegree2, col="purple")
+ddegree3 <- igraph::degree(dnet3_g)
+hist(ddegree3, col="purple")
+```
+Similarly to Sociology, the Data Science department shows a right-skewed distribution of the degrees. 
+In the first wave, most scientists had not co-published, or only little. In the histogram of the second wave, it can be observed that the degrees remain skewed to the right. Furthermore, it is visible that one scientist has more than 8 copublications, and that in general, the number of outdegrees increased. However, most individuals still have no co-publications. In the last histogram, more scientists are in the tail, as also observed at the Sociology department. Furthermore, there are even staff scientist with 10-11 copublications. This is a higher number of copublications than observed at the Sociology department.
+
+```{r}
 igraph::dyad.census(dnet1_g)
 igraph::triad.census(dnet1_g)
 igraph::edge_density(dnet1_g)
 
-```
-We see that the data science department also has a right-skewed distribution of the degrees. Most staff members have not co-published, or only little. We also see that there are 22 dyads in the network and an edge density of 0.0212. This is lower than that of the sociology staff. 
-
-# Descriptives of data science 2018-2019
-```{r}
-dnet2_g <- igraph::graph_from_adjacency_matrix(dnet2, mode = c("undirected"))
-plot(dnet2_g)
-
-```
-In the plot we see that in the 2 years after, there is a strong increase in copublications of the staff members of data science. We can also see that there are some nodes central in the network: node 1, 3 and 5 seem to have the most edges, and thus the most copublications with others of the data science staff. 
-
-```{r}
-ddegree2 <- igraph::degree(dnet2_g)
-hist(ddegree2, col="purple")
 igraph::dyad.census(dnet2_g)
 igraph::triad.census(dnet2_g)
 igraph::edge_density(dnet2_g)
 
-```
-In the histogram we observe that the outdegrees remain skewed to the right. We can see that one member even has more than 8 copublications. We also see that more people than in the year before have more copublications. However, most individuals still have no copublications. We see that the number of dyads has increased to 38 and that the edge density has increased a little bit to 0.037. This is still lower than the edge density within the sociology department in the same years. 
-
-# Descriptives of data science 2020-2022
-```{r}
-dnet3_g <- igraph::graph_from_adjacency_matrix(dnet3, mode = c("undirected"))
-plot(dnet3_g)
-
-```
-In the last plot, we again see an increase in copublications. Node 1, 3 and 5 still have a central role in the network, but there now are other nodes with a relative high number of copublications as well. 
-
-```{r}
-ddegree3 <- igraph::degree(dnet3_g)
-hist(ddegree3, col="purple")
 igraph::dyad.census(dnet3_g)
 igraph::triad.census(dnet3_g)
 igraph::edge_density(dnet3_g)
 
 ```
-In the histogram we observe that staff members are now also more in the tail, just like we observed at the sociology department. Furthermore, there are even staff members with 10-11 copublications. This is a higher number of copublications than observed at the sociology department. We also observe that there are now 70 dyads and that the edge density has increased towards a number of 0.068. This remains a little lower than the edge density of sociology at that time. 
+
+Looking at the dyad census and density, the number of dyads in 2016-2017 counts 22. The edge density is 0.0212. Both of these numbers are lower than at the Sociology department. 
+In 2018-2019, the number of dyads has increased to 38 and the edge
+density has increased to 0.037. This is still lower than
+the edge density within the sociology department in the same years. In the last years, there are 70 dyads and the edge density increased towards a number of 0.068. This remains a little lower than the edge density of the Sociology department at that time. 
 
 ```{r}
 igraph::transitivity(dnet1_g)
@@ -241,33 +288,58 @@ igraph::transitivity(dnet2_g)
 igraph::transitivity(dnet3_g)
 ```
 
-We can see that the transitivity of data science has decreased over the years. In the first period, the probability that B and C - both as connections of A - would copublish was 0.52. In the next year, this decreased to a 45% chance, while in the last year this chance is 41,2%. Still, this is a higher number than observed at the sociology department. Also, there is a linear decrease at the department of data science, while at the sociology department no linear trend could be observed. In conclusion, staff members at data science are more likely to copublish with staff members they got to know by copublishing with an author than at sociology. 
+Regarding the transitivity, this has decreased at Data Science over the years. 
+In the first period, the probability that scientist B and C - both as
+co-authors of scientist A - would co-publish was 0.52. In the next year, this
+decreased to a 45% chance, while in the last year this chance is 41,2%.
+Still, this is a higher number than observed at the Sociology
+department. Also, there is a linear decrease at the department of Data
+Science, while at the Sociology department no linear trend could be
+observed. In conclusion, staff members at Data Science are more likely
+to co-publish with co-authors of their co-authors than at Sociology. 
 
-
-# Explaining variables Data Science
+## K-index at the department of Data Science
 
 ```{r, echo=FALSE}
 load("/Users/anuschka/Documents/labjournal/data/datadef_df.RData")
 ```
 
 ```{r}
-hist(datadef_df$ki,col="red")
+twdatbar <- ggplot2:::ggplot(datadef_df, aes(factor(twitter_dum), fill = factor(twitter_dum))) + geom_bar()
+twdatbar <- twdatbar + scale_fill_manual(values=c("#56B4E9", "#66ff99"))
+ggplotly(twdatbar)
 ```
-We see that at the data science department, there is a very right-skewed distribution of the KI; most staff members have a KI between 0 and 1. 
+At the Data Science department, the majority of scientist has a Twitter account: 30 scientists have a Twitter account while 16 do not have one.  
 
 ```{r}
 sel2 <- datadef_df$twitter_dum==1
-hist(datadef_df$ki[sel2], col="red", border="darkblue")
+hist(datadef_df$ki[sel2], col="red")
 ```
-We also observe this pattern when only selecting the individuals with twitter, although the frequency of individuals with a KI between 0 and 1 is now a bit lower. We also observe some staff members with a high KI. Compared to sociology, the KI at the data science department is even more skewed. 
+The histogram shows that at the Data Science department, the distribution of the k-index is even more skewed than at the Sociology department. Most scientist have a k-index between 0 and 1, while only a few scientists have a k-index higher than that. Approximately two scientist would be categorized as "Kardashian Scientists" by Hall (2014)
+
 
 ```{r}
 modelki2 <- lm(ki ~ gender + dutch + pub_first, data=datadef_df)
 summary(modelki2)
 ```
-At the data science department, we see that the KI is predicted way differently than at the sociology department. The effect of gender and ethnicity are not significant, but age is a significant predictor of a KI. The younger, the higher the KI. 
 
-# Comparing the two departments
-Summarizing the two departments, we see that the density of the copublication network of sociology is higher than the density of data science. On the other hand, the transitivity is much higher within data science than within sociology. May this have to do with divisions within several theoretical topics, in which people within sociology could collaborate to a lesser extent? In terms of productivity (no network characteristic), we see that the data science department has copublished more than sociology. 
+At the Data Science department, the k-index is predicted
+differently than at the Sociology department when looking at the linear regression above. 
+For the Data Science department, the effect of gender and
+ethnicity are not significant. Age is a significant predictor of the k-index. The younger the scientist, the higher the k-index. In the (interactive) plot below, it is also visible that gender and age are lesser determinants of the k-index than at the Sociology department. 
 
+```{r}
+# Dit nog bij assigning gender neerzetten (webscraping)
+datadef_df$gender[datadef_df$id==261] <- "male"
+datadef_df$gender[datadef_df$id==273] <- "male"
 
+regplotdat <- ggplot(datadef_df, mapping = aes(x = pub_first, y = ki, color=gender)) +
+    geom_line() 
+ 
+ggplotly(regplotdat)
+```
+
+# Comparison of the two departments
+When comparing the two departments, there are some things worth noting. Regarding the network structure, the density of the co-publication network of Sociology is higher than that of the Data Science department. Within Sociology, scientists thus co-publish more with others of the same department, but at both cases the density is low. This shows that at both departments the co-publication network is rather sparse. This is not strange, as within academia it is not always possible to co-publish with any scientist in the network, as they might have different research interests. The transitivity differs as well between the two departments. The transitivity is higher at Data Science than at Sociology. This signals that it is more common among Data Scientists to publish articles with co-authors of co-authors. 
+
+With regard to Twitter and the k-index, the descriptives show that at both departments, the majority has a Twitter account. At the Data Science department, most scientists have a very low k-index with some exceptions, while at the Sociology department there are a few more scientists with a k-index above 1. This could show that for Sociologists, Twitter activity may be considered as more important than for Data Scientists, and for Sociologists the actual scientific output in terms of articles might be less important. Possibly, this could be explained by the fact that Sociologists would like to engage with society to share their research, as this society is often the research topic. However, for both departments, there are no clear hints that these scientists with a high k-index have more or less co-publications than scientists with a lower k-index. 

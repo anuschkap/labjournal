@@ -3,6 +3,7 @@ title: "introduction"
 author: "Anuschka Peelen"
 date: "`r Sys.Date()`"
 output: html_document
+bibliography: references.bib
 editor_options: 
   markdown: 
     wrap: 72
@@ -30,27 +31,104 @@ klippy::klippy(position = c('top', 'right'))
 #klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
 ```
 
-# Hypotheses
+# Theory
 
-Also descriptive hypotheses? For which people I expect a higher
-Kardashian Index (not really related to networks)
+## Collaboration networks of scientists
 
-*Scientists, because of the homophily effect, like to select scientist
-that are rather similar in their KI.*
+Scientific collaboration networks have been studied more often within
+social network analysis, as they are an example of a constantly changing
+network [@barabasi_evolution_2002]. These studies have shown that
+scientific collaboration networks can often be described as highly
+clustered [@newman_structure_2001], with scientists collaborating more
+often when they have a third common scientist as compared to two random
+scientists collaborating. Barabasi et al.
+[-@barabasi_evolution_2002]also conclude that these scientific
+collaboration networks are often marked by preferential attachment,
+meaning in this case that scientists with many collaboration ties get
+even more ties. Furthermore, homophily is also present within networks
+of scientific collaboration, showing that scientists have a preference
+of working together with scientists of the same institution or with
+similar research interests [@wang_homophily_2014].
 
-Scientists with a high Kardashian Index more popular: Hall explains that
-sometimes scientific speakers are invited because of their popularity,
-not based on good publications --\> maybe now social media has become
-more popular, scientists indeed attach value to other scientists,
-regardless of whether they have good publications or not. Thus then
-scientists with a high KI could still be popular. *Scientists prefer to
-co-publish with other scientists that have a high KI*
+These network structures that are typical for scientific collaboration
+networks are thus important to consider, and provide the opportunity to
+test the effects of several characteristics of scientists while also
+taking into account the consequences these network effects bring about.
+The effect of high clustering that Newman [-@newman_structure_2001]
+described, is also called "transitivity". This describes the tendency
+among individuals to form a tie with another individual who already has
+a tie with someone known (e.g. becoming friends with friends of friends)
+[@block_reciprocity_2015]. Scientists thus prefer to collaborate with
+scientists that have collaborated with one of my collaborators.
 
-Question: Should I also run a model where I disregard the Kardashian
-Index but only look at Twitter follower count?
+While the literature on (network effects within) scientific
+collaboration networks may be well-established
+[@barabasi_evolution_2002; @block_reciprocity_2015;
+@newman_structure_2001; @wang_homophily_2014 ], less is known about
+other factors that could have an effect of selection and influence in
+networks. While transitivity, homophily and preferential attachment
+provide clear expectations as to which scientist collaborates with whom
+and why, other elements could also determine collaborations between
+scientists. In this study, the influence of Twitter activity and its
+relation to popularity of scientific publications is investigated for
+co-publication networks of scientists.
 
-On the other hand, maybe scientists with a high KI are very unpopular
-because they are criticized for being active on social media but not
-really contributing to science. If this is true, then the following
-hypothesis can be expected: *Scientists prefer to co-publish with other
-scientist that have a low KI*.
+## Kardashian Index and expectations
+
+Hall [-@hall_kardashian_2014] developed the Kardashian Index to quantify
+whether social media use of scientists is becoming more important than
+scientific output. This k-index is a ratio between the number of Twitter
+followers of a scientist and the number of citations for scientific
+articles. According to Hall [-@hall_kardashian_2014], scientists with a
+k-index higher than 5, are strongly overvalued and have built their
+public profile based on social media while not having highly cited
+articles.
+
+The k-index is more often used within the literature. For instance,
+Kolahi and colleagues [-@kolahi_analysis_2019] found that scientific
+dental articles that covered important topics, were often not among the
+highly tweeted articles. On the other hand, they also found that the
+highly tweeted articles had 12.96 cites on average, possibly
+demonstrating a correlation between number of tweets and citations.
+While Kohali and colleagues [-@kolahi_analysis_2019] focused mostly on
+articles as subject of their research, Khan and colleagues
+[-@khan2020kardashian] investigated the k-index of cardiologists among a
+random sample drawn from cardiologists of the top 100 hospitals and
+found that the majority of the cardiologists had a rather low k-index,
+and that only some ranked above the number of 5.
+
+Most of the literature using the k-index is descriptive in nature and
+does not look at any influences on and consequences of the k-index.
+Eacott [-@eacott_educational_2020] did investigate the k-index and the
+Twitter tagging relations of scientists and concluded that scientists
+who get mentioned a lot are not necessarily of scientific value. What
+remains unclear, is whether this k-index also has an influence on social
+networks of scientists. As scientists that are popular on social media
+now get invited to speak at events because of their popularity
+[@hall_kardashian_2014] and not because of highly cited publications,
+this may signal that scientists attach value to other scientists that
+have a strong social media outreach. In this context, the citations of a
+scientists may be of less importance, making scientists with a high
+k-index attractive for other scientists to collaborate. Therefore, I
+derive the first hypothesis: *Scientists prefer to co-publish with other
+scientists that have a high k-index.*
+
+On the other hand, scientists are in general critical individuals. This
+may result in unpopularity of scientists with a high k-index, as they
+could be known for investing more time in social media than in
+contributing to science [@califf_perspective_2020]. This leads to the
+second hypothesis: *Scientists prefer to co-publish with other
+scientists that have a low k-index.*
+
+Furthermore, as explained above, the homophily effect is important
+within social networks [@wang_homophily_2014]. Possibly, not only the
+research topics of other scientists are taken into consideration when
+selecting others to co-publish with, but also a similar stance regarding
+the ratio between social media and scientific contributions. Thus, the
+scientist compares their own k-index with that of another scientist. In
+this regard, it can be expected that scientists select other scientists
+with a similar k-index for co-publication. Therefore, the last
+hypothesis can be derived as follows: *Scientists prefer to co-publish
+with other scientists that have a similar k-index.*
+
+# References

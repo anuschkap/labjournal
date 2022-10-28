@@ -22,9 +22,10 @@ navbar:
         href: webscraping_datascience.html
       - text: "Week 3 - Twitter scraping" 
         href: scrapingtwitter.html
-      - text: "Week 4"  
+      - text: "Week 4 - RSiena"  
         href: Rsienatutorial.html
-        
+      - text: "Week 4 - MyMovez tutorial"
+        href: rsiena_mymovez.html
       
         # here, other .Rmds can be added
     - text: "Report"
@@ -41,11 +42,19 @@ navbar:
         href: final_introduction.html 
       - text: "Theory" 
         href: final_theory.html
+      - text: "Data"
+        href: final_data.html
       - text: "Descriptives"
         href: descriptives.html
       - text: "RSiena results" 
         href: rsiena_results.html
-
+      - text: "Conclusion"
+        href: conclusion.html
+      - text: "Appendix A"
+        href: rsiena_results_twit.html
+      - text: "Appendix B"
+        href: appendixb.html
+      -  
   right:
   - icon: fab fa-github
     href: https://github.com/JochemTolsma/labjournal

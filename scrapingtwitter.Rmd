@@ -91,6 +91,43 @@ save(data_df, file = "addfiles\\data_df.RData")
 
 ```
 
+This is what I used later, when we had the definitive data. I can already notice from the difference that I made progress on knowing what I'm doing. 
+```{r, eval=FALSE}
+#Twitter
+require(httr)
+require(jsonlite)
+require(dplyr)
+library ("rtweet")
+
+data_twitter <- list()
+for (i in 1:nrow(datadef_df)) { 
+  
+  time <- runif (1,0,3)
+  Sys.sleep(time)
+  print(i)
+  
+  data_twitter[[i]] <- search_users(datadef_df[i, c("names")], n=1, parse=FALSE, token=NULL, verbose=TRUE)
+  } 
+
+twid <- NA
+twname <-NA
+twscreenname <- NA
+twfollowercount <- NA
+for (i in 1:length(data_twitter)) {
+  if (!length(data_twitter[[i]][[1]])==0) {
+  twid[i] <- data_twitter[[i]][[1]]$id[1] 
+  twname[i] <- data_twitter[[i]][[1]]$name[1]
+  twscreenname[i] <-data_twitter[[i]][[1]]$screen_name[1]
+  twfollowercount[i] <- data_twitter[[i]][[1]]$followers_count[1]
+  }
+}
+
+data_twitterinfo <- as.data.frame(cbind(twid, twname, twscreenname, twfollowercount))
+
+data_twitterinfo <- cbind(data_twitterinfo, datadef_df$gs_id, datadef_df$total_cites)
+```
+
+
 ```{r, echo=FALSE}
 load("/Users/anuschka/Documents/labjournal/data/data_twitter.RData")
 ```
@@ -154,6 +191,156 @@ save(soc_twitterinfo, file="/Users/anuschka/Documents/labjournal/data/soc_twitte
 ```
 
 
+Again this is where I did it with the definitive dataset. I calculated the index by hand because of adjustments I made (people who had the wrong number of followers e.g.). Now I would also know how to fix that in R. 
+
+```{r, eval=FALSE}
+# Now do the same for sociology (a bit faster I hope)
+
+soc_twitter <- list()
+for (i in 1:nrow(socdef_df)) { 
+  
+  time <- runif (1,0,3)
+  Sys.sleep(time)
+  print(i)
+  
+  soc_twitter[[i]] <- search_users(socdef_df[i, c("name")], n=1, parse=FALSE, token=NULL, verbose=TRUE)
+} 
+
+twids <- NA
+twnames <-NA
+twscreennames <- NA
+twfollowercounts <- NA
+for (i in 1:length(soc_twitter)) {
+  if (!length(soc_twitter[[i]][[1]])==0) {
+  twids[i] <- soc_twitter[[i]][[1]]$id[1] 
+  twnames[i] <- soc_twitter[[i]][[1]]$name[1]
+  twscreennames[i] <-soc_twitter[[i]][[1]]$screen_name[1]
+  twfollowercounts[i] <- soc_twitter[[i]][[1]]$followers_count[1]
+  }
+}
+soc_twitterinfo <- as.data.frame(cbind(twids, twnames, twscreennames, twfollowercounts))
+
+write.xlsx(socdef_df, '/Users/anuschka/Downloads/pubnets/socdef.xlsx')
+soc_twitterinfo <- cbind(soc_twitterinfo, socdef_df$total_cites)
+
+
+socdef_df$f <- c(616.515368,
+412.848115,
+298.720004,
+157.894808,
+298.491133,
+693.693625,
+545.087971,
+157.003041,
+228.530958,
+289.746799,
+366.653062,
+359.39986,
+163.033508,
+788.726149,
+259.114091,
+347.733125,
+955.178524,
+515.586116,
+540.459485,
+488.265532,
+317.552884,
+619.200085,
+170.150917,
+430.014658,
+798.900213,
+76.8238904,
+201.956359,
+140.97662,
+260.651329,
+254.059869,
+121.291034,
+43.3,
+121.291034,
+61.54,
+0,
+0
+)
+
+socdef_df$ki <- c(0,
+0,
+0.07364756,
+1.83666584,
+0,
+0,
+0.05503699,
+2.61778369,
+0,
+0.05176934,
+2.41918067,
+5.1112986,
+0,
+0.00126787,
+0.8065945,
+1.33148086,
+0.01570387,
+3.51832592,
+0.2627394,
+0,
+0,
+0,
+0,
+0,
+0,
+0.46860423,
+0.43078614,
+0,
+0,
+0,
+6.86777886,
+0,
+11.1302538,
+1.70617118,
+0,
+0
+
+ )
+
+socdef_df$followers <- c(0,
+0,
+22,
+290,
+0,
+0,
+30,
+411,
+0,
+15,
+887,
+1837,
+0,
+1,
+209,
+463,
+15,
+1814,
+142,
+0,
+0,
+0,
+0,
+36,
+87,
+0,
+0,
+833,
+0,
+1350,
+105,
+0,
+0)
+
+
+save(socdef_df, file="/Users/anuschka/Downloads/pubnets/socdef_df.RData")
+```
+
+
+
 ```{r, echo=FALSE}
 load("/Users/anuschka/Documents/labjournal/data/soc_twitter.RData")
 ```
@@ -163,19 +350,191 @@ head(soc_twitter)
 ```
 
 
+
+# Kardashian Index 
 ```{r, eval=FALSE}
+#Kardashian index berekenen
+
+datadef_df$total_cites <- as.integer(datadef_df$total_cites)
+dplyr::rename(data_twitterinfo, total_cites = datadef_df$total_cites)
+
 #If I ever get the loop fixed, the Kardashian Index can be calculated using the following code. Of course I have to adapt this to the names of my own variables. 
-calculate_kardashian_index <- function(twitter_followers, total_citations) {
+calculate_kardashian_index <- function(twfollowercount, total_cites) {
   
   # Set F_a as number of twitter followers:
-  F_a <- twitter_followers
+  F_a <- twfollowercount
   
   # Calculate F_c using equation 1 of Hall (2014):
-  F_c <- 43 * (total_citations ^ 0.32)
+  F_c <- 43 * (total_cites ^ 0.32)
   
   # Retrurn Kardashian Index (equation 2 of Hall 2014):
   F_a / F_c
 }
-```
 
+calculate_kardashian_index(data_twitterinfo)
+
+
+summary(data_twitterinfo$`datadef_df$total_cites`)
+
+install.packages("openxlsx")
+library(openxlsx)
+write.xlsx(data_twitterinfo, '/Users/anuschka/Downloads/pubnets')
+
+
+data_twitterinfo$f <- c(850.1455808,
+737.6146619,
+740.6498161,
+652.7478124,
+703.5440897,
+827.9055062,
+999.9312023,
+635.2725999,
+595.7753807,
+397.7847223,
+419.071737,
+334.9903335,
+479.6529866,
+336.9499762,
+519.2863574,
+185.934273,
+244.6624172,
+87.46725544,
+456.7787425,
+330.8122679,
+508.5288602,
+451.5208862,
+529.7255008,
+151.4113033,
+365.9116913,
+305.201247,
+376.8532751,
+796.7452654,
+261.2608638,
+202.480328,
+663.4200516,
+252.4357858,
+1601.95043,
+176.686392,
+84.23191845,
+340.7981992,
+156.1003788,
+178.0708722,
+147.4247509,
+498.4233811,
+246.7407065,
+157.8948082,
+76.82389044,
+164.6721556,
+1477.952295,
+80.70849876,
+151.4113033, 
+737.982
+)
+
+data_twitterinfo$ki <- c(0.00823388,
+0.17101902,
+0.02297884,
+0.13038054,
+0.15251728,
+0.00603482,
+0,
+0,
+0.42047026,
+0,
+0.00664452,
+1.50501672,
+0,
+1.96551724,
+0.039949,
+0,
+0.00446429,
+6.11111111,
+0.01522843,
+0.57391304,
+0.04219601,
+0,
+0.04233227,
+0,
+0.0748731,
+0.52796421,
+0,
+0.28306937,
+0.14909091,
+1.70967742,
+0.49772682,
+0.03643725,
+0.00881484,
+1.08641975,
+0,
+0,
+3,
+1.36144578,
+0.76086957,
+0,
+0.08695652,
+0,
+13.1666667,
+0,
+0.01064294,
+0,
+0,
+0.01983846
+)
+
+
+datadef_df$followers <- c(7,
+1205,
+164,
+627,
+927,
+61,
+0,
+0,
+1520,
+0,
+8,
+900,
+0,
+1197,
+94,
+0,
+1,
+55,
+24,
+330,
+93,
+0,
+106,
+0,
+59,
+236,
+0,
+2538,
+41,
+212,
+2518,
+9,
+88,
+0,
+0,
+165,
+113,
+35,
+0,
+20,
+0,
+79,
+0,
+0,
+0,
+140
+)
+
+
+save(data_twitterinfo, file="/Users/anuschka/Downloads/pubnets/datatwitterinfo_df.RData")
+datadef_df <- cbind(datadef_df, data_twitterinfo)
+datadef_df["datadef_df$gsid"]
+save(datadef_df, file="/Users/anuschka/Downloads/pubnets/datadef_df.RData")
+
+```
 

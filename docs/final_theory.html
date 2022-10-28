@@ -11,7 +11,7 @@
 
 <meta name="author" content="Anuschka Peelen" />
 
-<meta name="date" content="2022-10-18" />
+<meta name="date" content="2022-10-28" />
 
 <title>introduction</title>
 
@@ -75,6 +75,28 @@ if (window.hljs) {
 }
 </style>
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="tweaks.css" type="text/css" />
 
@@ -373,7 +395,10 @@ div.tocify {
       <a href="scrapingtwitter.html">Week 3 - Twitter scraping</a>
     </li>
     <li>
-      <a href="Rsienatutorial.html">Week 4</a>
+      <a href="Rsienatutorial.html">Week 4 - RSiena</a>
+    </li>
+    <li>
+      <a href="rsiena_mymovez.html">Week 4 - MyMovez tutorial</a>
     </li>
   </ul>
 </li>
@@ -406,10 +431,25 @@ div.tocify {
       <a href="final_theory.html">Theory</a>
     </li>
     <li>
+      <a href="final_data.html">Data</a>
+    </li>
+    <li>
       <a href="descriptives.html">Descriptives</a>
     </li>
     <li>
       <a href="rsiena_results.html">RSiena results</a>
+    </li>
+    <li>
+      <a href="conclusion.html">Conclusion</a>
+    </li>
+    <li>
+      <a href="rsiena_results_twit.html">Appendix A</a>
+    </li>
+    <li>
+      <a href="appendixb.html">Appendix B</a>
+    </li>
+    <li>
+      <a></a>
     </li>
   </ul>
 </li>
@@ -442,7 +482,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">introduction</h1>
 <h4 class="author">Anuschka Peelen</h4>
-<h4 class="date">2022-10-18</h4>
+<h4 class="date">2022-10-28</h4>
 
 </div>
 
@@ -451,30 +491,173 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<div id="hypotheses" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Hypotheses</h1>
-<p>Also descriptive hypotheses? For which people I expect a higher
-Kardashian Index (not really related to networks)</p>
-<p><em>Scientists, because of the homophily effect, like to select
-scientist that are rather similar in their KI.</em></p>
-<p>Scientists with a high Kardashian Index more popular: Hall explains
-that sometimes scientific speakers are invited because of their
-popularity, not based on good publications –&gt; maybe now social media
-has become more popular, scientists indeed attach value to other
-scientists, regardless of whether they have good publications or not.
-Thus then scientists with a high KI could still be popular.
+<div id="theory" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Theory</h1>
+<div id="collaboration-networks-of-scientists" class="section level2"
+number="1.1">
+<h2><span class="header-section-number">1.1</span> Collaboration
+networks of scientists</h2>
+<p>Scientific collaboration networks have been studied more often within
+social network analysis, as they are an example of a constantly changing
+network <span class="citation">(Barabási et al. 2002)</span>. These
+studies have shown that scientific collaboration networks can often be
+described as highly clustered <span class="citation">(Newman
+2001)</span>, with scientists collaborating more often when they have a
+third common scientist as compared to two random scientists
+collaborating. Barabasi et al. <span class="citation">(2002)</span>also
+conclude that these scientific collaboration networks are often marked
+by preferential attachment, meaning in this case that scientists with
+many collaboration ties get even more ties. Furthermore, homophily is
+also present within networks of scientific collaboration, showing that
+scientists have a preference of working together with scientists of the
+same institution or with similar research interests <span
+class="citation">(Wang and Zhu 2014)</span>.</p>
+<p>These network structures that are typical for scientific
+collaboration networks are thus important to consider, and provide the
+opportunity to test the effects of several characteristics of scientists
+while also taking into account the consequences these network effects
+bring about. The effect of high clustering that Newman <span
+class="citation">(2001)</span> described, is also called “transitivity”.
+This describes the tendency among individuals to form a tie with another
+individual who already has a tie with someone known (e.g. becoming
+friends with friends of friends) <span class="citation">(Block
+2015)</span>. Scientists thus prefer to collaborate with scientists that
+have collaborated with one of my collaborators.</p>
+<p>While the literature on (network effects within) scientific
+collaboration networks may be well-established <span
+class="citation">(Barabási et al. 2002; Block 2015; Newman 2001; Wang
+and Zhu 2014 )</span>, less is known about other factors that could have
+an effect of selection and influence in networks. While transitivity,
+homophily and preferential attachment provide clear expectations as to
+which scientist collaborates with whom and why, other elements could
+also determine collaborations between scientists. In this study, the
+influence of Twitter activity and its relation to popularity of
+scientific publications is investigated for co-publication networks of
+scientists.</p>
+</div>
+<div id="kardashian-index-and-expectations" class="section level2"
+number="1.2">
+<h2><span class="header-section-number">1.2</span> Kardashian Index and
+expectations</h2>
+<p>Hall <span class="citation">(2014)</span> developed the Kardashian
+Index to quantify whether social media use of scientists is becoming
+more important than scientific output. This k-index is a ratio between
+the number of Twitter followers of a scientist and the number of
+citations for scientific articles. According to Hall <span
+class="citation">(2014)</span>, scientists with a k-index higher than 5,
+are strongly overvalued and have built their public profile based on
+social media while not having highly cited articles.</p>
+<p>The k-index is more often used within the literature. For instance,
+Kolahi and colleagues <span class="citation">(2019)</span> found that
+scientific dental articles that covered important topics, were often not
+among the highly tweeted articles. On the other hand, they also found
+that the highly tweeted articles had 12.96 cites on average, possibly
+demonstrating a correlation between number of tweets and citations.
+While Kohali and colleagues <span class="citation">(2019)</span> focused
+mostly on articles as subject of their research, Khan and colleagues
+<span class="citation">(2020)</span> investigated the k-index of
+cardiologists among a random sample drawn from cardiologists of the top
+100 hospitals and found that the majority of the cardiologists had a
+rather low k-index, and that only some ranked above the number of 5.</p>
+<p>Most of the literature using the k-index is descriptive in nature and
+does not look at any influences on and consequences of the k-index.
+Eacott <span class="citation">(2020)</span> did investigate the k-index
+and the Twitter tagging relations of scientists and concluded that
+scientists who get mentioned a lot are not necessarily of scientific
+value. What remains unclear, is whether this k-index also has an
+influence on social networks of scientists. As scientists that are
+popular on social media now get invited to speak at events because of
+their popularity <span class="citation">(Hall 2014)</span> and not
+because of highly cited publications, this may signal that scientists
+attach value to other scientists that have a strong social media
+outreach. In this context, the citations of a scientists may be of less
+importance, making scientists with a high k-index attractive for other
+scientists to collaborate. Therefore, I derive the first hypothesis:
 <em>Scientists prefer to co-publish with other scientists that have a
-high KI</em></p>
-<p>Question: Should I also run a model where I disregard the Kardashian
-Index but only look at Twitter follower count?</p>
-<p>On the other hand, maybe scientists with a high KI are very unpopular
-because they are criticized for being active on social media but not
-really contributing to science. If this is true, then the following
-hypothesis can be expected: <em>Scientists prefer to co-publish with
-other scientist that have a low KI</em>.</p>
+high k-index.</em></p>
+<p>On the other hand, scientists are in general critical individuals.
+This may result in unpopularity of scientists with a high k-index, as
+they could be known for investing more time in social media than in
+contributing to science <span class="citation">(Califf 2020)</span>.
+This leads to the second hypothesis: <em>Scientists prefer to co-publish
+with other scientists that have a low k-index.</em></p>
+<p>Furthermore, as explained above, the homophily effect is important
+within social networks <span class="citation">(Wang and Zhu
+2014)</span>. Possibly, not only the research topics of other scientists
+are taken into consideration when selecting others to co-publish with,
+but also a similar stance regarding the ratio between social media and
+scientific contributions. Thus, the scientist compares their own k-index
+with that of another scientist. In this regard, it can be expected that
+scientists select other scientists with a similar k-index for
+co-publication. Therefore, the last hypothesis can be derived as
+follows: <em>Scientists prefer to co-publish with other scientists that
+have a similar k-index.</em></p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-barabasi_evolution_2002" class="csl-entry">
+Barabási, A. L, H Jeong, Z Néda, E Ravasz, A Schubert, and T Vicsek.
+2002. <span>“Evolution of the Social Network of Scientific
+Collaborations.”</span> <em>Physica A: Statistical Mechanics and Its
+Applications</em> 311 (3): 590–614. <a
+href="https://doi.org/10.1016/S0378-4371(02)00736-7">https://doi.org/10.1016/S0378-4371(02)00736-7</a>.
+</div>
+<div id="ref-block_reciprocity_2015" class="csl-entry">
+Block, Per. 2015. <span>“Reciprocity, Transitivity, and the Mysterious
+Three-Cycle.”</span> <em>Social Networks</em> 40 (January): 163–73. <a
+href="https://doi.org/10.1016/j.socnet.2014.10.005">https://doi.org/10.1016/j.socnet.2014.10.005</a>.
+</div>
+<div id="ref-califf_perspective_2020" class="csl-entry">
+Califf, Robert M. 2020. <span>“A <span>Perspective</span> on the
+<span>K</span>-<span>Index</span>∗.”</span> <em>JACC: Case Reports</em>
+2 (2): 335–36. <a
+href="https://doi.org/10.1016/j.jaccas.2020.01.003">https://doi.org/10.1016/j.jaccas.2020.01.003</a>.
+</div>
+<div id="ref-eacott_educational_2020" class="csl-entry">
+Eacott, Scott. 2020. <span>“Educational Leadership Research,
+<span>Twitter</span> and the Curation of Followership.”</span>
+<em>Leadership, Education, Personality: An Interdisciplinary
+Journal</em> 2 (2): 91–99. <a
+href="https://doi.org/10.1365/s42681-020-00016-z">https://doi.org/10.1365/s42681-020-00016-z</a>.
+</div>
+<div id="ref-hall_kardashian_2014" class="csl-entry">
+Hall, Neil. 2014. <span>“The <span>Kardashian</span> Index: A Measure of
+Discrepant Social Media Profile for Scientists.”</span> <em>Genome
+Biology</em> 15 (7): 424. <a
+href="https://doi.org/10.1186/s13059-014-0424-0">https://doi.org/10.1186/s13059-014-0424-0</a>.
+</div>
+<div id="ref-khan2020kardashian" class="csl-entry">
+Khan, Muhammad Shahzeb, Amna Shahadat, Safi U Khan, Saba Ahmed, Rami
+Doukky, Erin D Michos, and Ankur Kalra. 2020. <span>“The Kardashian
+Index of Cardiologists: Celebrities or Experts?”</span> <em>Case
+Reports</em>. American College of Cardiology Foundation Washington DC.
+</div>
+<div id="ref-kolahi_analysis_2019" class="csl-entry">
+Kolahi, Jafar, Saber Khazaei, Pedram Iranmanesh, and Parisa Soltani.
+2019. <span>“Analysis of Highly Tweeted Dental Journals and Articles: A
+Science Mapping Approach.”</span> <em>British Dental Journal</em> 226
+(9): 673–78. <a
+href="https://doi.org/10.1038/s41415-019-0212-z">https://doi.org/10.1038/s41415-019-0212-z</a>.
+</div>
+<div id="ref-newman_structure_2001" class="csl-entry">
+Newman, M. E. J. 2001. <span>“The Structure of Scientific Collaboration
+Networks.”</span> <em>Proceedings of the National Academy of
+Sciences</em> 98 (2): 404–9. <a
+href="https://doi.org/10.1073/pnas.98.2.404">https://doi.org/10.1073/pnas.98.2.404</a>.
+</div>
+<div id="ref-wang_homophily_2014" class="csl-entry">
+Wang, Zhen-Zhen, and Jonathan J. H. Zhu. 2014. <span>“Homophily Versus
+Preferential Attachment: <span>Evolutionary</span> Mechanisms of
+Scientific Collaboration Networks.”</span> <em>International Journal of
+Modern Physics C</em> 25 (05): 1440014. <a
+href="https://doi.org/10.1142/S0129183114400142">https://doi.org/10.1142/S0129183114400142</a>.
+</div>
+</div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiaW50cm9kdWN0aW9uIgphdXRob3I6ICJBbnVzY2hrYSBQZWVsZW4iCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OiBodG1sX2RvY3VtZW50CmVkaXRvcl9vcHRpb25zOiAKICBtYXJrZG93bjogCiAgICB3cmFwOiA3MgotLS0KCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCmBgYAoKYGBge3IsIGdsb2JhbHNldHRpbmdzLCBlY2hvPUZBTFNFLCB3YXJuaW5nPUZBTFNFLCByZXN1bHRzPSdoaWRlJ30KbGlicmFyeShrbml0cikKCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKb3B0c19jaHVuayRzZXQodGlkeS5vcHRzPWxpc3Qod2lkdGguY3V0b2ZmPTEwMCksdGlkeT1UUlVFLCB3YXJuaW5nID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRSxjb21tZW50ID0gIiM+IiwgY2FjaGU9VFJVRSwgY2xhc3Muc291cmNlPWMoInRlc3QiKSwgY2xhc3Mub3V0cHV0PWMoInRlc3QyIikpCm9wdGlvbnMod2lkdGggPSAxMDApCnJnbDo6c2V0dXBLbml0cigpCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KYGBgCgpgYGB7ciBrbGlwcHksIGVjaG89RkFMU0UsIGluY2x1ZGU9VFJVRX0Ka2xpcHB5OjprbGlwcHkocG9zaXRpb24gPSBjKCd0b3AnLCAncmlnaHQnKSkKI2tsaXBweTo6a2xpcHB5KGNvbG9yID0gJ2RhcmtyZWQnKQoja2xpcHB5OjprbGlwcHkodG9vbHRpcF9tZXNzYWdlID0gJ0NsaWNrIHRvIGNvcHknLCB0b29sdGlwX3N1Y2Nlc3MgPSAnRG9uZScpCmBgYAoKIyBIeXBvdGhlc2VzCgpBbHNvIGRlc2NyaXB0aXZlIGh5cG90aGVzZXM/IEZvciB3aGljaCBwZW9wbGUgSSBleHBlY3QgYSBoaWdoZXIKS2FyZGFzaGlhbiBJbmRleCAobm90IHJlYWxseSByZWxhdGVkIHRvIG5ldHdvcmtzKQoKKlNjaWVudGlzdHMsIGJlY2F1c2Ugb2YgdGhlIGhvbW9waGlseSBlZmZlY3QsIGxpa2UgdG8gc2VsZWN0IHNjaWVudGlzdAp0aGF0IGFyZSByYXRoZXIgc2ltaWxhciBpbiB0aGVpciBLSS4qCgpTY2llbnRpc3RzIHdpdGggYSBoaWdoIEthcmRhc2hpYW4gSW5kZXggbW9yZSBwb3B1bGFyOiBIYWxsIGV4cGxhaW5zIHRoYXQKc29tZXRpbWVzIHNjaWVudGlmaWMgc3BlYWtlcnMgYXJlIGludml0ZWQgYmVjYXVzZSBvZiB0aGVpciBwb3B1bGFyaXR5LApub3QgYmFzZWQgb24gZ29vZCBwdWJsaWNhdGlvbnMgLS1cPiBtYXliZSBub3cgc29jaWFsIG1lZGlhIGhhcyBiZWNvbWUKbW9yZSBwb3B1bGFyLCBzY2llbnRpc3RzIGluZGVlZCBhdHRhY2ggdmFsdWUgdG8gb3RoZXIgc2NpZW50aXN0cywKcmVnYXJkbGVzcyBvZiB3aGV0aGVyIHRoZXkgaGF2ZSBnb29kIHB1YmxpY2F0aW9ucyBvciBub3QuIFRodXMgdGhlbgpzY2llbnRpc3RzIHdpdGggYSBoaWdoIEtJIGNvdWxkIHN0aWxsIGJlIHBvcHVsYXIuICpTY2llbnRpc3RzIHByZWZlciB0bwpjby1wdWJsaXNoIHdpdGggb3RoZXIgc2NpZW50aXN0cyB0aGF0IGhhdmUgYSBoaWdoIEtJKgoKUXVlc3Rpb246IFNob3VsZCBJIGFsc28gcnVuIGEgbW9kZWwgd2hlcmUgSSBkaXNyZWdhcmQgdGhlIEthcmRhc2hpYW4KSW5kZXggYnV0IG9ubHkgbG9vayBhdCBUd2l0dGVyIGZvbGxvd2VyIGNvdW50PwoKT24gdGhlIG90aGVyIGhhbmQsIG1heWJlIHNjaWVudGlzdHMgd2l0aCBhIGhpZ2ggS0kgYXJlIHZlcnkgdW5wb3B1bGFyCmJlY2F1c2UgdGhleSBhcmUgY3JpdGljaXplZCBmb3IgYmVpbmcgYWN0aXZlIG9uIHNvY2lhbCBtZWRpYSBidXQgbm90CnJlYWxseSBjb250cmlidXRpbmcgdG8gc2NpZW5jZS4gSWYgdGhpcyBpcyB0cnVlLCB0aGVuIHRoZSBmb2xsb3dpbmcKaHlwb3RoZXNpcyBjYW4gYmUgZXhwZWN0ZWQ6ICpTY2llbnRpc3RzIHByZWZlciB0byBjby1wdWJsaXNoIHdpdGggb3RoZXIKc2NpZW50aXN0IHRoYXQgaGF2ZSBhIGxvdyBLSSouCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiaW50cm9kdWN0aW9uIgphdXRob3I6ICJBbnVzY2hrYSBQZWVsZW4iCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OiBodG1sX2RvY3VtZW50CmJpYmxpb2dyYXBoeTogcmVmZXJlbmNlcy5iaWIKZWRpdG9yX29wdGlvbnM6IAogIG1hcmtkb3duOiAKICAgIHdyYXA6IDcyCi0tLQoKYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9CmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKYGBgCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgpjb2xvcml6ZSA8LSBmdW5jdGlvbih4LCBjb2xvcikge3NwcmludGYoIjxzcGFuIHN0eWxlPSdjb2xvcjogJXM7Jz4lczwvc3Bhbj4iLCBjb2xvciwgeCkgfQpgYGAKCmBgYHtyIGtsaXBweSwgZWNobz1GQUxTRSwgaW5jbHVkZT1UUlVFfQprbGlwcHk6OmtsaXBweShwb3NpdGlvbiA9IGMoJ3RvcCcsICdyaWdodCcpKQoja2xpcHB5OjprbGlwcHkoY29sb3IgPSAnZGFya3JlZCcpCiNrbGlwcHk6OmtsaXBweSh0b29sdGlwX21lc3NhZ2UgPSAnQ2xpY2sgdG8gY29weScsIHRvb2x0aXBfc3VjY2VzcyA9ICdEb25lJykKYGBgCgojIFRoZW9yeQoKIyMgQ29sbGFib3JhdGlvbiBuZXR3b3JrcyBvZiBzY2llbnRpc3RzCgpTY2llbnRpZmljIGNvbGxhYm9yYXRpb24gbmV0d29ya3MgaGF2ZSBiZWVuIHN0dWRpZWQgbW9yZSBvZnRlbiB3aXRoaW4Kc29jaWFsIG5ldHdvcmsgYW5hbHlzaXMsIGFzIHRoZXkgYXJlIGFuIGV4YW1wbGUgb2YgYSBjb25zdGFudGx5IGNoYW5naW5nCm5ldHdvcmsgW0BiYXJhYmFzaV9ldm9sdXRpb25fMjAwMl0uIFRoZXNlIHN0dWRpZXMgaGF2ZSBzaG93biB0aGF0CnNjaWVudGlmaWMgY29sbGFib3JhdGlvbiBuZXR3b3JrcyBjYW4gb2Z0ZW4gYmUgZGVzY3JpYmVkIGFzIGhpZ2hseQpjbHVzdGVyZWQgW0BuZXdtYW5fc3RydWN0dXJlXzIwMDFdLCB3aXRoIHNjaWVudGlzdHMgY29sbGFib3JhdGluZyBtb3JlCm9mdGVuIHdoZW4gdGhleSBoYXZlIGEgdGhpcmQgY29tbW9uIHNjaWVudGlzdCBhcyBjb21wYXJlZCB0byB0d28gcmFuZG9tCnNjaWVudGlzdHMgY29sbGFib3JhdGluZy4gQmFyYWJhc2kgZXQgYWwuClstQGJhcmFiYXNpX2V2b2x1dGlvbl8yMDAyXWFsc28gY29uY2x1ZGUgdGhhdCB0aGVzZSBzY2llbnRpZmljCmNvbGxhYm9yYXRpb24gbmV0d29ya3MgYXJlIG9mdGVuIG1hcmtlZCBieSBwcmVmZXJlbnRpYWwgYXR0YWNobWVudCwKbWVhbmluZyBpbiB0aGlzIGNhc2UgdGhhdCBzY2llbnRpc3RzIHdpdGggbWFueSBjb2xsYWJvcmF0aW9uIHRpZXMgZ2V0CmV2ZW4gbW9yZSB0aWVzLiBGdXJ0aGVybW9yZSwgaG9tb3BoaWx5IGlzIGFsc28gcHJlc2VudCB3aXRoaW4gbmV0d29ya3MKb2Ygc2NpZW50aWZpYyBjb2xsYWJvcmF0aW9uLCBzaG93aW5nIHRoYXQgc2NpZW50aXN0cyBoYXZlIGEgcHJlZmVyZW5jZQpvZiB3b3JraW5nIHRvZ2V0aGVyIHdpdGggc2NpZW50aXN0cyBvZiB0aGUgc2FtZSBpbnN0aXR1dGlvbiBvciB3aXRoCnNpbWlsYXIgcmVzZWFyY2ggaW50ZXJlc3RzIFtAd2FuZ19ob21vcGhpbHlfMjAxNF0uCgpUaGVzZSBuZXR3b3JrIHN0cnVjdHVyZXMgdGhhdCBhcmUgdHlwaWNhbCBmb3Igc2NpZW50aWZpYyBjb2xsYWJvcmF0aW9uCm5ldHdvcmtzIGFyZSB0aHVzIGltcG9ydGFudCB0byBjb25zaWRlciwgYW5kIHByb3ZpZGUgdGhlIG9wcG9ydHVuaXR5IHRvCnRlc3QgdGhlIGVmZmVjdHMgb2Ygc2V2ZXJhbCBjaGFyYWN0ZXJpc3RpY3Mgb2Ygc2NpZW50aXN0cyB3aGlsZSBhbHNvCnRha2luZyBpbnRvIGFjY291bnQgdGhlIGNvbnNlcXVlbmNlcyB0aGVzZSBuZXR3b3JrIGVmZmVjdHMgYnJpbmcgYWJvdXQuClRoZSBlZmZlY3Qgb2YgaGlnaCBjbHVzdGVyaW5nIHRoYXQgTmV3bWFuIFstQG5ld21hbl9zdHJ1Y3R1cmVfMjAwMV0KZGVzY3JpYmVkLCBpcyBhbHNvIGNhbGxlZCAidHJhbnNpdGl2aXR5Ii4gVGhpcyBkZXNjcmliZXMgdGhlIHRlbmRlbmN5CmFtb25nIGluZGl2aWR1YWxzIHRvIGZvcm0gYSB0aWUgd2l0aCBhbm90aGVyIGluZGl2aWR1YWwgd2hvIGFscmVhZHkgaGFzCmEgdGllIHdpdGggc29tZW9uZSBrbm93biAoZS5nLiBiZWNvbWluZyBmcmllbmRzIHdpdGggZnJpZW5kcyBvZiBmcmllbmRzKQpbQGJsb2NrX3JlY2lwcm9jaXR5XzIwMTVdLiBTY2llbnRpc3RzIHRodXMgcHJlZmVyIHRvIGNvbGxhYm9yYXRlIHdpdGgKc2NpZW50aXN0cyB0aGF0IGhhdmUgY29sbGFib3JhdGVkIHdpdGggb25lIG9mIG15IGNvbGxhYm9yYXRvcnMuCgpXaGlsZSB0aGUgbGl0ZXJhdHVyZSBvbiAobmV0d29yayBlZmZlY3RzIHdpdGhpbikgc2NpZW50aWZpYwpjb2xsYWJvcmF0aW9uIG5ldHdvcmtzIG1heSBiZSB3ZWxsLWVzdGFibGlzaGVkCltAYmFyYWJhc2lfZXZvbHV0aW9uXzIwMDI7IEBibG9ja19yZWNpcHJvY2l0eV8yMDE1OwpAbmV3bWFuX3N0cnVjdHVyZV8yMDAxOyBAd2FuZ19ob21vcGhpbHlfMjAxNCBdLCBsZXNzIGlzIGtub3duIGFib3V0Cm90aGVyIGZhY3RvcnMgdGhhdCBjb3VsZCBoYXZlIGFuIGVmZmVjdCBvZiBzZWxlY3Rpb24gYW5kIGluZmx1ZW5jZSBpbgpuZXR3b3Jrcy4gV2hpbGUgdHJhbnNpdGl2aXR5LCBob21vcGhpbHkgYW5kIHByZWZlcmVudGlhbCBhdHRhY2htZW50CnByb3ZpZGUgY2xlYXIgZXhwZWN0YXRpb25zIGFzIHRvIHdoaWNoIHNjaWVudGlzdCBjb2xsYWJvcmF0ZXMgd2l0aCB3aG9tCmFuZCB3aHksIG90aGVyIGVsZW1lbnRzIGNvdWxkIGFsc28gZGV0ZXJtaW5lIGNvbGxhYm9yYXRpb25zIGJldHdlZW4Kc2NpZW50aXN0cy4gSW4gdGhpcyBzdHVkeSwgdGhlIGluZmx1ZW5jZSBvZiBUd2l0dGVyIGFjdGl2aXR5IGFuZCBpdHMKcmVsYXRpb24gdG8gcG9wdWxhcml0eSBvZiBzY2llbnRpZmljIHB1YmxpY2F0aW9ucyBpcyBpbnZlc3RpZ2F0ZWQgZm9yCmNvLXB1YmxpY2F0aW9uIG5ldHdvcmtzIG9mIHNjaWVudGlzdHMuCgojIyBLYXJkYXNoaWFuIEluZGV4IGFuZCBleHBlY3RhdGlvbnMKCkhhbGwgWy1AaGFsbF9rYXJkYXNoaWFuXzIwMTRdIGRldmVsb3BlZCB0aGUgS2FyZGFzaGlhbiBJbmRleCB0byBxdWFudGlmeQp3aGV0aGVyIHNvY2lhbCBtZWRpYSB1c2Ugb2Ygc2NpZW50aXN0cyBpcyBiZWNvbWluZyBtb3JlIGltcG9ydGFudCB0aGFuCnNjaWVudGlmaWMgb3V0cHV0LiBUaGlzIGstaW5kZXggaXMgYSByYXRpbyBiZXR3ZWVuIHRoZSBudW1iZXIgb2YgVHdpdHRlcgpmb2xsb3dlcnMgb2YgYSBzY2llbnRpc3QgYW5kIHRoZSBudW1iZXIgb2YgY2l0YXRpb25zIGZvciBzY2llbnRpZmljCmFydGljbGVzLiBBY2NvcmRpbmcgdG8gSGFsbCBbLUBoYWxsX2thcmRhc2hpYW5fMjAxNF0sIHNjaWVudGlzdHMgd2l0aCBhCmstaW5kZXggaGlnaGVyIHRoYW4gNSwgYXJlIHN0cm9uZ2x5IG92ZXJ2YWx1ZWQgYW5kIGhhdmUgYnVpbHQgdGhlaXIKcHVibGljIHByb2ZpbGUgYmFzZWQgb24gc29jaWFsIG1lZGlhIHdoaWxlIG5vdCBoYXZpbmcgaGlnaGx5IGNpdGVkCmFydGljbGVzLgoKVGhlIGstaW5kZXggaXMgbW9yZSBvZnRlbiB1c2VkIHdpdGhpbiB0aGUgbGl0ZXJhdHVyZS4gRm9yIGluc3RhbmNlLApLb2xhaGkgYW5kIGNvbGxlYWd1ZXMgWy1Aa29sYWhpX2FuYWx5c2lzXzIwMTldIGZvdW5kIHRoYXQgc2NpZW50aWZpYwpkZW50YWwgYXJ0aWNsZXMgdGhhdCBjb3ZlcmVkIGltcG9ydGFudCB0b3BpY3MsIHdlcmUgb2Z0ZW4gbm90IGFtb25nIHRoZQpoaWdobHkgdHdlZXRlZCBhcnRpY2xlcy4gT24gdGhlIG90aGVyIGhhbmQsIHRoZXkgYWxzbyBmb3VuZCB0aGF0IHRoZQpoaWdobHkgdHdlZXRlZCBhcnRpY2xlcyBoYWQgMTIuOTYgY2l0ZXMgb24gYXZlcmFnZSwgcG9zc2libHkKZGVtb25zdHJhdGluZyBhIGNvcnJlbGF0aW9uIGJldHdlZW4gbnVtYmVyIG9mIHR3ZWV0cyBhbmQgY2l0YXRpb25zLgpXaGlsZSBLb2hhbGkgYW5kIGNvbGxlYWd1ZXMgWy1Aa29sYWhpX2FuYWx5c2lzXzIwMTldIGZvY3VzZWQgbW9zdGx5IG9uCmFydGljbGVzIGFzIHN1YmplY3Qgb2YgdGhlaXIgcmVzZWFyY2gsIEtoYW4gYW5kIGNvbGxlYWd1ZXMKWy1Aa2hhbjIwMjBrYXJkYXNoaWFuXSBpbnZlc3RpZ2F0ZWQgdGhlIGstaW5kZXggb2YgY2FyZGlvbG9naXN0cyBhbW9uZyBhCnJhbmRvbSBzYW1wbGUgZHJhd24gZnJvbSBjYXJkaW9sb2dpc3RzIG9mIHRoZSB0b3AgMTAwIGhvc3BpdGFscyBhbmQKZm91bmQgdGhhdCB0aGUgbWFqb3JpdHkgb2YgdGhlIGNhcmRpb2xvZ2lzdHMgaGFkIGEgcmF0aGVyIGxvdyBrLWluZGV4LAphbmQgdGhhdCBvbmx5IHNvbWUgcmFua2VkIGFib3ZlIHRoZSBudW1iZXIgb2YgNS4KCk1vc3Qgb2YgdGhlIGxpdGVyYXR1cmUgdXNpbmcgdGhlIGstaW5kZXggaXMgZGVzY3JpcHRpdmUgaW4gbmF0dXJlIGFuZApkb2VzIG5vdCBsb29rIGF0IGFueSBpbmZsdWVuY2VzIG9uIGFuZCBjb25zZXF1ZW5jZXMgb2YgdGhlIGstaW5kZXguCkVhY290dCBbLUBlYWNvdHRfZWR1Y2F0aW9uYWxfMjAyMF0gZGlkIGludmVzdGlnYXRlIHRoZSBrLWluZGV4IGFuZCB0aGUKVHdpdHRlciB0YWdnaW5nIHJlbGF0aW9ucyBvZiBzY2llbnRpc3RzIGFuZCBjb25jbHVkZWQgdGhhdCBzY2llbnRpc3RzCndobyBnZXQgbWVudGlvbmVkIGEgbG90IGFyZSBub3QgbmVjZXNzYXJpbHkgb2Ygc2NpZW50aWZpYyB2YWx1ZS4gV2hhdApyZW1haW5zIHVuY2xlYXIsIGlzIHdoZXRoZXIgdGhpcyBrLWluZGV4IGFsc28gaGFzIGFuIGluZmx1ZW5jZSBvbiBzb2NpYWwKbmV0d29ya3Mgb2Ygc2NpZW50aXN0cy4gQXMgc2NpZW50aXN0cyB0aGF0IGFyZSBwb3B1bGFyIG9uIHNvY2lhbCBtZWRpYQpub3cgZ2V0IGludml0ZWQgdG8gc3BlYWsgYXQgZXZlbnRzIGJlY2F1c2Ugb2YgdGhlaXIgcG9wdWxhcml0eQpbQGhhbGxfa2FyZGFzaGlhbl8yMDE0XSBhbmQgbm90IGJlY2F1c2Ugb2YgaGlnaGx5IGNpdGVkIHB1YmxpY2F0aW9ucywKdGhpcyBtYXkgc2lnbmFsIHRoYXQgc2NpZW50aXN0cyBhdHRhY2ggdmFsdWUgdG8gb3RoZXIgc2NpZW50aXN0cyB0aGF0CmhhdmUgYSBzdHJvbmcgc29jaWFsIG1lZGlhIG91dHJlYWNoLiBJbiB0aGlzIGNvbnRleHQsIHRoZSBjaXRhdGlvbnMgb2YgYQpzY2llbnRpc3RzIG1heSBiZSBvZiBsZXNzIGltcG9ydGFuY2UsIG1ha2luZyBzY2llbnRpc3RzIHdpdGggYSBoaWdoCmstaW5kZXggYXR0cmFjdGl2ZSBmb3Igb3RoZXIgc2NpZW50aXN0cyB0byBjb2xsYWJvcmF0ZS4gVGhlcmVmb3JlLCBJCmRlcml2ZSB0aGUgZmlyc3QgaHlwb3RoZXNpczogKlNjaWVudGlzdHMgcHJlZmVyIHRvIGNvLXB1Ymxpc2ggd2l0aCBvdGhlcgpzY2llbnRpc3RzIHRoYXQgaGF2ZSBhIGhpZ2ggay1pbmRleC4qCgpPbiB0aGUgb3RoZXIgaGFuZCwgc2NpZW50aXN0cyBhcmUgaW4gZ2VuZXJhbCBjcml0aWNhbCBpbmRpdmlkdWFscy4gVGhpcwptYXkgcmVzdWx0IGluIHVucG9wdWxhcml0eSBvZiBzY2llbnRpc3RzIHdpdGggYSBoaWdoIGstaW5kZXgsIGFzIHRoZXkKY291bGQgYmUga25vd24gZm9yIGludmVzdGluZyBtb3JlIHRpbWUgaW4gc29jaWFsIG1lZGlhIHRoYW4gaW4KY29udHJpYnV0aW5nIHRvIHNjaWVuY2UgW0BjYWxpZmZfcGVyc3BlY3RpdmVfMjAyMF0uIFRoaXMgbGVhZHMgdG8gdGhlCnNlY29uZCBoeXBvdGhlc2lzOiAqU2NpZW50aXN0cyBwcmVmZXIgdG8gY28tcHVibGlzaCB3aXRoIG90aGVyCnNjaWVudGlzdHMgdGhhdCBoYXZlIGEgbG93IGstaW5kZXguKgoKRnVydGhlcm1vcmUsIGFzIGV4cGxhaW5lZCBhYm92ZSwgdGhlIGhvbW9waGlseSBlZmZlY3QgaXMgaW1wb3J0YW50CndpdGhpbiBzb2NpYWwgbmV0d29ya3MgW0B3YW5nX2hvbW9waGlseV8yMDE0XS4gUG9zc2libHksIG5vdCBvbmx5IHRoZQpyZXNlYXJjaCB0b3BpY3Mgb2Ygb3RoZXIgc2NpZW50aXN0cyBhcmUgdGFrZW4gaW50byBjb25zaWRlcmF0aW9uIHdoZW4Kc2VsZWN0aW5nIG90aGVycyB0byBjby1wdWJsaXNoIHdpdGgsIGJ1dCBhbHNvIGEgc2ltaWxhciBzdGFuY2UgcmVnYXJkaW5nCnRoZSByYXRpbyBiZXR3ZWVuIHNvY2lhbCBtZWRpYSBhbmQgc2NpZW50aWZpYyBjb250cmlidXRpb25zLiBUaHVzLCB0aGUKc2NpZW50aXN0IGNvbXBhcmVzIHRoZWlyIG93biBrLWluZGV4IHdpdGggdGhhdCBvZiBhbm90aGVyIHNjaWVudGlzdC4gSW4KdGhpcyByZWdhcmQsIGl0IGNhbiBiZSBleHBlY3RlZCB0aGF0IHNjaWVudGlzdHMgc2VsZWN0IG90aGVyIHNjaWVudGlzdHMKd2l0aCBhIHNpbWlsYXIgay1pbmRleCBmb3IgY28tcHVibGljYXRpb24uIFRoZXJlZm9yZSwgdGhlIGxhc3QKaHlwb3RoZXNpcyBjYW4gYmUgZGVyaXZlZCBhcyBmb2xsb3dzOiAqU2NpZW50aXN0cyBwcmVmZXIgdG8gY28tcHVibGlzaAp3aXRoIG90aGVyIHNjaWVudGlzdHMgdGhhdCBoYXZlIGEgc2ltaWxhciBrLWluZGV4LioKCiMgUmVmZXJlbmNlcwo=</div>
 
 
 </div>

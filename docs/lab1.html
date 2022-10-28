@@ -74,28 +74,6 @@ if (window.hljs) {
 }
 </style>
 
-<style type="text/css">
-/* for pandoc --citeproc since 2.11 */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
 
 <link rel="stylesheet" href="tweaks.css" type="text/css" />
 
@@ -394,7 +372,10 @@ div.tocify {
       <a href="scrapingtwitter.html">Week 3 - Twitter scraping</a>
     </li>
     <li>
-      <a href="Rsienatutorial.html">Week 4</a>
+      <a href="Rsienatutorial.html">Week 4 - RSiena</a>
+    </li>
+    <li>
+      <a href="rsiena_mymovez.html">Week 4 - MyMovez tutorial</a>
     </li>
   </ul>
 </li>
@@ -427,10 +408,25 @@ div.tocify {
       <a href="final_theory.html">Theory</a>
     </li>
     <li>
+      <a href="final_data.html">Data</a>
+    </li>
+    <li>
       <a href="descriptives.html">Descriptives</a>
     </li>
     <li>
       <a href="rsiena_results.html">RSiena results</a>
+    </li>
+    <li>
+      <a href="conclusion.html">Conclusion</a>
+    </li>
+    <li>
+      <a href="rsiena_results_twit.html">Appendix A</a>
+    </li>
+    <li>
+      <a href="appendixb.html">Appendix B</a>
+    </li>
+    <li>
+      <a></a>
     </li>
   </ul>
 </li>
@@ -510,8 +506,8 @@ with SNA as it maps how exactly networks change as a result of internet,
 whereas studies that make no use of SNA are only able to provide
 insights in internet use on the macro level and cohesion on the macro
 level. These research questions are mostly part of the “selection”
-literature within SNA <span class="citation">(( Tolsma and Wolbers
-2010))</span>.</p>
+literature within SNA <span class="citation">((
+<strong>tolsma2010naar?</strong>))</span>.</p>
 <p>(Will move these to references document later)</p>
 <p>Haythornthwaite, C.(2002). Strong, Weak, and Latent Ties and the
 Impact of New Media. The Information Society, 18(5), 385–401. <a
@@ -530,15 +526,8 @@ class="uri">https://doi.org/10.1177/0885412220921526</a></p>
 <pre class="r test"><code>print(&quot;Hello Lab Journal&quot;)</code></pre>
 <pre class="test2"><code>#&gt; [1] &quot;Hello Lab Journal&quot;</code></pre>
 </div>
-<div id="references" class="section level1 unnumbered">
-<h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-tolsma2010naar" class="csl-entry">
-Tolsma, Jochem, and Maarten Hendrik Jan Wolbers. 2010. <span>“Naar Een
-Open Samenleving? Recente Ontwikkelingen in Sociale Stijging En Daling
-in Nederland.”</span>
-</div>
-</div>
+<div id="references" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> References</h1>
 </div>
 
 <div id="rmd-source-code">LS0tCnRpdGxlOiAiUmVzZWFyY2ggcXVlc3Rpb24iCmJpYmxpb2dyYXBoeTogcmVmZXJlbmNlcy5iaWIKYXV0aG9yOiAiQW51c2Noa2EgUGVlbGVuIgplZGl0b3Jfb3B0aW9uczogCiAgbWFya2Rvd246IAogICAgd3JhcDogNzIKLS0tCgpgYGB7ciB3YXJuaW5nPUZBTFNFLCBnbG9iYWxzZXR0aW5ncywgZWNobz1GQUxTRSwgcmVzdWx0cz0naGlkZSd9CmxpYnJhcnkoa25pdHIpCgprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCm9wdHNfY2h1bmskc2V0KHRpZHkub3B0cz1saXN0KHdpZHRoLmN1dG9mZj0xMDApLHRpZHk9VFJVRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0UsY29tbWVudCA9ICIjPiIsIGNhY2hlPVRSVUUsIGNsYXNzLnNvdXJjZT1jKCJ0ZXN0IiksIGNsYXNzLm91dHB1dD1jKCJ0ZXN0MiIpKQpvcHRpb25zKHdpZHRoID0gMTAwKQpyZ2w6OnNldHVwS25pdHIoKQoKCgpjb2xvcml6ZSA8LSBmdW5jdGlvbih4LCBjb2xvcikge3NwcmludGYoIjxzcGFuIHN0eWxlPSdjb2xvcjogJXM7Jz4lczwvc3Bhbj4iLCBjb2xvciwgeCkgfQoKYGBgCgpgYGB7ciBrbGlwcHksIGVjaG89RkFMU0UsIGluY2x1ZGU9VFJVRX0Ka2xpcHB5OjprbGlwcHkocG9zaXRpb24gPSBjKCd0b3AnLCAncmlnaHQnKSkKI2tsaXBweTo6a2xpcHB5KGNvbG9yID0gJ2RhcmtyZWQnKQoja2xpcHB5OjprbGlwcHkodG9vbHRpcF9tZXNzYWdlID0gJ0NsaWNrIHRvIGNvcHknLCB0b29sdGlwX3N1Y2Nlc3MgPSAnRG9uZScpCmBgYAoKTGFzdCBjb21waWxlZCBvbiBgciBmb3JtYXQoU3lzLnRpbWUoKSwgJyVCLCAlWScpYAoKPGJyPgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpUaGlzIGlzIGp1c3QgYW4gZXhhbXBsZSBwYWdlIG9mIHlvdXIgYHIgY29sb3JpemUoImxhYiBqb3VybmFsIiwgInJlZCIpYC4KWW91IGNhbiBqb3VybmFsIHRoZSBhc3NpZ25tZW50cyBvZiB0aGUgZmlyc3QgZGF5IGhlcmUuCgojIyBSZXNlYXJjaCBxdWVzdGlvbgoKSUNUIGhhcyBoYWQgYW4gaW5mbHVlbmNlIG9uIHNvY2lhbCBuZXR3b3JrcyAoTGljb3BwZSAmIFNtb3JlZGEsIDIwMDUpLgpTb2NpYWwgbWVkaWEgY2FuIGFjdGl2YXRlIGxhdGVudCB0aWVzIG9yIGRldmVsb3AgYW5kIHN0cmVuZ3RoZW4gd2Vhawp0aWVzIChIYXl0aG9ybnRod2FpdGUsIDIwMDIpIGFuZCB0aGVyZWZvcmUgcHJvdmlkZXMgb3Bwb3J0dW5pdGllcyB0bwpkZXZlbG9wIG5ldyB0aWVzLiBBcyB0aGUgaW50ZXJuZXQgbWFrZXMgaXQgcG9zc2libGUgdG8gY29ubmVjdCB3aXRoCm90aGVycyB3b3JsZHdpZGUsIGJlaW5nIGxlc3MgbGltaXRlZCB0byBzcGF0aWFsIGNvbm5lY3Rpb25zIHdpdGggb3RoZXJzCihUcmFub3MsIDIwMjApLiBXaGVuIHRyYW5zbGF0aW5nIHRoaXMgdG8gZGF0YSBhYm91dCBzY2llbnRpc3RzLAppbmNyZWFzZWQgb3Bwb3J0dW5pdGllcyB0byBjb21tdW5pY2F0ZSBvbmxpbmUgbWF5IGhhdmUgY3JlYXRlZCBuZXcKY29sbGFib3JhdGlvbnMgYmV0d2VlbiBjby1hdXRob3JzIHRoYXQgbWF5IGhhdmUgbm90IGhhcHBlbmVkIGlmIHRoZXJlCndhcyBubyBpbnRlcm5ldC4gVGhpcyBjb3VsZCBoYXZlIGFuIGluZmx1ZW5jZSBvbiB0aGUgZGVuc2l0eSBvZiBuZXR3b3JrcwphcyB3ZWxsOiBJdCBpcyBub3cgZWFzaWVyIHRvIGNvbGxhYm9yYXRlIHdpdGggbmV3IHBlb3BsZSBiYXNlZCBvbgpjZXJ0YWluIHJlc2VhcmNoIGlkZWFzLCB3aGljaCBtYXkgbGltaXQgcmVwZWF0ZWQgY28tYXV0aG9yc2hpcHMgYW5kCnRoZXJlZm9yZSBkZWNyZWFzZXMgZGVuc2l0eS4gRnVydGhlcm1vcmUsIHNjaWVudGlzdHMgaGF2ZSBiZWNvbWUgbGVzcwpib3VuZGVkIGJ5IHNwYXRpYWwgcmVzdHJpY3Rpb25zLCBhcyBpdCBpcyBub3cgZWFzaWVyIHRvIGNvbGxhYm9yYXRlIHdpdGgKc2NpZW50aXN0cyBhbGwgb3ZlciB0aGUgd29ybGQuIFRoaXMgY291bGQgbGVhZCB0byBzb2NpYWwgbmV0d29ya3MgdGhhdAphcmUgZ2VvZ3JhcGhpY2FsbHkgYnJvYWRlciB0aGFuIHRoZXkgd2VyZSBiZWZvcmUgaW50ZXJuZXQgd2FzIHVzZWQgdG8KY29sbGFib3JhdGUuIFRoZXJlZm9yZSwgSSB3b3VsZCBsaWtlIHRvIGZvY3VzIG9uIHRoZSBmb2xsb3dpbmcgcmVzZWFyY2gKcXVlc3Rpb25zOgoKSG93IGhhcyB0aGUgZGVuc2l0eSBvZiBzb2NpYWwgbmV0d29ya3MgYmV0d2VlbiBjby1hdXRob3JzIGNoYW5nZWQKYmV0d2VlbiAyMDAyIGFuZCAyMDIyIChhcyBhIHJlc3VsdCBvZiBJQ1QpPwoKSG93IGhhcyB0aGUgc3BhdGlhbGl0eSB3aXRoaW4gc29jaWFsIG5ldHdvcmtzIGJldHdlZW4gY28tYXV0aG9ycyBjaGFuZ2VkCmJldHdlZW4gMjAwMiBhbmQgMjAyMiAoYXMgYSByZXN1bHQgb2YgSUNUKT8KClNvY2lldGFsbHkgcmVsZXZhbnQgYmVjYXVzZSBpdCBjYW4gc2F5IHNvbWV0aGluZyBhYm91dCBjb2hlc2lvbiBpZgpuZXR3b3JrcyBiZWNvbWUgbGVzcyBkZW5zZSBkdWUgdG8gbW9yZSBJQ1QuIEFsc28sIGl0IGlzIGltcG9ydGFudCB0bwpzdHVkeSB0aGUgaW5mbHVlbmNlIG9mIGEgbW9yZSBkaWdpdGFsaXplZCBzb2NpZXR5IChhbHNvIG9uIGFjYWRlbWljcykuClNjaWVudGlmaWNhbGx5IHJlbGV2YW50IGJlY2F1c2UgaW50ZXJuZXQgY2FuIGJlIGEgIm5ldyIgaW1wb3J0YW50CmNyaXRlcmlvbiBvZiBzZWxlY3Rpb24gYmV0d2VlbiBlZ28ncyBhbmQgYWx0ZXJzLiBSZWxldmFudCB0byBzdHVkeSB0aGlzCndpdGggU05BIGFzIGl0IG1hcHMgaG93IGV4YWN0bHkgbmV0d29ya3MgY2hhbmdlIGFzIGEgcmVzdWx0IG9mIGludGVybmV0LAp3aGVyZWFzIHN0dWRpZXMgdGhhdCBtYWtlIG5vIHVzZSBvZiBTTkEgYXJlIG9ubHkgYWJsZSB0byBwcm92aWRlCmluc2lnaHRzIGluIGludGVybmV0IHVzZSBvbiB0aGUgbWFjcm8gbGV2ZWwgYW5kIGNvaGVzaW9uIG9uIHRoZSBtYWNybwpsZXZlbC4gVGhlc2UgcmVzZWFyY2ggcXVlc3Rpb25zIGFyZSBtb3N0bHkgcGFydCBvZiB0aGUgInNlbGVjdGlvbiIKbGl0ZXJhdHVyZSB3aXRoaW4gU05BIFsoQHRvbHNtYTIwMTBuYWFyKV0uCgooV2lsbCBtb3ZlIHRoZXNlIHRvIHJlZmVyZW5jZXMgZG9jdW1lbnQgbGF0ZXIpCgpIYXl0aG9ybnRod2FpdGUsIEMuKDIwMDIpLiBTdHJvbmcsIFdlYWssIGFuZCBMYXRlbnQgVGllcyBhbmQgdGhlIEltcGFjdApvZiBOZXcgTWVkaWEuIFRoZSBJbmZvcm1hdGlvbiBTb2NpZXR5LCAxOCg1KSwgMzg1LS00MDEuCjxodHRwczovL2RvaS5vcmcvMTAuMTA4MC8wMTk3MjI0MDI5MDEwODE5NT4gTGljb3BwZSwgQy4sICYgU21vcmVkYSwgWi4KKDIwMDUpLiBBcmUgc29jaWFsIG5ldHdvcmtzIHRlY2hub2xvZ2ljYWxseSBlbWJlZGRlZD86IEhvdyBuZXR3b3JrcyBhcmUKY2hhbmdpbmcgdG9kYXkgd2l0aCBjaGFuZ2VzIGluIGNvbW11bmljYXRpb24gdGVjaG5vbG9neS4gU29jaWFsCk5ldHdvcmtzLCAyNyg0KSwgMzE3LS0zMzUuCjxodHRwczovL2RvaS5vcmcvMTAuMTAxNi9qLnNvY25ldC4yMDA0LjExLjAwMT4gVHJhbm9zLCBFLiAoMjAyMCkuIFNvY2lhbApOZXR3b3JrIFNpdGVzIGFuZCBLbm93bGVkZ2UgVHJhbnNmZXI6IEFuIFVyYmFuIFBlcnNwZWN0aXZlLiBKb3VybmFsIG9mClBsYW5uaW5nIExpdGVyYXR1cmUsIDM1KDQpLCA0MDgtLTQyMi4KPGh0dHBzOi8vZG9pLm9yZy8xMC4xMTc3LzA4ODU0MTIyMjA5MjE1MjY+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCmBgYHtyfQpwcmludCgiSGVsbG8gTGFiIEpvdXJuYWwiKQpgYGAKCiMgUmVmZXJlbmNlcwo=</div>

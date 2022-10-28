@@ -3,9 +3,11 @@ title: "introduction"
 author: "Anuschka Peelen"
 date: "`r Sys.Date()`"
 output: html_document
+bibliography: references.bib
 editor_options: 
   markdown: 
     wrap: 72
+
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +40,7 @@ I could not spend as much time on it as I wished, so this weekend I'll
 have time to improve the introduction.
 
 The rise of the Internet, like on many aspects in life, has had an
-influence on social networks (Licoppe & Smoreda, 2005). Especially
+influence on social networks [@licoppe_are_5]. Especially
 social media has altered networks, as it provides opportunities to
 activate latent ties and strengthen weak ties (Haythornthwaite, 2002);
 more recent source). Furthermore, the selection and influence within

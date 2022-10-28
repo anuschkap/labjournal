@@ -11,7 +11,7 @@
 
 <meta name="author" content="Anuschka Peelen" />
 
-<meta name="date" content="2022-10-18" />
+<meta name="date" content="2022-10-28" />
 
 <title>R Siena</title>
 
@@ -75,6 +75,28 @@ if (window.hljs) {
 }
 </style>
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="tweaks.css" type="text/css" />
 
@@ -373,7 +395,10 @@ div.tocify {
       <a href="scrapingtwitter.html">Week 3 - Twitter scraping</a>
     </li>
     <li>
-      <a href="Rsienatutorial.html">Week 4</a>
+      <a href="Rsienatutorial.html">Week 4 - RSiena</a>
+    </li>
+    <li>
+      <a href="rsiena_mymovez.html">Week 4 - MyMovez tutorial</a>
     </li>
   </ul>
 </li>
@@ -406,10 +431,25 @@ div.tocify {
       <a href="final_theory.html">Theory</a>
     </li>
     <li>
+      <a href="final_data.html">Data</a>
+    </li>
+    <li>
       <a href="descriptives.html">Descriptives</a>
     </li>
     <li>
       <a href="rsiena_results.html">RSiena results</a>
+    </li>
+    <li>
+      <a href="conclusion.html">Conclusion</a>
+    </li>
+    <li>
+      <a href="rsiena_results_twit.html">Appendix A</a>
+    </li>
+    <li>
+      <a href="appendixb.html">Appendix B</a>
+    </li>
+    <li>
+      <a></a>
     </li>
   </ul>
 </li>
@@ -442,7 +482,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">R Siena</h1>
 <h4 class="author">Anuschka Peelen</h4>
-<h4 class="date">2022-10-18</h4>
+<h4 class="date">2022-10-28</h4>
 
 </div>
 
@@ -451,10 +491,12 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<div id="estimate-a-model-for-sociology" class="section level1"
-number="1">
-<h1><span class="header-section-number">1</span> Estimate a model for
-sociology</h1>
+<div id="rsiena-models-for-sociology" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> RSiena Models for
+Sociology</h1>
+<p>First, the models for the Sociology department will be estimated.
+Afterwards, these models will be estimated for the Data Science
+department.</p>
 <pre class="r test"><code>#dependent
 snet &lt;- sienaDependent(soc_net_array)
 
@@ -492,13 +534,26 @@ twitter_dum &lt;- coCovar(twitter_dum)
 # #if no publication yet, set pub_first op 2023
 # socdef_df %&gt;% mutate(pub_first = replace_na(pub_first, 2023)) -&gt; socdef_df
 
-pub_first &lt;-  coCovar(socdef_df$pub_first)</code></pre>
-<pre class="r test"><code>mydata &lt;- sienaDataCreate(snet, gender, ki, dutch, pub_first, twitter_dum)</code></pre>
-<pre class="r test"><code>### Step 2: create effects structure
+pub_first &lt;-  coCovar(socdef_df$pub_first)
+
+mydata &lt;- sienaDataCreate(snet, gender, ki, dutch, pub_first, twitter_dum)
+
+### Step 2: create effects structure
 myeffs &lt;- getEffects(mydata)
 effectsDocumentation(myeffs)
 ### Step 3: get initial description
 print01Report(mydata, modelname = &quot;/Users/anuschka/Documents/labjournal/results/soc_report&quot;)</code></pre>
+<!---to show this file in your lab journal use the following code--->
+<p><embed src="results/soc_report.txt" id="id" class="class"
+style="width:100.0%" height="200" /></p>
+<p>The report above shows - next to the descriptives of the variables
+included - the Jaccard Index. This is an index for stability and change
+in networks, as it counts the number of stable ties, new ties and
+dissolved ties when comparing waves. In the first change period (wave 1
+and 2), the Jaccard Index of this model is 0.359. For the subsequent
+comparison of waves, the Jaccard Index is 0.327. When above 0.3, the
+values are good to estimate <span class="citation">(Ripley et al.
+2022)</span></p>
 <pre class="r test"><code>### Step4: specify model with structural effects
 myeffs &lt;- includeEffects(myeffs, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
 myeffs &lt;- includeEffects(myeffs, transTriads)</code></pre>
@@ -508,8 +563,6 @@ myAlgorithm &lt;- sienaAlgorithmCreate(projname = &quot;soc_report&quot;)
 # (the outer parentheses lead to printing the obtained result on the screen) if necessary, estimate
 # further
 (ans &lt;- siena07(myAlgorithm, data = mydata, effects = myeffs, prevAns = ans))</code></pre>
-<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
-save(ans, file=&quot;/Users/anuschka/Documents/labjournal/results/soc_model_struc&quot;)</code></pre>
 <pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
 #&gt; 
 #&gt;                                    Estimate   Standard   Convergence 
@@ -546,15 +599,70 @@ save(ans, file=&quot;/Users/anuschka/Documents/labjournal/results/soc_model_stru
 #&gt;      106.212       87.995     3395.242
 #&gt;        0.808      111.756     3269.719
 #&gt;        0.948        0.890   120891.596</code></pre>
-<p>In the above model output, we can see that the density effect is
-strongly negative and significant. In the network, staff members do not
-have the wish to copublish with everyone (HOW CAN I INTERPRET THIS
-BECAUSE NOW THE EFFECT IS VERY STRONG). We also observe that within this
-network, there is a significant and positive transitive triads effect,
-meaning that staff members prefer a transitive tie rather than no
-transitive tie. We also learn that staff members prefer to publish
-together with staff members that have already published, hence the
-significant activity and popularity effect.</p>
+<p>The first model with only the structural network effects, shows that
+the density effect is strongly negative (b=-2.687; se=0.347) and
+significant. As this is the effect of the observed ties as part of all
+possible ties and a degree of 0 would equal the fact that 50% of
+possible ties would be observed, it is logic that this number is below
+zero. Furthermore, a significant and positive effect (b=0.599; se=0.240)
+of transitive triads can be observed, meaning that scientists of
+Sociology prefer a transitive tie rather than no transitive tie. Lastly,
+the activity and popularity effect (b=0.090; se=0.036) is also
+significant, signalling that scientists at this department prefer to
+co-publish with other staff members that have already co-published.</p>
+<pre class="r test"><code>myeffs1a &lt;- getEffects(mydata)
+myeffs1a &lt;- includeEffects(myeffs1a, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffs1a &lt;- includeEffects(myeffs1a, transTriads)
+myeffs1a &lt;- includeEffects(myeffs1a, absDiffX, interaction1 = &quot;ki&quot;)
+(ans1a &lt;- siena07(myAlgorithm, data = mydata, effects = myeffs1a, prevAns = ans))</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                    Estimate   Standard   Convergence 
+#&gt;                                                 Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1  1.5909  ( 0.4567   )             
+#&gt;   0.2      Rate parameter period 2  2.5832  ( 0.7844   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)        -2.6353  ( 0.3646   )   -0.0140   
+#&gt;   2.  eval transitive triads        0.5990  ( 0.2475   )   -0.0236   
+#&gt;   3.  eval degree act+pop           0.0875  ( 0.0353   )   -0.0133   
+#&gt;   4.  eval ki abs. difference      -0.0231  ( 0.0623   )   -0.0289   
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.0417 
+#&gt; 
+#&gt; 
+#&gt; Total of 2190 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.133        0.006       -0.011       -0.008
+#&gt;        0.064        0.061       -0.004        0.000
+#&gt;       -0.823       -0.487        0.001        0.000
+#&gt;       -0.346        0.031        0.120        0.004
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt;       76.690       57.157     2375.885      161.922
+#&gt;       55.405       67.917     1970.718       96.302
+#&gt;      847.409      744.072    29779.093     1641.010
+#&gt;       92.583       55.645     2560.508      715.250
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt;      105.301       89.206     3441.255      215.354
+#&gt;        0.838      107.707     3272.897      151.211
+#&gt;        0.954        0.897   123676.216     6491.007
+#&gt;        0.549        0.381        0.482     1463.767</code></pre>
+<p>When adding the k-index to the model, the structural network effects
+remain significant. The effect of the k-index is negative (b=-0.231;
+se=0.062) and significant, meaning that scientists at the Sociology
+department prefer to co-publish with someone with a lower k-index than
+themselves. However, as this effect shows the absolute difference, it
+can also be interpreted as a rather small effect, indicating a
+preference for similarity regarding the k-index. This could thus support
+the idea of homophily with regard to the k-index.</p>
 <pre class="r test"><code>myeffs1 &lt;- getEffects(mydata)
 myeffs1 &lt;- includeEffects(myeffs1, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
 myeffs1 &lt;- includeEffects(myeffs1, transTriads)
@@ -622,16 +730,70 @@ save(ans1, file=&quot;/Users/anuschka/Documents/labjournal/results/soc_model_cov
 #&gt;        0.922        0.798        0.846        0.800        0.474      277.590     3519.510      244.130
 #&gt;        0.927        0.782        0.908        0.761        0.536        0.825    65629.461     3796.850
 #&gt;        0.929        0.763        0.877        0.787        0.560        0.857        0.867      292.395</code></pre>
-<p>Now apart from the network effects (which effects remain
-significant), the KI is now included as a covariate. We see that this
-effect is not signficant.This means that scientists do not prefer to
-co-publish with other scientist that have a similar Kardashian Index.
-Apparently, this is not something the staff members consider in the
-selection process of co-publishing. This also applies to ethnicity, age
-and gender, as we see that these effects are both insignificant.
-However, we do see that there is a significant effect of having Twitter
-or not. Staff members at sociology have a preference to work together
-with someone who is the same in terms of (not) having Twitter.</p>
+<p>However, when adding the control variables, the significant effect of
+the k-index disappears (b=-0.017; se=0.065) Thus, when taking into
+account not only structural network effects but also other covariates,
+the effect of homophily in k-index does not hold. Therefore, the
+hypothesis on similarity with regard to the k-index cannot be supported.
+Scientists at this department do not seem to consider the k-index of
+their possible co-authors. This also applies to ethnicity (b=0.277;
+se=0.366), age (b=0.007; se=0.019), and gender (b=0.000; se=0.266), as
+these effects are all insignificant. Interestingly, there is a
+significant effect of having Twitter or not (b=0.929; se=0.294).
+Sociologists at this department have a preference to work together with
+someone who is the similar in terms of (not) having Twitter.</p>
+<pre class="r test"><code>myeffs2a &lt;- getEffects(mydata)
+myeffs2a &lt;- includeEffects(myeffs2a, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffs2a &lt;- includeEffects(myeffs2a, transTriads)
+myeffs2a &lt;- includeEffects(myeffs2a, altX, interaction1 = &quot;ki&quot;)
+(ans2a &lt;- siena07(myAlgorithm, data = mydata, effects = myeffs2a, prevAns = ans1a))</code></pre>
+<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
+save(ans2a, file=&quot;/Users/anuschka/Documents/labjournal/results/soc_model_cov2a&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                    Estimate   Standard   Convergence 
+#&gt;                                                 Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1  1.5895  ( 0.4282   )             
+#&gt;   0.2      Rate parameter period 2  2.5321  ( 0.7308   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)        -2.6744  ( 0.3610   )   -0.0425   
+#&gt;   2.  eval transitive triads        0.6153  ( 0.2548   )   -0.0358   
+#&gt;   3.  eval degree act+pop           0.0877  ( 0.0400   )   -0.0341   
+#&gt;   4.  eval ki alter                 0.0045  ( 0.0964   )   -0.0314   
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.0803 
+#&gt; 
+#&gt; 
+#&gt; Total of 2030 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.130        0.021       -0.012       -0.007
+#&gt;        0.232        0.065       -0.006       -0.001
+#&gt;       -0.865       -0.577        0.002        0.001
+#&gt;       -0.211       -0.035        0.303        0.009
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt;       76.097       55.440     2354.715      -83.410
+#&gt;       56.493       69.397     2043.598      -80.169
+#&gt;      847.742      742.393    29737.993    -1096.967
+#&gt;      -42.126      -41.760    -1659.366      257.927
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt;      104.424       88.758     3420.276     -126.052
+#&gt;        0.837      107.579     3277.367     -125.420
+#&gt;        0.953        0.900   123272.471    -4552.025
+#&gt;       -0.540       -0.530       -0.568      521.361</code></pre>
+<p>In the model above where the effect of the k-index of the alter is
+included, this effect turns out to be insignificant (b=0.005; se=0.096).
+The k-index of the alter (regardless of one’s own k-index) is thus not
+regarded when looking to co-publishing with others of the
+department.</p>
 <pre class="r test"><code>myeffs2 &lt;- getEffects(mydata)
 myeffs2 &lt;- includeEffects(myeffs2, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
 myeffs2 &lt;- includeEffects(myeffs2, transTriads)
@@ -699,13 +861,20 @@ save(ans2, file=&quot;/Users/anuschka/Documents/labjournal/results/soc_model_cov
 #&gt;        0.923        0.789        0.851        0.805       -0.583      277.209     3626.967      243.660
 #&gt;        0.930        0.779        0.902        0.773       -0.535        0.835    68008.330     3830.213
 #&gt;        0.924        0.743        0.857        0.801       -0.484        0.856        0.859      292.120</code></pre>
-<p>The above model shows us that the effect of the KI of the alter is
-not significant. This could mean that scientists do not regard the
-Kardashian Index of the other, so it does not matter whether it’s lower
-or higher than their own.</p>
+<p>When including the control variables, the alter effect of the k-index
+remains insignificant (b=0.017; se=0.100). This rejects the hypothesis
+on co-publication with scientists with a lower or higher k-index, as for
+the scientists at the Sociology department, the k-index of their
+co-authors does not matter. Furthermore, the effect of gender (b=-0.006;
+se=0.274), age (b=0.008; se=0.021), and ethnicity (b=0.285; se=0.362)
+are again not significant. The effect of similarity in having a Twitter
+account (b=0.943; se=0.301) is significant. As concluded before,
+scientists at this department do prefer to co-publish with other
+scientists that are similar in terms of their Twitter account.</p>
 </div>
-<div id="rsiena-data-science" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> RSiena Data
+<div id="rsiena-models-for-data-science" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span> RSiena models for Data
 Science</h1>
 <pre class="r test"><code>rm(list=ls())</code></pre>
 <pre class="r test"><code>#dependent
@@ -746,8 +915,15 @@ myeff &lt;- getEffects(mydata)
 effectsDocumentation(myeff)
 ### Step 3: get initial description
 print01Report(mydata, modelname = &quot;/Users/anuschka/Documents/labjournal/results/data_report&quot;)</code></pre>
+<p><embed src="results/data_report.txt" id="id" class="class"
+style="width:100.0%" height="200" /></p>
+<p>For Data Science, the Jaccard Index of the first comparison of waves
+is 0.304. For the second wave change, the index is 0.286. These are
+lower numbers than at the Sociology department, but they are still high
+enough to estimate correctly <span class="citation">(Ripley et al.
+2022)</span></p>
 <pre class="r test"><code>### Step4: specify model
-myeff &lt;- includeEffects(myeff, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeff &lt;- includeEffects(myeff, degPlus) 
 myeff &lt;- includeEffects(myeff, transTriads)</code></pre>
 <pre class="r test"><code>### Step5 estimate
 myAlgorithm &lt;- sienaAlgorithmCreate(projname = &quot;data_report&quot;)
@@ -792,15 +968,70 @@ myAlgorithm &lt;- sienaAlgorithmCreate(projname = &quot;data_report&quot;)
 #&gt;      131.208      189.773     5249.323
 #&gt;        0.738      504.437    10424.327
 #&gt;        0.896        0.908   261456.111</code></pre>
-<p>In this model of data science we see similar effects as at the
-sociology department. There again is a negative density effect, albeit
-less strong. Data scientist have a preference for copublishing with
-staff members that they know from publishing with other staff members
-(the transitivity), and this effect is larger for this network than that
-of sociology. This was also visible in the transitivity effect of the
-descriptive statistics. The effect of activity and popularity is
-insignificant: Apparently data scientist do not have a preference to
-copublish with staff members that have already copublished a lot.</p>
+<p>In the first model for Data Science with structural network effects,
+similar effects are visible as at the Sociology department. There again
+is a negative density effect (b=-2.359; se=0.284), albeit less strong.
+The transitivity effect (b=1.254; se=0.212) is larger for this network
+than for the Sociology department. Data scientists prefer to co-publish
+with co-authors of their co-authors more than Sociologists, which is in
+line with the transitivity observed from the descriptive statistics. The
+effect of activity and popularity (b=0.034; se=0.031) is insignificant:
+Apparently Data scientists do not have a preference to co-publish with
+scientists of their department who have already co-published many
+times.</p>
+<pre class="r test"><code>myeffd1a &lt;- getEffects(mydata)
+myeffd1a &lt;- includeEffects(myeffd1a, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffd1a &lt;- includeEffects(myeffd1a, transTriads)
+myeffd1a &lt;- includeEffects(myeffd1a, absDiffX, interaction1 = &quot;ki&quot;)
+(ansd1a &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd1a, prevAns = ans))</code></pre>
+<pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
+save(ansd1a, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_cov1a&quot;)</code></pre>
+<pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
+#&gt; 
+#&gt;                                    Estimate   Standard   Convergence 
+#&gt;                                                 Error      t-ratio   
+#&gt; 
+#&gt; Rate parameters: 
+#&gt;   0.1      Rate parameter period 1  1.5857  ( 0.4509   )             
+#&gt;   0.2      Rate parameter period 2  3.1264  ( 0.7009   )             
+#&gt; 
+#&gt; Other parameters: 
+#&gt;   1.  eval degree (density)        -2.2254  ( 0.2976   )   -0.0670   
+#&gt;   2.  eval transitive triads        1.2295  ( 0.2042   )   -0.1021   
+#&gt;   3.  eval degree act+pop           0.0278  ( 0.0320   )   -0.0983   
+#&gt;   4.  eval ki abs. difference      -0.0957  ( 0.0865   )    0.0139   
+#&gt; 
+#&gt; Overall maximum convergence ratio:    0.1133 
+#&gt; 
+#&gt; 
+#&gt; Total of 2209 iteration steps.
+#&gt; 
+#&gt; Covariance matrix of estimates (correlations below diagonal)
+#&gt; 
+#&gt;        0.089        0.002       -0.008       -0.006
+#&gt;        0.027        0.042       -0.002        0.001
+#&gt;       -0.847       -0.364        0.001        0.000
+#&gt;       -0.233        0.030        0.058        0.007
+#&gt; 
+#&gt; Derivative matrix of expected statistics X by parameters:
+#&gt; 
+#&gt;       81.829       46.706     2277.465       92.249
+#&gt;       70.602      134.006     2984.585       54.816
+#&gt;      877.102      845.448    31968.293      836.507
+#&gt;       30.884      -10.710      437.718      356.676
+#&gt; 
+#&gt; Covariance matrix of X (correlations below diagonal):
+#&gt; 
+#&gt;      142.422      203.732     5589.594       97.584
+#&gt;        0.748      520.289    10723.104       63.818
+#&gt;        0.908        0.912   265800.848     2692.774
+#&gt;        0.285        0.098        0.182      821.068</code></pre>
+<p>In contrast to the Sociology department, the effect of difference in
+k-index is not significant (b=-0.096; se=0.087) at the Data Science
+department. From the above model without control variables it can
+already be concluded that Data Scientists do not compare their k-index
+with their possible co-authors and that they do not seem to attach value
+to this index.</p>
 <pre class="r test"><code>myeffd1 &lt;- getEffects(mydata)
 myeffd1 &lt;- includeEffects(myeffd1, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
 myeffd1 &lt;- includeEffects(myeffd1, transTriads)
@@ -808,8 +1039,8 @@ myeffd1 &lt;- includeEffects(myeffd1, absDiffX, interaction1 = &quot;ki&quot;)
 myeffd1 &lt;- includeEffects(myeffd1, sameX, interaction1 = &quot;dutch&quot;)
 myeffd1 &lt;- includeEffects(myeffd1, absDiffX, interaction1 = &quot;pub_first&quot;)
 myeffd1 &lt;- includeEffects(myeffd1, sameX, interaction1 = &quot;twitter_dum&quot;)
-myeffd1 &lt;- includeEffects(myeffd1, sameX, interaction1 = &quot;gender&quot;)</code></pre>
-<pre class="r test"><code>(ansd1 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd1, prevAns = ans))</code></pre>
+myeffd1 &lt;- includeEffects(myeffd1, sameX, interaction1 = &quot;gender&quot;)
+(ansd1 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd1, prevAns = ans))</code></pre>
 <pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
 save(ansd1, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_cov1&quot;)</code></pre>
 <pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
@@ -818,73 +1049,82 @@ save(ansd1, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_c
 #&gt;                                                   Error      t-ratio   
 #&gt; 
 #&gt; Rate parameters: 
-#&gt;   0.1      Rate parameter period 1    1.5461  ( 0.4243   )             
-#&gt;   0.2      Rate parameter period 2    3.0691  ( 0.6514   )             
+#&gt;   0.1      Rate parameter period 1    1.5988  ( 0.4227   )             
+#&gt;   0.2      Rate parameter period 2    3.0587  ( 0.7459   )             
 #&gt; 
 #&gt; Other parameters: 
-#&gt;   1.  eval degree (density)          -2.2419  ( 0.3869   )    0.0248   
-#&gt;   2.  eval transitive triads          1.2386  ( 0.2109   )   -0.0085   
-#&gt;   3.  eval degree act+pop             0.0278  ( 0.0329   )    0.0063   
-#&gt;   4.  eval same gender               -0.1258  ( 0.2344   )    0.0312   
-#&gt;   5.  eval ki abs. difference        -0.1129  ( 0.0882   )    0.0297   
-#&gt;   6.  eval same dutch                -0.0208  ( 0.2111   )    0.0250   
-#&gt;   7.  eval pub_first abs. difference -0.0135  ( 0.0122   )    0.0368   
-#&gt;   8.  eval same twitter_dum           0.4105  ( 0.2111   )   -0.0539   
+#&gt;   1.  eval degree (density)          -2.3007  ( 0.3926   )    0.0406   
+#&gt;   2.  eval transitive triads          1.2459  ( 0.2103   )    0.0595   
+#&gt;   3.  eval degree act+pop             0.0287  ( 0.0332   )    0.0443   
+#&gt;   4.  eval same gender               -0.0625  ( 0.2210   )    0.0056   
+#&gt;   5.  eval ki abs. difference        -0.1176  ( 0.0928   )   -0.0090   
+#&gt;   6.  eval same dutch                -0.0116  ( 0.2053   )    0.0510   
+#&gt;   7.  eval pub_first abs. difference -0.0138  ( 0.0129   )    0.0365   
+#&gt;   8.  eval same twitter_dum           0.4269  ( 0.2082   )    0.0019   
 #&gt; 
-#&gt; Overall maximum convergence ratio:    0.1417 
+#&gt; Overall maximum convergence ratio:    0.1087 
 #&gt; 
 #&gt; 
-#&gt; Total of 2682 iteration steps.
+#&gt; Total of 2598 iteration steps.
 #&gt; 
 #&gt; Covariance matrix of estimates (correlations below diagonal)
 #&gt; 
-#&gt;        0.150        0.005       -0.008       -0.024       -0.006       -0.034       -0.001       -0.031
-#&gt;        0.063        0.044       -0.003       -0.004       -0.001        0.003        0.000        0.004
-#&gt;       -0.657       -0.384        0.001        0.000        0.000        0.000        0.000        0.000
-#&gt;       -0.263       -0.083       -0.041        0.055        0.001        0.002        0.000       -0.002
-#&gt;       -0.181       -0.037        0.103        0.041        0.008        0.000        0.000        0.000
-#&gt;       -0.412        0.059        0.061        0.047        0.000        0.045        0.000        0.005
-#&gt;       -0.167       -0.070       -0.144       -0.001        0.010       -0.076        0.000        0.000
-#&gt;       -0.380        0.093       -0.003       -0.035        0.000        0.109       -0.019        0.045
+#&gt;        0.154        0.014       -0.009       -0.025       -0.009       -0.025       -0.001       -0.030
+#&gt;        0.164        0.044       -0.003       -0.001        0.000       -0.001        0.000        0.000
+#&gt;       -0.663       -0.480        0.001        0.000        0.000        0.000        0.000        0.000
+#&gt;       -0.290       -0.032       -0.037        0.049        0.001       -0.003        0.000        0.000
+#&gt;       -0.235       -0.003        0.152        0.038        0.009       -0.001        0.000        0.000
+#&gt;       -0.309       -0.017        0.035       -0.058       -0.038        0.042        0.000        0.000
+#&gt;       -0.285       -0.073       -0.052        0.032       -0.027       -0.015        0.000        0.000
+#&gt;       -0.370       -0.002        0.028        0.001       -0.018       -0.001        0.050        0.043
 #&gt; 
 #&gt; Derivative matrix of expected statistics X by parameters:
 #&gt; 
-#&gt;       83.975       54.396     2458.501       92.819       64.684       96.782     1757.759       97.805
-#&gt;       67.885      133.335     2972.700       81.944       45.323       72.464     1554.499       76.907
-#&gt;      900.941      939.571    34179.701     1010.461      652.995      995.111    19890.411     1064.315
-#&gt;       44.621       32.755     1357.634       94.357       25.170       52.029      944.602       47.596
-#&gt;       26.947      -12.155      227.490       21.958      314.236       34.796      381.118       33.045
-#&gt;       48.334       25.451     1301.379       54.166       38.281       99.150     1058.996       50.594
-#&gt;      923.649      732.499    29430.583     1075.138      663.671     1078.262    32397.798     1041.628
-#&gt;       54.237       35.423     1610.440       55.761       53.641       57.120     1093.338      110.537
+#&gt;       82.684       45.123     2288.516      100.109       80.365       93.760     1642.218       98.551
+#&gt;       73.678      141.231     3220.486       93.439       54.573       83.780     1574.858       87.874
+#&gt;      891.897      869.796    32893.785     1086.705      720.172      994.546    18500.325     1072.581
+#&gt;       49.807       28.789     1410.045      105.543       35.287       61.121      992.038       57.508
+#&gt;       36.791       -8.727      526.555       40.190      314.567       50.425      663.205       49.869
+#&gt;       48.386       26.310     1332.954       63.166       41.805       98.623      967.956       53.192
+#&gt;      840.573      505.625    23694.907      993.753      808.147      955.130    28635.455      945.481
+#&gt;       52.857       27.281     1461.060       60.236       61.037       56.501      987.674      113.797
 #&gt; 
 #&gt; Covariance matrix of X (correlations below diagonal):
 #&gt; 
-#&gt;      129.550      194.385     5215.308      146.680       81.557      143.066     2832.386      158.179
-#&gt;        0.755      511.607    10595.459      224.965       66.106      199.056     4492.251      243.267
-#&gt;        0.899        0.919   259806.972     5889.007     2424.604     5449.084   118275.749     6537.852
-#&gt;        0.773        0.597        0.693      277.679       61.181      171.133     3311.357      155.624
-#&gt;        0.267        0.109        0.177        0.137      722.755       95.985     1375.776      131.548
-#&gt;        0.811        0.567        0.689        0.662        0.230      240.506     3167.661      161.064
-#&gt;        0.848        0.677        0.790        0.677        0.174        0.696    86178.366     3301.071
-#&gt;        0.811        0.628        0.749        0.545        0.286        0.606        0.656      293.400</code></pre>
-<p>In the above model, the structural effects are the same as in the
-first model. Just like at the sociology department, the effects of the
-KI, ethnicity and age are not significant. These factors do not play a
-role in the selection effect of finding co-authors. (Not) having twitter
-is significant, thus the data science staff do select staff members to
-copublish with that have the same twitter status as themselves. (IN THIS
-MODEL NOT SIGNIFICANT, CHECK AGAIN WHAT HAPPENS IN BETTER FITTING
-MODEL)</p>
+#&gt;      137.367      197.604     5345.680      170.119      106.110      152.824     2804.625      167.227
+#&gt;        0.738      522.475    10643.141      247.322       94.868      221.704     4141.972      239.771
+#&gt;        0.895        0.914   259450.222     6597.409     3233.144     5930.113   110880.375     6613.630
+#&gt;        0.824        0.614        0.735      310.625      102.568      203.797     3467.115      194.211
+#&gt;        0.334        0.153        0.234        0.215      733.585      116.462     1954.605      161.659
+#&gt;        0.823        0.612        0.734        0.729        0.271      251.262     3122.375      170.051
+#&gt;        0.843        0.638        0.767        0.693        0.254        0.694    80607.050     3252.736
+#&gt;        0.802        0.590        0.730        0.619        0.335        0.603        0.644      316.567</code></pre>
+<p>As expected, the k-index remains insignificant (b=-0.118; se=0.093)
+when adding the control variables to the model. Comparable to the
+Sociology department, the effects of age (b=-0.014; se=0.013), gender
+(b=-0.063; se=0.221) and ethnicity (b=-0.012; se=0.205) are not
+significant. Similarity in age, gender and ethnicity thus does not play
+a role in the selection of suitable co-authors. (Not) having Twitter is
+significant (b=0.427; se=0.208), thus the Data scientists do select
+scientists to co-publish with who have a similar Twitter status as
+themselves.</p>
+<pre class="r test"><code>myeffd2a &lt;- getEffects(mydata)
+myeffd2a &lt;- includeEffects(myeffd2a, degPlus) 
+myeffd2a &lt;- includeEffects(myeffd2a, transTriads)
+myeffd2a &lt;- includeEffects(myeffd2a, altX, interaction1 = &quot;ki&quot;)
+(ansd2 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd2a, prevAns = ansd1))</code></pre>
+<p>In the above model, it turns out that the effect of the k-index of
+the alter (regardless of the k-index of ego) is also not significant
+(b=-0.109; se=0.177), which is the same at both departments.</p>
 <pre class="r test"><code>myeffd2 &lt;- getEffects(mydata)
-myeffd2 &lt;- includeEffects(myeffd2, degPlus) #some publish a lot, some not. (interpretation: talent/luck? )
+myeffd2 &lt;- includeEffects(myeffd2, degPlus) 
 myeffd2 &lt;- includeEffects(myeffd2, transTriads)
 myeffd2 &lt;- includeEffects(myeffd2, altX, interaction1 = &quot;ki&quot;)
 myeffd2 &lt;- includeEffects(myeffd2, sameX, interaction1 = &quot;dutch&quot;)
 myeffd2 &lt;- includeEffects(myeffd2, absDiffX, interaction1 = &quot;pub_first&quot;)
 myeffd2 &lt;- includeEffects(myeffd2, sameX, interaction1 = &quot;twitter_dum&quot;)
-myeffd2 &lt;- includeEffects(myeffd2, sameX, interaction1 = &quot;gender&quot;)</code></pre>
-<pre class="r test"><code>(ansd2 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd2, prevAns = ansd1))</code></pre>
+myeffd2 &lt;- includeEffects(myeffd2, sameX, interaction1 = &quot;gender&quot;)
+(ansd2 &lt;- siena07(myAlgorithm, data = mydata, effects = myeffd2, prevAns = ansd1))</code></pre>
 <pre class="r test"><code>#Save the last model since it has the lowest maximum convergence ratio. 
 save(ansd2, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_cov2&quot;)</code></pre>
 <pre class="test2"><code>#&gt; Estimates, standard errors and convergence t-ratios
@@ -943,11 +1183,55 @@ save(ansd2, file=&quot;/Users/anuschka/Documents/labjournal/results/data_model_c
 #&gt;        0.814        0.599        0.713        0.673       -0.466      260.602     3207.117      170.972
 #&gt;        0.848        0.657        0.792        0.687       -0.524        0.689    83110.098     3414.815
 #&gt;        0.805        0.593        0.734        0.519       -0.386        0.595        0.665      316.991</code></pre>
-<p>In the last model, we see that the KI of the alter again does not
-matter.</p>
+<p>In the model with the control variables added, the effect of alter’s
+k-index remains insignificant (b=-0.183; se=0.195). The hypotheses on
+co-publication with scientists with a lower or higher k-index are thus
+also not confirmed for Data Scientists. Just like in the other models
+for Data Science, age (b=-0.016; se=0.012), gender (b=-0.125; se=0.223),
+and ethnicity (b=-0.026; se=0.213) are not of significant importance for
+selecting scientists to co-publish with. (Not) having a Twitter account
+is something that remains of importance (b=0.445; se=0.216): also in
+this model it shows that Data scientists prefer to co-publish with
+another scientists that is similar with regard to their Twitter
+profile.</p>
+</div>
+<div id="robustness-checks" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Robustness checks</h1>
+<p>It is possible that the k-index is not significant throughout most
+models, because scientists do not regard the ratio between Twitter
+activity and scientific publications, but especially care about Twitter
+activity. In Appendix A, the same models are run as above, but then
+without the k-index and with the number of Twitter followers included.
+For both Sociology and Data Science, the effects of the number of
+Twitter followers are insignificant. This applies to the effects of
+absolute difference as well as the alter’s number of followers. These
+effects are thus rather similar as the results of the k-index. One
+difference noted is that the first model for Sociology in Appendix A is
+insignificant, while the absolute difference between the k-index was
+significant for Sociology when control variables were not included.
+However, also the effect of the k-index became insignificant when
+including the control variables, and thus equal conclusions would be
+drawn from the models with the k-index and that with the number of
+twitter followers.</p>
+<p>In Appendix B, the same models are run without the dummy for having a
+Twitter account. This again results in similar outcomes, meaning that
+the effect of having Twitter when included in the model does not take
+away the possible effect of the k-index. In these models without the
+Twitter dummy, the k-index remains insignificant. Again, the same
+conclusions would be drawn. Therefore, the results are rather
+robust.</p>
+<p>#References</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-manual" class="csl-entry">
+Ripley, Ruth M., Tom A. B. Snijders, Zsofia B’oda, Andr’as V"or"os, and
+Paulina Preciado. 2022. <span>“Manual for <span>Siena</span> Version
+4.0.”</span> Oxford: University of Oxford, Department of Statistics;
+Nuffield College.
+</div>
+</div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBTaWVuYSIKYXV0aG9yOiAiQW51c2Noa2EgUGVlbGVuIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDogaHRtbF9kb2N1bWVudAotLS0KCmBgYHtyIHdhcm5pbmc9RkFMU0UsIGdsb2JhbHNldHRpbmdzLCBlY2hvPUZBTFNFLCByZXN1bHRzPSdoaWRlJ30KbGlicmFyeShrbml0cikKCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKb3B0c19jaHVuayRzZXQodGlkeS5vcHRzPWxpc3Qod2lkdGguY3V0b2ZmPTEwMCksdGlkeT1UUlVFLCB3YXJuaW5nID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRSxjb21tZW50ID0gIiM+IiwgY2FjaGU9VFJVRSwgY2xhc3Muc291cmNlPWMoInRlc3QiKSwgY2xhc3Mub3V0cHV0PWMoInRlc3QyIikpCm9wdGlvbnMod2lkdGggPSAxMDApCnJnbDo6c2V0dXBLbml0cigpCgoKCmNvbG9yaXplIDwtIGZ1bmN0aW9uKHgsIGNvbG9yKSB7c3ByaW50ZigiPHNwYW4gc3R5bGU9J2NvbG9yOiAlczsnPiVzPC9zcGFuPiIsIGNvbG9yLCB4KSB9CmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFfbmV0X2FycmF5LlJEYXRhIikKbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvc29jZGVmX25ldF9hcnJheS5SRGF0YSIpCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL3NvY2RlZl9kZi5SRGF0YSIpCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFkZWZfZGYuUkRhdGEiKQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvZGF0YS9zb2NfdHdpdHRlcmluZm8uUkRhdGEiKQpgYGAKCiMgRXN0aW1hdGUgYSBtb2RlbCBmb3Igc29jaW9sb2d5CgpgYGB7ciwgZWNobz1GQUxTRX0KI2xvYWQgZGF0YW9iamVjdHMKI2xvYWQoIi4vZGF0YS9zb2Nfc3RhZmZfY2l0LlJEYXRhIikKbGlicmFyeShSU2llbmEpCmxpYnJhcnkodGlkeXZlcnNlKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojZGVwZW5kZW50CnNuZXQgPC0gc2llbmFEZXBlbmRlbnQoc29jX25ldF9hcnJheSkKCiMjIyBTdGVwIDE6IGRlZmluZSBkYXRhCiNnZW5kZXIKZ2VuZGVyIDwtIGFzLm51bWVyaWMoc29jZGVmX2RmJGdlbmRlcj09ImZlbWFsZSIpCmdlbmRlciA8LSBjb0NvdmFyKGdlbmRlcikKCiNLYXJkYXNoaWFuIEluZGV4CmtpIDwtIGFzLm51bWVyaWMoc29jZGVmX2RmJGtpKQpraSA8LSBjb0NvdmFyKGtpKQoKI0V0aG5pY2l0eQpkdXRjaCA8LSBhcy5udW1lcmljKHNvY2RlZl9kZiRkdXRjaCkKZHV0Y2ggPC0gY29Db3ZhcihkdXRjaCkKCiNUd2l0dGVyIGR1bW15IGFzIGNvbnRyb2wgdmFyaWFibGUKdHdpdHRlcl9kdW0gPC0gKHNvY2RlZl9kZiR0d2l0dGVyX2R1bSkKdHdpdHRlcl9kdW0gPC0gY29Db3Zhcih0d2l0dGVyX2R1bSkKCiNUd2l0dGVyIGZvbGxvd2VyY291bnQKI2ZvbGxvd2VycyA8LSBhcy5udW1lcmljKHNvY190d2l0dGVyaW5mbyR0d2ZvbGxvd2VyY291bnRzKQojZm9sbG93ZXJzIDwtIGNvQ292YXIoZm9sbG93ZXJzKQoKCgojeWVhciBmaXJzdCBwdWIKIyBzb2Nfc3RhZmZfY2l0ICU+JSBncm91cF9ieShnc19pZCkgJT4lCiMgICBtdXRhdGUocHViX2ZpcnN0ID0gbWluKHllYXIpKSAlPiUgCiMgICBzZWxlY3QoYygiZ3NfaWQiLCAicHViX2ZpcnN0IikpICU+JQojICAgZGlzdGluY3QoZ3NfaWQsIHB1Yl9maXJzdCwgLmtlZXBfYWxsID0gVFJVRSkgLT4gZmlyc3RwdWJfZGYKIyAKIyBzb2NkZWZfZGYgPC0gbGVmdF9qb2luKHNvY2RlZl9kZiwgZmlyc3RwdWJfZGYpCiMgCiMgI2lmIG5vIHB1YmxpY2F0aW9uIHlldCwgc2V0IHB1Yl9maXJzdCBvcCAyMDIzCiMgc29jZGVmX2RmICU+JSBtdXRhdGUocHViX2ZpcnN0ID0gcmVwbGFjZV9uYShwdWJfZmlyc3QsIDIwMjMpKSAtPiBzb2NkZWZfZGYKCnB1Yl9maXJzdCA8LSAgY29Db3Zhcihzb2NkZWZfZGYkcHViX2ZpcnN0KQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQpteWRhdGEgPC0gc2llbmFEYXRhQ3JlYXRlKHNuZXQsIGdlbmRlciwga2ksIGR1dGNoLCBwdWJfZmlyc3QsIHR3aXR0ZXJfZHVtKQpgYGAKCmBgYHtyLGV2YWw9RkFMU0V9CiMjIyBTdGVwIDI6IGNyZWF0ZSBlZmZlY3RzIHN0cnVjdHVyZQpteWVmZnMgPC0gZ2V0RWZmZWN0cyhteWRhdGEpCmVmZmVjdHNEb2N1bWVudGF0aW9uKG15ZWZmcykKIyMjIFN0ZXAgMzogZ2V0IGluaXRpYWwgZGVzY3JpcHRpb24KcHJpbnQwMVJlcG9ydChteWRhdGEsIG1vZGVsbmFtZSA9ICIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9zb2NfcmVwb3J0IikKYGBgCgpgYGB7cixldmFsPUZBTFNFfQojIyMgU3RlcDQ6IHNwZWNpZnkgbW9kZWwgd2l0aCBzdHJ1Y3R1cmFsIGVmZmVjdHMKbXllZmZzIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmcywgZGVnUGx1cykgI3NvbWUgcHVibGlzaCBhIGxvdCwgc29tZSBub3QuIChpbnRlcnByZXRhdGlvbjogdGFsZW50L2x1Y2s/ICkKbXllZmZzIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmcywgdHJhbnNUcmlhZHMpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiMjIyBTdGVwNSBlc3RpbWF0ZQpteUFsZ29yaXRobSA8LSBzaWVuYUFsZ29yaXRobUNyZWF0ZShwcm9qbmFtZSA9ICJzb2NfcmVwb3J0IikKKGFucyA8LSBzaWVuYTA3KG15QWxnb3JpdGhtLCBkYXRhID0gbXlkYXRhLCBlZmZlY3RzID0gbXllZmZzKSkKIyAodGhlIG91dGVyIHBhcmVudGhlc2VzIGxlYWQgdG8gcHJpbnRpbmcgdGhlIG9idGFpbmVkIHJlc3VsdCBvbiB0aGUgc2NyZWVuKSBpZiBuZWNlc3NhcnksIGVzdGltYXRlCiMgZnVydGhlcgooYW5zIDwtIHNpZW5hMDcobXlBbGdvcml0aG0sIGRhdGEgPSBteWRhdGEsIGVmZmVjdHMgPSBteWVmZnMsIHByZXZBbnMgPSBhbnMpKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojU2F2ZSB0aGUgbGFzdCBtb2RlbCBzaW5jZSBpdCBoYXMgdGhlIGxvd2VzdCBtYXhpbXVtIGNvbnZlcmdlbmNlIHJhdGlvLiAKc2F2ZShhbnMsIGZpbGU9Ii9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL3NvY19tb2RlbF9zdHJ1YyIpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL3NvY19tb2RlbF9zdHJ1YyIpCnN1bW1hcnkoYW5zKQpgYGAKCkluIHRoZSBhYm92ZSBtb2RlbCBvdXRwdXQsIHdlIGNhbiBzZWUgdGhhdCB0aGUgZGVuc2l0eSBlZmZlY3QgaXMgc3Ryb25nbHkgbmVnYXRpdmUgYW5kIHNpZ25pZmljYW50LiBJbiB0aGUgbmV0d29yaywgc3RhZmYgbWVtYmVycyBkbyBub3QgaGF2ZSB0aGUgd2lzaCB0byBjb3B1Ymxpc2ggd2l0aCBldmVyeW9uZSAoSE9XIENBTiBJIElOVEVSUFJFVCBUSElTIEJFQ0FVU0UgTk9XIFRIRSBFRkZFQ1QgSVMgVkVSWSBTVFJPTkcpLiBXZSBhbHNvIG9ic2VydmUgdGhhdCB3aXRoaW4gdGhpcyBuZXR3b3JrLCB0aGVyZSBpcyBhIHNpZ25pZmljYW50IGFuZCBwb3NpdGl2ZSB0cmFuc2l0aXZlIHRyaWFkcyBlZmZlY3QsIG1lYW5pbmcgdGhhdCBzdGFmZiBtZW1iZXJzIHByZWZlciBhIHRyYW5zaXRpdmUgdGllIHJhdGhlciB0aGFuIG5vIHRyYW5zaXRpdmUgdGllLiBXZSBhbHNvIGxlYXJuIHRoYXQgc3RhZmYgbWVtYmVycyBwcmVmZXIgdG8gcHVibGlzaCB0b2dldGhlciB3aXRoIHN0YWZmIG1lbWJlcnMgdGhhdCBoYXZlIGFscmVhZHkgcHVibGlzaGVkLCBoZW5jZSB0aGUgc2lnbmlmaWNhbnQgYWN0aXZpdHkgYW5kIHBvcHVsYXJpdHkgZWZmZWN0LgoKYGBge3IsZXZhbD1GQUxTRX0KbXllZmZzMSA8LSBnZXRFZmZlY3RzKG15ZGF0YSkKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBkZWdQbHVzKSAjc29tZSBwdWJsaXNoIGEgbG90LCBzb21lIG5vdC4gKGludGVycHJldGF0aW9uOiB0YWxlbnQvbHVjaz8gKQpteWVmZnMxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczEsIHRyYW5zVHJpYWRzKQpteWVmZnMxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczEsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAia2kiKQpteWVmZnMxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczEsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAiZHV0Y2giKQpteWVmZnMxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczEsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAicHViX2ZpcnN0IikKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gInR3aXR0ZXJfZHVtIikKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImdlbmRlciIpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CihhbnMxIDwtIHNpZW5hMDcobXlBbGdvcml0aG0sIGRhdGEgPSBteWRhdGEsIGVmZmVjdHMgPSBteWVmZnMxLCBwcmV2QW5zID0gYW5zKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zMSwgZmlsZT0iL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX2NvdjEiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9zb2NfbW9kZWxfY292MSIpCnN1bW1hcnkoYW5zMSkKYGBgCgpOb3cgYXBhcnQgZnJvbSB0aGUgbmV0d29yayBlZmZlY3RzICh3aGljaCBlZmZlY3RzIHJlbWFpbiBzaWduaWZpY2FudCksIHRoZSBLSSBpcyBub3cgaW5jbHVkZWQgYXMgYSBjb3ZhcmlhdGUuIFdlIHNlZSB0aGF0IHRoaXMgZWZmZWN0IGlzIG5vdCBzaWduZmljYW50LlRoaXMgbWVhbnMgdGhhdCBzY2llbnRpc3RzIGRvIG5vdCBwcmVmZXIgdG8gY28tcHVibGlzaCB3aXRoIG90aGVyIHNjaWVudGlzdCB0aGF0IGhhdmUgYSBzaW1pbGFyIEthcmRhc2hpYW4gSW5kZXguIEFwcGFyZW50bHksIHRoaXMgaXMgbm90IHNvbWV0aGluZyB0aGUgc3RhZmYgbWVtYmVycyBjb25zaWRlciBpbiB0aGUgc2VsZWN0aW9uIHByb2Nlc3Mgb2YgY28tcHVibGlzaGluZy4gVGhpcyBhbHNvIGFwcGxpZXMgdG8gZXRobmljaXR5LCBhZ2UgYW5kIGdlbmRlciwgYXMgd2Ugc2VlIHRoYXQgdGhlc2UgZWZmZWN0cyBhcmUgYm90aCBpbnNpZ25pZmljYW50LiBIb3dldmVyLCB3ZSBkbyBzZWUgdGhhdCB0aGVyZSBpcyBhIHNpZ25pZmljYW50IGVmZmVjdCBvZiBoYXZpbmcgVHdpdHRlciBvciBub3QuIFN0YWZmIG1lbWJlcnMgYXQgc29jaW9sb2d5IGhhdmUgYSBwcmVmZXJlbmNlIHRvIHdvcmsgdG9nZXRoZXIgd2l0aCBzb21lb25lIHdobyBpcyB0aGUgc2FtZSBpbiB0ZXJtcyBvZiAobm90KSBoYXZpbmcgVHdpdHRlci4KCmBgYHtyLGV2YWw9RkFMU0V9Cm15ZWZmczIgPC0gZ2V0RWZmZWN0cyhteWRhdGEpCm15ZWZmczIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMiwgZGVnUGx1cykgI3NvbWUgcHVibGlzaCBhIGxvdCwgc29tZSBub3QuIChpbnRlcnByZXRhdGlvbjogdGFsZW50L2x1Y2s/ICkKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCB0cmFuc1RyaWFkcykKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBhbHRYLCBpbnRlcmFjdGlvbjEgPSAia2kiKQpteWVmZnMyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczIsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAiZHV0Y2giKQpteWVmZnMyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczIsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAicHViX2ZpcnN0IikKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gInR3aXR0ZXJfZHVtIikKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImdlbmRlciIpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CihhbnMyIDwtIHNpZW5hMDcobXlBbGdvcml0aG0sIGRhdGEgPSBteWRhdGEsIGVmZmVjdHMgPSBteWVmZnMyLCBwcmV2QW5zID0gYW5zMSkpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiNTYXZlIHRoZSBsYXN0IG1vZGVsIHNpbmNlIGl0IGhhcyB0aGUgbG93ZXN0IG1heGltdW0gY29udmVyZ2VuY2UgcmF0aW8uIApzYXZlKGFuczIsIGZpbGU9Ii9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL3NvY19tb2RlbF9jb3YyIikKYGBgCgpgYGB7ciwgZWNobz1GQUxTRX0KbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX2NvdjIiKQpzdW1tYXJ5KGFuczIpCmBgYAoKVGhlIGFib3ZlIG1vZGVsIHNob3dzIHVzIHRoYXQgdGhlIGVmZmVjdCBvZiB0aGUgS0kgb2YgdGhlIGFsdGVyIGlzIG5vdCBzaWduaWZpY2FudC4gVGhpcyBjb3VsZCBtZWFuIHRoYXQgc2NpZW50aXN0cyBkbyBub3QgcmVnYXJkIHRoZSBLYXJkYXNoaWFuIEluZGV4IG9mIHRoZSBvdGhlciwgc28gaXQgZG9lcyBub3QgbWF0dGVyIHdoZXRoZXIgaXQncyBsb3dlciBvciBoaWdoZXIgdGhhbiB0aGVpciBvd24uCgojIFJTaWVuYSBEYXRhIFNjaWVuY2UKCmBgYHtyfQpybShsaXN0PWxzKCkpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFfbmV0X2FycmF5LlJEYXRhIikKbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvZGF0YWRlZl9kZi5SRGF0YSIpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiNkZXBlbmRlbnQKZG5ldCA8LSBzaWVuYURlcGVuZGVudChkbmV0X2FycmF5KQoKIyMjIFN0ZXAgMTogZGVmaW5lIGRhdGEKI2dlbmRlcgpnZW5kZXIgPC0gYXMubnVtZXJpYyhkYXRhZGVmX2RmJGdlbmRlcj09ImZlbWFsZSIpCmdlbmRlciA8LSBjb0NvdmFyKGdlbmRlcikKCiNLYXJkYXNoaWFuIEluZGV4CmtpIDwtIGFzLm51bWVyaWMoZGF0YWRlZl9kZiRraSkKa2kgPC0gY29Db3ZhcihraSkKCiNFdGhuaWNpdHkKZHV0Y2ggPC0gYXMubnVtZXJpYyhkYXRhZGVmX2RmJGR1dGNoKQpkdXRjaCA8LSBjb0NvdmFyKGR1dGNoKQoKI1R3aXR0ZXIgZHVtbXkgYXMgY29udHJvbCB2YXJpYWJsZQp0d2l0dGVyX2R1bSA8LSAoZGF0YWRlZl9kZiR0d2l0dGVyX2R1bSkKdHdpdHRlcl9kdW0gPC0gY29Db3Zhcih0d2l0dGVyX2R1bSkKCiMgI3llYXIgZmlyc3QgcHViCiMgZGF0YV9zdGFmZl9jaXQgJT4lIGdyb3VwX2J5KGdzX2lkKSAlPiUKIyAgIG11dGF0ZShwdWJfZmlyc3QgPSBtaW4oeWVhcikpICU+JSAKIyAgIHNlbGVjdChjKCJnc19pZCIsICJwdWJfZmlyc3QiKSkgJT4lCiMgICBkaXN0aW5jdChnc19pZCwgcHViX2ZpcnN0LCAua2VlcF9hbGwgPSBUUlVFKSAtPiBmaXJzdHB1Yl9kZjEKIyAKIyBkYXRhZGVmX2RmIDwtIGxlZnRfam9pbihkYXRhZGVmX2RmLCBmaXJzdHB1Yl9kZjEpCiMgCiMgI2lmIG5vIHB1YmxpY2F0aW9uIHlldCwgc2V0IHB1Yl9maXJzdCBvcCAyMDIzCiMgZGF0YWRlZl9kZiAlPiUgbXV0YXRlKHB1Yl9maXJzdCA9IHJlcGxhY2VfbmEocHViX2ZpcnN0LCAyMDIzKSkgLT4gZGF0YWRlZl9kZgoKcHViX2ZpcnN0IDwtICBjb0NvdmFyKGRhdGFkZWZfZGYkcHViX2ZpcnN0KQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQpteWRhdGEgPC0gc2llbmFEYXRhQ3JlYXRlKGRuZXQsIGdlbmRlciwga2ksIGR1dGNoLCBwdWJfZmlyc3QsIHR3aXR0ZXJfZHVtKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojIyMgU3RlcCAyOiBjcmVhdGUgZWZmZWN0cyBzdHJ1Y3R1cmUKbXllZmYgPC0gZ2V0RWZmZWN0cyhteWRhdGEpCmVmZmVjdHNEb2N1bWVudGF0aW9uKG15ZWZmKQojIyMgU3RlcCAzOiBnZXQgaW5pdGlhbCBkZXNjcmlwdGlvbgpwcmludDAxUmVwb3J0KG15ZGF0YSwgbW9kZWxuYW1lID0gIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL2RhdGFfcmVwb3J0IikKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KIyMjIFN0ZXA0OiBzcGVjaWZ5IG1vZGVsCm15ZWZmIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmLCBkZWdQbHVzKSAjc29tZSBwdWJsaXNoIGEgbG90LCBzb21lIG5vdC4gKGludGVycHJldGF0aW9uOiB0YWxlbnQvbHVjaz8gKQpteWVmZiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZiwgdHJhbnNUcmlhZHMpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiMjIyBTdGVwNSBlc3RpbWF0ZQpteUFsZ29yaXRobSA8LSBzaWVuYUFsZ29yaXRobUNyZWF0ZShwcm9qbmFtZSA9ICJkYXRhX3JlcG9ydCIpCihhbnMgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmKSkKIyAodGhlIG91dGVyIHBhcmVudGhlc2VzIGxlYWQgdG8gcHJpbnRpbmcgdGhlIG9idGFpbmVkIHJlc3VsdCBvbiB0aGUgc2NyZWVuKSBpZiBuZWNlc3NhcnksIGVzdGltYXRlCiMgZnVydGhlcgojKGFucyA8LSBzaWVuYTA3KG15QWxnb3JpdGhtLCBkYXRhID0gbXlkYXRhLCBlZmZlY3RzID0gbXllZmYsIHByZXZBbnMgPSBhbnMpKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQpzYXZlKGFucywgZmlsZT0iL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvZGF0YV9tb2RlbF9zdHJ1YyIpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL2RhdGFfbW9kZWxfc3RydWMiKQpzdW1tYXJ5KGFucykKYGBgCgpJbiB0aGlzIG1vZGVsIG9mIGRhdGEgc2NpZW5jZSB3ZSBzZWUgc2ltaWxhciBlZmZlY3RzIGFzIGF0IHRoZSBzb2Npb2xvZ3kgZGVwYXJ0bWVudC4gVGhlcmUgYWdhaW4gaXMgYSBuZWdhdGl2ZSBkZW5zaXR5IGVmZmVjdCwgYWxiZWl0IGxlc3Mgc3Ryb25nLiBEYXRhIHNjaWVudGlzdCBoYXZlIGEgcHJlZmVyZW5jZSBmb3IgY29wdWJsaXNoaW5nIHdpdGggc3RhZmYgbWVtYmVycyB0aGF0IHRoZXkga25vdyBmcm9tIHB1Ymxpc2hpbmcgd2l0aCBvdGhlciBzdGFmZiBtZW1iZXJzICh0aGUgdHJhbnNpdGl2aXR5KSwgYW5kIHRoaXMgZWZmZWN0IGlzIGxhcmdlciBmb3IgdGhpcyBuZXR3b3JrIHRoYW4gdGhhdCBvZiBzb2Npb2xvZ3kuIFRoaXMgd2FzIGFsc28gdmlzaWJsZSBpbiB0aGUgdHJhbnNpdGl2aXR5IGVmZmVjdCBvZiB0aGUgZGVzY3JpcHRpdmUgc3RhdGlzdGljcy4gVGhlIGVmZmVjdCBvZiBhY3Rpdml0eSBhbmQgcG9wdWxhcml0eSBpcyBpbnNpZ25pZmljYW50OiBBcHBhcmVudGx5IGRhdGEgc2NpZW50aXN0IGRvIG5vdCBoYXZlIGEgcHJlZmVyZW5jZSB0byBjb3B1Ymxpc2ggd2l0aCBzdGFmZiBtZW1iZXJzIHRoYXQgaGF2ZSBhbHJlYWR5IGNvcHVibGlzaGVkIGEgbG90LgoKYGBge3IsZXZhbD1GQUxTRX0KbXllZmZkMSA8LSBnZXRFZmZlY3RzKG15ZGF0YSkKbXllZmZkMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQxLCBkZWdQbHVzKSAjc29tZSBwdWJsaXNoIGEgbG90LCBzb21lIG5vdC4gKGludGVycHJldGF0aW9uOiB0YWxlbnQvbHVjaz8gKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIHRyYW5zVHJpYWRzKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAia2kiKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAiZHV0Y2giKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAicHViX2ZpcnN0IikKbXllZmZkMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQxLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gInR3aXR0ZXJfZHVtIikKbXllZmZkMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQxLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImdlbmRlciIpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CihhbnNkMSA8LSBzaWVuYTA3KG15QWxnb3JpdGhtLCBkYXRhID0gbXlkYXRhLCBlZmZlY3RzID0gbXllZmZkMSwgcHJldkFucyA9IGFucykpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiNTYXZlIHRoZSBsYXN0IG1vZGVsIHNpbmNlIGl0IGhhcyB0aGUgbG93ZXN0IG1heGltdW0gY29udmVyZ2VuY2UgcmF0aW8uIApzYXZlKGFuc2QxLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjEiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjEiKQpzdW1tYXJ5KGFuc2QxKQpgYGAKCkluIHRoZSBhYm92ZSBtb2RlbCwgdGhlIHN0cnVjdHVyYWwgZWZmZWN0cyBhcmUgdGhlIHNhbWUgYXMgaW4gdGhlIGZpcnN0IG1vZGVsLiBKdXN0IGxpa2UgYXQgdGhlIHNvY2lvbG9neSBkZXBhcnRtZW50LCB0aGUgZWZmZWN0cyBvZiB0aGUgS0ksIGV0aG5pY2l0eSBhbmQgYWdlIGFyZSBub3Qgc2lnbmlmaWNhbnQuIFRoZXNlIGZhY3RvcnMgZG8gbm90IHBsYXkgYSByb2xlIGluIHRoZSBzZWxlY3Rpb24gZWZmZWN0IG9mIGZpbmRpbmcgY28tYXV0aG9ycy4gKE5vdCkgaGF2aW5nIHR3aXR0ZXIgaXMgc2lnbmlmaWNhbnQsIHRodXMgdGhlIGRhdGEgc2NpZW5jZSBzdGFmZiBkbyBzZWxlY3Qgc3RhZmYgbWVtYmVycyB0byBjb3B1Ymxpc2ggd2l0aCB0aGF0IGhhdmUgdGhlIHNhbWUgdHdpdHRlciBzdGF0dXMgYXMgdGhlbXNlbHZlcy4gKElOIFRISVMgTU9ERUwgTk9UIFNJR05JRklDQU5ULCBDSEVDSyBBR0FJTiBXSEFUIEhBUFBFTlMgSU4gQkVUVEVSIEZJVFRJTkcgTU9ERUwpCgpgYGB7cixldmFsPUZBTFNFfQpteWVmZmQyIDwtIGdldEVmZmVjdHMobXlkYXRhKQpteWVmZmQyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDIsIGRlZ1BsdXMpICNzb21lIHB1Ymxpc2ggYSBsb3QsIHNvbWUgbm90LiAoaW50ZXJwcmV0YXRpb246IHRhbGVudC9sdWNrPyApCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgdHJhbnNUcmlhZHMpCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgYWx0WCwgaW50ZXJhY3Rpb24xID0gImtpIikKbXllZmZkMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQyLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImR1dGNoIikKbXllZmZkMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQyLCBhYnNEaWZmWCwgaW50ZXJhY3Rpb24xID0gInB1Yl9maXJzdCIpCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJ0d2l0dGVyX2R1bSIpCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJnZW5kZXIiKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQooYW5zZDIgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmZDIsIHByZXZBbnMgPSBhbnNkMSkpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiNTYXZlIHRoZSBsYXN0IG1vZGVsIHNpbmNlIGl0IGhhcyB0aGUgbG93ZXN0IG1heGltdW0gY29udmVyZ2VuY2UgcmF0aW8uIApzYXZlKGFuc2QyLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjIiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjIiKQpzdW1tYXJ5KGFuc2QyKQpgYGAKCkluIHRoZSBsYXN0IG1vZGVsLCB3ZSBzZWUgdGhhdCB0aGUgS0kgb2YgdGhlIGFsdGVyIGFnYWluIGRvZXMgbm90IG1hdHRlci4K</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBTaWVuYSIKYXV0aG9yOiAiQW51c2Noa2EgUGVlbGVuIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCmJpYmxpb2dyYXBoeTogcmVmZXJlbmNlcy5iaWIKb3V0cHV0OiAKICBodG1sX2RvY3VtZW50OgogICAgIGNvZGVfZm9sZGluZzogImhpZGUiCmVkaXRvcl9vcHRpb25zOiAKICBtYXJrZG93bjogCiAgICB3cmFwOiA3MgotLS0KCmBgYHtyIHdhcm5pbmc9RkFMU0UsIGdsb2JhbHNldHRpbmdzLCBlY2hvPUZBTFNFLCByZXN1bHRzPSdoaWRlJ30KbGlicmFyeShrbml0cikKCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKb3B0c19jaHVuayRzZXQodGlkeS5vcHRzPWxpc3Qod2lkdGguY3V0b2ZmPTEwMCksdGlkeT1UUlVFLCB3YXJuaW5nID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRSxjb21tZW50ID0gIiM+IiwgY2FjaGU9VFJVRSwgY2xhc3Muc291cmNlPWMoInRlc3QiKSwgY2xhc3Mub3V0cHV0PWMoInRlc3QyIikpCm9wdGlvbnMod2lkdGggPSAxMDApCnJnbDo6c2V0dXBLbml0cigpCgoKCmNvbG9yaXplIDwtIGZ1bmN0aW9uKHgsIGNvbG9yKSB7c3ByaW50ZigiPHNwYW4gc3R5bGU9J2NvbG9yOiAlczsnPiVzPC9zcGFuPiIsIGNvbG9yLCB4KSB9CmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxpYnJhcnkoUlNpZW5hKQpsaWJyYXJ5KHRpZHl2ZXJzZSkKCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFfbmV0X2FycmF5LlJEYXRhIikKbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvc29jZGVmX25ldF9hcnJheS5SRGF0YSIpCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL3NvY2RlZl9kZi5SRGF0YSIpCmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFkZWZfZGYuUkRhdGEiKQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvZGF0YS9zb2NfdHdpdHRlcmluZm8uUkRhdGEiKQpgYGAKCiMgUlNpZW5hIE1vZGVscyBmb3IgU29jaW9sb2d5CkZpcnN0LCB0aGUgbW9kZWxzIGZvciB0aGUgU29jaW9sb2d5IGRlcGFydG1lbnQgd2lsbCBiZSBlc3RpbWF0ZWQuIEFmdGVyd2FyZHMsIHRoZXNlIG1vZGVscyB3aWxsIGJlIGVzdGltYXRlZCBmb3IgdGhlIERhdGEgU2NpZW5jZSBkZXBhcnRtZW50LiAKCgpgYGB7ciwgZXZhbD1GQUxTRX0KI2RlcGVuZGVudApzbmV0IDwtIHNpZW5hRGVwZW5kZW50KHNvY19uZXRfYXJyYXkpCgojIyMgU3RlcCAxOiBkZWZpbmUgZGF0YQojZ2VuZGVyCmdlbmRlciA8LSBhcy5udW1lcmljKHNvY2RlZl9kZiRnZW5kZXI9PSJmZW1hbGUiKQpnZW5kZXIgPC0gY29Db3ZhcihnZW5kZXIpCgojS2FyZGFzaGlhbiBJbmRleApraSA8LSBhcy5udW1lcmljKHNvY2RlZl9kZiRraSkKa2kgPC0gY29Db3ZhcihraSkKCiNFdGhuaWNpdHkKZHV0Y2ggPC0gYXMubnVtZXJpYyhzb2NkZWZfZGYkZHV0Y2gpCmR1dGNoIDwtIGNvQ292YXIoZHV0Y2gpCgojVHdpdHRlciBkdW1teSBhcyBjb250cm9sIHZhcmlhYmxlCnR3aXR0ZXJfZHVtIDwtIChzb2NkZWZfZGYkdHdpdHRlcl9kdW0pCnR3aXR0ZXJfZHVtIDwtIGNvQ292YXIodHdpdHRlcl9kdW0pCgojVHdpdHRlciBmb2xsb3dlcmNvdW50CiNmb2xsb3dlcnMgPC0gYXMubnVtZXJpYyhzb2NfdHdpdHRlcmluZm8kdHdmb2xsb3dlcmNvdW50cykKI2ZvbGxvd2VycyA8LSBjb0NvdmFyKGZvbGxvd2VycykKCgoKI3llYXIgZmlyc3QgcHViCiMgc29jX3N0YWZmX2NpdCAlPiUgZ3JvdXBfYnkoZ3NfaWQpICU+JQojICAgbXV0YXRlKHB1Yl9maXJzdCA9IG1pbih5ZWFyKSkgJT4lIAojICAgc2VsZWN0KGMoImdzX2lkIiwgInB1Yl9maXJzdCIpKSAlPiUKIyAgIGRpc3RpbmN0KGdzX2lkLCBwdWJfZmlyc3QsIC5rZWVwX2FsbCA9IFRSVUUpIC0+IGZpcnN0cHViX2RmCiMgCiMgc29jZGVmX2RmIDwtIGxlZnRfam9pbihzb2NkZWZfZGYsIGZpcnN0cHViX2RmKQojIAojICNpZiBubyBwdWJsaWNhdGlvbiB5ZXQsIHNldCBwdWJfZmlyc3Qgb3AgMjAyMwojIHNvY2RlZl9kZiAlPiUgbXV0YXRlKHB1Yl9maXJzdCA9IHJlcGxhY2VfbmEocHViX2ZpcnN0LCAyMDIzKSkgLT4gc29jZGVmX2RmCgpwdWJfZmlyc3QgPC0gIGNvQ292YXIoc29jZGVmX2RmJHB1Yl9maXJzdCkKCm15ZGF0YSA8LSBzaWVuYURhdGFDcmVhdGUoc25ldCwgZ2VuZGVyLCBraSwgZHV0Y2gsIHB1Yl9maXJzdCwgdHdpdHRlcl9kdW0pCgojIyMgU3RlcCAyOiBjcmVhdGUgZWZmZWN0cyBzdHJ1Y3R1cmUKbXllZmZzIDwtIGdldEVmZmVjdHMobXlkYXRhKQplZmZlY3RzRG9jdW1lbnRhdGlvbihteWVmZnMpCiMjIyBTdGVwIDM6IGdldCBpbml0aWFsIGRlc2NyaXB0aW9uCnByaW50MDFSZXBvcnQobXlkYXRhLCBtb2RlbG5hbWUgPSAiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX3JlcG9ydCIpCmBgYAoKPCEtLS10byBzaG93IHRoaXMgZmlsZSBpbiB5b3VyIGxhYiBqb3VybmFsIHVzZSB0aGUgZm9sbG93aW5nIGNvZGUtLS0+IAoKIVtdKHJlc3VsdHMvc29jX3JlcG9ydC50eHQpeyNpZCAuY2xhc3Mgd2lkdGg9MTAwJSBoZWlnaHQ9MjAwcHh9CgpUaGUgcmVwb3J0IGFib3ZlIHNob3dzIC0gbmV4dCB0byB0aGUgZGVzY3JpcHRpdmVzIG9mIHRoZSB2YXJpYWJsZXMgaW5jbHVkZWQgLSB0aGUgSmFjY2FyZCBJbmRleC4gVGhpcyBpcyBhbiBpbmRleCBmb3Igc3RhYmlsaXR5IGFuZCBjaGFuZ2UgaW4gbmV0d29ya3MsIGFzIGl0IGNvdW50cyB0aGUgbnVtYmVyIG9mIHN0YWJsZSB0aWVzLCBuZXcgdGllcyBhbmQgZGlzc29sdmVkIHRpZXMgd2hlbiBjb21wYXJpbmcgd2F2ZXMuIEluIHRoZSBmaXJzdCBjaGFuZ2UgcGVyaW9kICh3YXZlIDEgYW5kIDIpLCB0aGUgSmFjY2FyZCBJbmRleCBvZiB0aGlzIG1vZGVsIGlzIDAuMzU5LiBGb3IgdGhlIHN1YnNlcXVlbnQgY29tcGFyaXNvbiBvZiB3YXZlcywgdGhlIEphY2NhcmQgSW5kZXggaXMgMC4zMjcuIFdoZW4gYWJvdmUgMC4zLCB0aGUgdmFsdWVzIGFyZSBnb29kIHRvIGVzdGltYXRlIFtAbWFudWFsXQoKYGBge3IsZXZhbD1GQUxTRX0KIyMjIFN0ZXA0OiBzcGVjaWZ5IG1vZGVsIHdpdGggc3RydWN0dXJhbCBlZmZlY3RzCm15ZWZmcyA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMsIGRlZ1BsdXMpICNzb21lIHB1Ymxpc2ggYSBsb3QsIHNvbWUgbm90LiAoaW50ZXJwcmV0YXRpb246IHRhbGVudC9sdWNrPyApCm15ZWZmcyA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMsIHRyYW5zVHJpYWRzKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojIyMgU3RlcDUgZXN0aW1hdGUKbXlBbGdvcml0aG0gPC0gc2llbmFBbGdvcml0aG1DcmVhdGUocHJvam5hbWUgPSAic29jX3JlcG9ydCIpCihhbnMgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmcykpCiMgKHRoZSBvdXRlciBwYXJlbnRoZXNlcyBsZWFkIHRvIHByaW50aW5nIHRoZSBvYnRhaW5lZCByZXN1bHQgb24gdGhlIHNjcmVlbikgaWYgbmVjZXNzYXJ5LCBlc3RpbWF0ZQojIGZ1cnRoZXIKKGFucyA8LSBzaWVuYTA3KG15QWxnb3JpdGhtLCBkYXRhID0gbXlkYXRhLCBlZmZlY3RzID0gbXllZmZzLCBwcmV2QW5zID0gYW5zKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRSwgZWNobz1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9zb2NfbW9kZWxfc3RydWMiKQpgYGAKCgpgYGB7ciwgZWNobz1GQUxTRX0KbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX3N0cnVjIikKc3VtbWFyeShhbnMpCmBgYAoKVGhlIGZpcnN0IG1vZGVsIHdpdGggb25seSB0aGUgc3RydWN0dXJhbCBuZXR3b3JrIGVmZmVjdHMsIHNob3dzIHRoYXQgdGhlIGRlbnNpdHkgZWZmZWN0IGlzIHN0cm9uZ2x5IG5lZ2F0aXZlIChiPS0yLjY4Nzsgc2U9MC4zNDcpIGFuZCBzaWduaWZpY2FudC4gQXMgdGhpcyBpcyB0aGUgZWZmZWN0IG9mIHRoZSBvYnNlcnZlZCB0aWVzIGFzIHBhcnQgb2YgYWxsIHBvc3NpYmxlIHRpZXMgYW5kIGEgZGVncmVlIG9mIDAgd291bGQgZXF1YWwgdGhlIGZhY3QgdGhhdCA1MCUgb2YgcG9zc2libGUgdGllcyB3b3VsZCBiZSBvYnNlcnZlZCwgaXQgaXMgbG9naWMgdGhhdCB0aGlzIG51bWJlciBpcyBiZWxvdyB6ZXJvLiBGdXJ0aGVybW9yZSwgYSBzaWduaWZpY2FudCBhbmQgcG9zaXRpdmUgZWZmZWN0IChiPTAuNTk5OyBzZT0wLjI0MCkgb2YgdHJhbnNpdGl2ZSB0cmlhZHMgY2FuIGJlIG9ic2VydmVkLCBtZWFuaW5nIHRoYXQgc2NpZW50aXN0cyBvZiBTb2Npb2xvZ3kgcHJlZmVyIGEgdHJhbnNpdGl2ZSB0aWUgcmF0aGVyIHRoYW4gbm8gdHJhbnNpdGl2ZSB0aWUuIExhc3RseSwgdGhlIGFjdGl2aXR5IGFuZCBwb3B1bGFyaXR5IGVmZmVjdCAoYj0wLjA5MDsgc2U9MC4wMzYpIGlzIGFsc28gc2lnbmlmaWNhbnQsIHNpZ25hbGxpbmcgdGhhdCBzY2llbnRpc3RzIGF0IHRoaXMgZGVwYXJ0bWVudCBwcmVmZXIgdG8gY28tcHVibGlzaCB3aXRoIG90aGVyIHN0YWZmIG1lbWJlcnMgdGhhdCBoYXZlIGFscmVhZHkgY28tcHVibGlzaGVkLiAKCmBgYHtyLCBldmFsPUZBTFNFfQpteWVmZnMxYSA8LSBnZXRFZmZlY3RzKG15ZGF0YSkKbXllZmZzMWEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMWEsIGRlZ1BsdXMpICNzb21lIHB1Ymxpc2ggYSBsb3QsIHNvbWUgbm90LiAoaW50ZXJwcmV0YXRpb246IHRhbGVudC9sdWNrPyApCm15ZWZmczFhIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczFhLCB0cmFuc1RyaWFkcykKbXllZmZzMWEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMWEsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAia2kiKQooYW5zMWEgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmczFhLCBwcmV2QW5zID0gYW5zKSkKYGBgCmBgYHtyLCBldmFsPUZBTFNFLCBlY2hvPUZBTFNFfQojU2F2ZSB0aGUgbGFzdCBtb2RlbCBzaW5jZSBpdCBoYXMgdGhlIGxvd2VzdCBtYXhpbXVtIGNvbnZlcmdlbmNlIHJhdGlvLiAKc2F2ZShhbnMxYSwgZmlsZT0iL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX2NvdjFhIikKYGBgCgoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL3NvY19tb2RlbF9jb3YxYSIpCnN1bW1hcnkoYW5zMWEpCmBgYApXaGVuIGFkZGluZyB0aGUgay1pbmRleCB0byB0aGUgbW9kZWwsIHRoZSBzdHJ1Y3R1cmFsIG5ldHdvcmsgZWZmZWN0cyByZW1haW4gc2lnbmlmaWNhbnQuIFRoZSBlZmZlY3Qgb2YgdGhlIGstaW5kZXggaXMgbmVnYXRpdmUgKGI9LTAuMjMxOyBzZT0wLjA2MikgYW5kIHNpZ25pZmljYW50LCBtZWFuaW5nIHRoYXQgc2NpZW50aXN0cyBhdCB0aGUgU29jaW9sb2d5IGRlcGFydG1lbnQgcHJlZmVyIHRvIGNvLXB1Ymxpc2ggd2l0aCBzb21lb25lIHdpdGggYSBsb3dlciBrLWluZGV4IHRoYW4gdGhlbXNlbHZlcy4gSG93ZXZlciwgYXMgdGhpcyBlZmZlY3Qgc2hvd3MgdGhlIGFic29sdXRlIGRpZmZlcmVuY2UsIGl0IGNhbiBhbHNvIGJlIGludGVycHJldGVkIGFzIGEgcmF0aGVyIHNtYWxsIGVmZmVjdCwgaW5kaWNhdGluZyBhIHByZWZlcmVuY2UgZm9yIHNpbWlsYXJpdHkgcmVnYXJkaW5nIHRoZSBrLWluZGV4LiBUaGlzIGNvdWxkIHRodXMgc3VwcG9ydCB0aGUgaWRlYSBvZiBob21vcGhpbHkgd2l0aCByZWdhcmQgdG8gdGhlIGstaW5kZXguIAoKYGBge3IsZXZhbD1GQUxTRX0KbXllZmZzMSA8LSBnZXRFZmZlY3RzKG15ZGF0YSkKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBkZWdQbHVzKSAjc29tZSBwdWJsaXNoIGEgbG90LCBzb21lIG5vdC4gKGludGVycHJldGF0aW9uOiB0YWxlbnQvbHVjaz8gKQpteWVmZnMxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczEsIHRyYW5zVHJpYWRzKQpteWVmZnMxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczEsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAia2kiKQpteWVmZnMxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczEsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAiZHV0Y2giKQpteWVmZnMxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczEsIGFic0RpZmZYLCBpbnRlcmFjdGlvbjEgPSAicHViX2ZpcnN0IikKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gInR3aXR0ZXJfZHVtIikKbXllZmZzMSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMxLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImdlbmRlciIpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CihhbnMxIDwtIHNpZW5hMDcobXlBbGdvcml0aG0sIGRhdGEgPSBteWRhdGEsIGVmZmVjdHMgPSBteWVmZnMxLCBwcmV2QW5zID0gYW5zKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zMSwgZmlsZT0iL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX2NvdjEiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9zb2NfbW9kZWxfY292MSIpCnN1bW1hcnkoYW5zMSkKYGBgCgpIb3dldmVyLCB3aGVuIGFkZGluZyB0aGUgY29udHJvbCB2YXJpYWJsZXMsIHRoZSBzaWduaWZpY2FudCBlZmZlY3Qgb2YgdGhlIGstaW5kZXggZGlzYXBwZWFycyAoYj0tMC4wMTc7IHNlPTAuMDY1KSBUaHVzLCB3aGVuIHRha2luZyBpbnRvIGFjY291bnQgbm90IG9ubHkgc3RydWN0dXJhbCBuZXR3b3JrIGVmZmVjdHMgYnV0IGFsc28gb3RoZXIgY292YXJpYXRlcywgdGhlIGVmZmVjdCBvZiBob21vcGhpbHkgaW4gay1pbmRleCBkb2VzIG5vdCBob2xkLiBUaGVyZWZvcmUsIHRoZSBoeXBvdGhlc2lzIG9uIHNpbWlsYXJpdHkgd2l0aCByZWdhcmQgdG8gdGhlIGstaW5kZXggY2Fubm90IGJlIHN1cHBvcnRlZC4gU2NpZW50aXN0cyBhdCB0aGlzIGRlcGFydG1lbnQgZG8gbm90IHNlZW0gdG8gY29uc2lkZXIgdGhlIGstaW5kZXggb2YgdGhlaXIgcG9zc2libGUgY28tYXV0aG9ycy4gVGhpcyBhbHNvIGFwcGxpZXMgdG8gZXRobmljaXR5IChiPTAuMjc3OyBzZT0wLjM2NiksIGFnZSAoYj0wLjAwNzsgc2U9MC4wMTkpLCBhbmQgZ2VuZGVyIChiPTAuMDAwOyBzZT0wLjI2NiksIGFzIHRoZXNlIGVmZmVjdHMgYXJlIGFsbCBpbnNpZ25pZmljYW50LiBJbnRlcmVzdGluZ2x5LCB0aGVyZSBpcyBhIHNpZ25pZmljYW50IGVmZmVjdCBvZiBoYXZpbmcgVHdpdHRlciBvciBub3QgKGI9MC45Mjk7IHNlPTAuMjk0KS4gU29jaW9sb2dpc3RzIGF0IHRoaXMgZGVwYXJ0bWVudCBoYXZlIGEgcHJlZmVyZW5jZSB0byB3b3JrIHRvZ2V0aGVyIHdpdGggc29tZW9uZSB3aG8gaXMgdGhlIHNpbWlsYXIgaW4gdGVybXMgb2YgKG5vdCkgaGF2aW5nIFR3aXR0ZXIuCgpgYGB7ciwgZXZhbD1GQUxTRX0KbXllZmZzMmEgPC0gZ2V0RWZmZWN0cyhteWRhdGEpCm15ZWZmczJhIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczJhLCBkZWdQbHVzKSAjc29tZSBwdWJsaXNoIGEgbG90LCBzb21lIG5vdC4gKGludGVycHJldGF0aW9uOiB0YWxlbnQvbHVjaz8gKQpteWVmZnMyYSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyYSwgdHJhbnNUcmlhZHMpCm15ZWZmczJhIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczJhLCBhbHRYLCBpbnRlcmFjdGlvbjEgPSAia2kiKQooYW5zMmEgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmczJhLCBwcmV2QW5zID0gYW5zMWEpKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojU2F2ZSB0aGUgbGFzdCBtb2RlbCBzaW5jZSBpdCBoYXMgdGhlIGxvd2VzdCBtYXhpbXVtIGNvbnZlcmdlbmNlIHJhdGlvLiAKc2F2ZShhbnMyYSwgZmlsZT0iL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX2NvdjJhIikKYGBgCgpgYGB7ciwgZWNobz1GQUxTRX0KbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvc29jX21vZGVsX2NvdjJhIikKc3VtbWFyeShhbnMyYSkKYGBgCgpJbiB0aGUgbW9kZWwgYWJvdmUgd2hlcmUgdGhlIGVmZmVjdCBvZiB0aGUgay1pbmRleCBvZiB0aGUgYWx0ZXIgaXMgaW5jbHVkZWQsIHRoaXMgZWZmZWN0IHR1cm5zIG91dCB0byBiZSBpbnNpZ25pZmljYW50IChiPTAuMDA1OyBzZT0wLjA5NikuIFRoZSBrLWluZGV4IG9mIHRoZSBhbHRlciAocmVnYXJkbGVzcyBvZiBvbmUncyBvd24gay1pbmRleCkgaXMgdGh1cyBub3QgcmVnYXJkZWQgd2hlbiBsb29raW5nIHRvIGNvLXB1Ymxpc2hpbmcgd2l0aCBvdGhlcnMgb2YgdGhlIGRlcGFydG1lbnQuIAoKCmBgYHtyLCBldmFsPUZBTFNFfQpteWVmZnMyIDwtIGdldEVmZmVjdHMobXlkYXRhKQpteWVmZnMyIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmczIsIGRlZ1BsdXMpICNzb21lIHB1Ymxpc2ggYSBsb3QsIHNvbWUgbm90LiAoaW50ZXJwcmV0YXRpb246IHRhbGVudC9sdWNrPyApCm15ZWZmczIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMiwgdHJhbnNUcmlhZHMpCm15ZWZmczIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMiwgYWx0WCwgaW50ZXJhY3Rpb24xID0gImtpIikKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImR1dGNoIikKbXllZmZzMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZnMyLCBhYnNEaWZmWCwgaW50ZXJhY3Rpb24xID0gInB1Yl9maXJzdCIpCm15ZWZmczIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMiwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJ0d2l0dGVyX2R1bSIpCm15ZWZmczIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZzMiwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJnZW5kZXIiKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQooYW5zMiA8LSBzaWVuYTA3KG15QWxnb3JpdGhtLCBkYXRhID0gbXlkYXRhLCBlZmZlY3RzID0gbXllZmZzMiwgcHJldkFucyA9IGFuczEpKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojU2F2ZSB0aGUgbGFzdCBtb2RlbCBzaW5jZSBpdCBoYXMgdGhlIGxvd2VzdCBtYXhpbXVtIGNvbnZlcmdlbmNlIHJhdGlvLiAKc2F2ZShhbnMyLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9zb2NfbW9kZWxfY292MiIpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL3NvY19tb2RlbF9jb3YyIikKc3VtbWFyeShhbnMyKQpgYGAKCldoZW4gaW5jbHVkaW5nIHRoZSBjb250cm9sIHZhcmlhYmxlcywgdGhlIGFsdGVyIGVmZmVjdCBvZiB0aGUgay1pbmRleCByZW1haW5zIGluc2lnbmlmaWNhbnQgKGI9MC4wMTc7IHNlPTAuMTAwKS4gVGhpcyByZWplY3RzIHRoZSBoeXBvdGhlc2lzIG9uIGNvLXB1YmxpY2F0aW9uIHdpdGggc2NpZW50aXN0cyB3aXRoIGEgbG93ZXIgb3IgaGlnaGVyIGstaW5kZXgsIGFzIGZvciB0aGUgc2NpZW50aXN0cyBhdCB0aGUgU29jaW9sb2d5IGRlcGFydG1lbnQsIHRoZSBrLWluZGV4IG9mIHRoZWlyIGNvLWF1dGhvcnMgZG9lcyBub3QgbWF0dGVyLiBGdXJ0aGVybW9yZSwgdGhlIGVmZmVjdCBvZiBnZW5kZXIgKGI9LTAuMDA2OyBzZT0wLjI3NCksIGFnZSAoYj0wLjAwODsgc2U9MC4wMjEpLCBhbmQgZXRobmljaXR5IChiPTAuMjg1OyBzZT0wLjM2MikgYXJlIGFnYWluIG5vdCBzaWduaWZpY2FudC4gVGhlIGVmZmVjdCBvZiBzaW1pbGFyaXR5IGluIGhhdmluZyBhIFR3aXR0ZXIgYWNjb3VudCAoYj0wLjk0Mzsgc2U9MC4zMDEpIGlzIHNpZ25pZmljYW50LiBBcyBjb25jbHVkZWQgYmVmb3JlLCBzY2llbnRpc3RzIGF0IHRoaXMgZGVwYXJ0bWVudCBkbyBwcmVmZXIgdG8gY28tcHVibGlzaCB3aXRoIG90aGVyIHNjaWVudGlzdHMgdGhhdCBhcmUgc2ltaWxhciBpbiB0ZXJtcyBvZiB0aGVpciBUd2l0dGVyIGFjY291bnQuIAoKIyBSU2llbmEgbW9kZWxzIGZvciBEYXRhIFNjaWVuY2UKCmBgYHtyfQpybShsaXN0PWxzKCkpCmBgYAoKYGBge3IsIGVjaG89RkFMU0V9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFfbmV0X2FycmF5LlJEYXRhIikKbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL2RhdGEvZGF0YWRlZl9kZi5SRGF0YSIpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiNkZXBlbmRlbnQKZG5ldCA8LSBzaWVuYURlcGVuZGVudChkbmV0X2FycmF5KQoKIyMjIFN0ZXAgMTogZGVmaW5lIGRhdGEKI2dlbmRlcgpnZW5kZXIgPC0gYXMubnVtZXJpYyhkYXRhZGVmX2RmJGdlbmRlcj09ImZlbWFsZSIpCmdlbmRlciA8LSBjb0NvdmFyKGdlbmRlcikKCiNLYXJkYXNoaWFuIEluZGV4CmtpIDwtIGFzLm51bWVyaWMoZGF0YWRlZl9kZiRraSkKa2kgPC0gY29Db3ZhcihraSkKCiNFdGhuaWNpdHkKZHV0Y2ggPC0gYXMubnVtZXJpYyhkYXRhZGVmX2RmJGR1dGNoKQpkdXRjaCA8LSBjb0NvdmFyKGR1dGNoKQoKI1R3aXR0ZXIgZHVtbXkgYXMgY29udHJvbCB2YXJpYWJsZQp0d2l0dGVyX2R1bSA8LSAoZGF0YWRlZl9kZiR0d2l0dGVyX2R1bSkKdHdpdHRlcl9kdW0gPC0gY29Db3Zhcih0d2l0dGVyX2R1bSkKCiMgI3llYXIgZmlyc3QgcHViCiMgZGF0YV9zdGFmZl9jaXQgJT4lIGdyb3VwX2J5KGdzX2lkKSAlPiUKIyAgIG11dGF0ZShwdWJfZmlyc3QgPSBtaW4oeWVhcikpICU+JSAKIyAgIHNlbGVjdChjKCJnc19pZCIsICJwdWJfZmlyc3QiKSkgJT4lCiMgICBkaXN0aW5jdChnc19pZCwgcHViX2ZpcnN0LCAua2VlcF9hbGwgPSBUUlVFKSAtPiBmaXJzdHB1Yl9kZjEKIyAKIyBkYXRhZGVmX2RmIDwtIGxlZnRfam9pbihkYXRhZGVmX2RmLCBmaXJzdHB1Yl9kZjEpCiMgCiMgI2lmIG5vIHB1YmxpY2F0aW9uIHlldCwgc2V0IHB1Yl9maXJzdCBvcCAyMDIzCiMgZGF0YWRlZl9kZiAlPiUgbXV0YXRlKHB1Yl9maXJzdCA9IHJlcGxhY2VfbmEocHViX2ZpcnN0LCAyMDIzKSkgLT4gZGF0YWRlZl9kZgoKcHViX2ZpcnN0IDwtICBjb0NvdmFyKGRhdGFkZWZfZGYkcHViX2ZpcnN0KQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQpteWRhdGEgPC0gc2llbmFEYXRhQ3JlYXRlKGRuZXQsIGdlbmRlciwga2ksIGR1dGNoLCBwdWJfZmlyc3QsIHR3aXR0ZXJfZHVtKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojIyMgU3RlcCAyOiBjcmVhdGUgZWZmZWN0cyBzdHJ1Y3R1cmUKbXllZmYgPC0gZ2V0RWZmZWN0cyhteWRhdGEpCmVmZmVjdHNEb2N1bWVudGF0aW9uKG15ZWZmKQojIyMgU3RlcCAzOiBnZXQgaW5pdGlhbCBkZXNjcmlwdGlvbgpwcmludDAxUmVwb3J0KG15ZGF0YSwgbW9kZWxuYW1lID0gIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL2RhdGFfcmVwb3J0IikKYGBgCgohW10ocmVzdWx0cy9kYXRhX3JlcG9ydC50eHQpeyNpZCAuY2xhc3Mgd2lkdGg9MTAwJSBoZWlnaHQ9MjAwcHh9CgpGb3IgRGF0YSBTY2llbmNlLCB0aGUgSmFjY2FyZCBJbmRleCBvZiB0aGUgZmlyc3QgY29tcGFyaXNvbiBvZiB3YXZlcyBpcyAwLjMwNC4gRm9yIHRoZSBzZWNvbmQgd2F2ZSBjaGFuZ2UsIHRoZSBpbmRleCBpcyAwLjI4Ni4gVGhlc2UgYXJlIGxvd2VyIG51bWJlcnMgdGhhbiBhdCB0aGUgU29jaW9sb2d5IGRlcGFydG1lbnQsIGJ1dCB0aGV5IGFyZSBzdGlsbCBoaWdoIGVub3VnaCB0byBlc3RpbWF0ZSBjb3JyZWN0bHkgW0BtYW51YWxdCgpgYGB7ciwgZXZhbD1GQUxTRX0KIyMjIFN0ZXA0OiBzcGVjaWZ5IG1vZGVsCm15ZWZmIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmLCBkZWdQbHVzKSAKbXllZmYgPC0gaW5jbHVkZUVmZmVjdHMobXllZmYsIHRyYW5zVHJpYWRzKQpgYGAKCmBgYHtyLCBldmFsPUZBTFNFfQojIyMgU3RlcDUgZXN0aW1hdGUKbXlBbGdvcml0aG0gPC0gc2llbmFBbGdvcml0aG1DcmVhdGUocHJvam5hbWUgPSAiZGF0YV9yZXBvcnQiKQooYW5zIDwtIHNpZW5hMDcobXlBbGdvcml0aG0sIGRhdGEgPSBteWRhdGEsIGVmZmVjdHMgPSBteWVmZikpCiMgKHRoZSBvdXRlciBwYXJlbnRoZXNlcyBsZWFkIHRvIHByaW50aW5nIHRoZSBvYnRhaW5lZCByZXN1bHQgb24gdGhlIHNjcmVlbikgaWYgbmVjZXNzYXJ5LCBlc3RpbWF0ZQojIGZ1cnRoZXIKIyhhbnMgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmLCBwcmV2QW5zID0gYW5zKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0Kc2F2ZShhbnMsIGZpbGU9Ii9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9yZXN1bHRzL2RhdGFfbW9kZWxfc3RydWMiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX3N0cnVjIikKc3VtbWFyeShhbnMpCmBgYAoKSW4gdGhlIGZpcnN0IG1vZGVsIGZvciBEYXRhIFNjaWVuY2Ugd2l0aCBzdHJ1Y3R1cmFsIG5ldHdvcmsgZWZmZWN0cywgc2ltaWxhciBlZmZlY3RzIGFyZSB2aXNpYmxlIGFzIGF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudC4gVGhlcmUgYWdhaW4gaXMgYSBuZWdhdGl2ZSBkZW5zaXR5IGVmZmVjdCAoYj0tMi4zNTk7IHNlPTAuMjg0KSwgYWxiZWl0IGxlc3Mgc3Ryb25nLiBUaGUgdHJhbnNpdGl2aXR5IGVmZmVjdCAoYj0xLjI1NDsgc2U9MC4yMTIpIGlzIGxhcmdlciBmb3IgdGhpcyBuZXR3b3JrIHRoYW4gZm9yIHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudC4gRGF0YSBzY2llbnRpc3RzIHByZWZlciB0byBjby1wdWJsaXNoIHdpdGggY28tYXV0aG9ycyBvZiB0aGVpciBjby1hdXRob3JzIG1vcmUgdGhhbiBTb2Npb2xvZ2lzdHMsIHdoaWNoIGlzIGluIGxpbmUgd2l0aCB0aGUgdHJhbnNpdGl2aXR5IG9ic2VydmVkIGZyb20gdGhlIGRlc2NyaXB0aXZlIHN0YXRpc3RpY3MuIFRoZSBlZmZlY3Qgb2YgYWN0aXZpdHkgYW5kIHBvcHVsYXJpdHkgKGI9MC4wMzQ7IHNlPTAuMDMxKSBpcyBpbnNpZ25pZmljYW50OiBBcHBhcmVudGx5IERhdGEgc2NpZW50aXN0cyBkbyBub3QgaGF2ZSBhIHByZWZlcmVuY2UgdG8gY28tcHVibGlzaCB3aXRoIHNjaWVudGlzdHMgb2YgdGhlaXIgZGVwYXJ0bWVudCB3aG8gaGF2ZSBhbHJlYWR5IGNvLXB1Ymxpc2hlZCBtYW55IHRpbWVzLiAKCmBgYHtyLGV2YWw9RkFMU0V9Cm15ZWZmZDFhIDwtIGdldEVmZmVjdHMobXlkYXRhKQpteWVmZmQxYSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQxYSwgZGVnUGx1cykgI3NvbWUgcHVibGlzaCBhIGxvdCwgc29tZSBub3QuIChpbnRlcnByZXRhdGlvbjogdGFsZW50L2x1Y2s/ICkKbXllZmZkMWEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMWEsIHRyYW5zVHJpYWRzKQpteWVmZmQxYSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQxYSwgYWJzRGlmZlgsIGludGVyYWN0aW9uMSA9ICJraSIpCihhbnNkMWEgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmZDFhLCBwcmV2QW5zID0gYW5zKSkKYGBgCgpgYGB7ciwgZXZhbD1GQUxTRX0KI1NhdmUgdGhlIGxhc3QgbW9kZWwgc2luY2UgaXQgaGFzIHRoZSBsb3dlc3QgbWF4aW11bSBjb252ZXJnZW5jZSByYXRpby4gCnNhdmUoYW5zZDFhLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjFhIikKYGBgCgpgYGB7ciwgZWNobz1GQUxTRX0KbG9hZCgiL1VzZXJzL2FudXNjaGthL0RvY3VtZW50cy9sYWJqb3VybmFsL3Jlc3VsdHMvZGF0YV9tb2RlbF9jb3YxYSIpCnN1bW1hcnkoYW5zZDFhKQpgYGAKCkluIGNvbnRyYXN0IHRvIHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudCwgdGhlIGVmZmVjdCBvZiBkaWZmZXJlbmNlIGluIGstaW5kZXggaXMgbm90IHNpZ25pZmljYW50IChiPS0wLjA5Njsgc2U9MC4wODcpIGF0IHRoZSBEYXRhIFNjaWVuY2UgZGVwYXJ0bWVudC4gRnJvbSB0aGUgYWJvdmUgbW9kZWwgd2l0aG91dCBjb250cm9sIHZhcmlhYmxlcyBpdCBjYW4gYWxyZWFkeSBiZSBjb25jbHVkZWQgdGhhdCBEYXRhIFNjaWVudGlzdHMgZG8gbm90IGNvbXBhcmUgdGhlaXIgay1pbmRleCB3aXRoIHRoZWlyIHBvc3NpYmxlIGNvLWF1dGhvcnMgYW5kIHRoYXQgdGhleSBkbyBub3Qgc2VlbSB0byBhdHRhY2ggdmFsdWUgdG8gdGhpcyBpbmRleC4gCgpgYGB7cixldmFsPUZBTFNFfQpteWVmZmQxIDwtIGdldEVmZmVjdHMobXlkYXRhKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIGRlZ1BsdXMpICNzb21lIHB1Ymxpc2ggYSBsb3QsIHNvbWUgbm90LiAoaW50ZXJwcmV0YXRpb246IHRhbGVudC9sdWNrPyApCm15ZWZmZDEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMSwgdHJhbnNUcmlhZHMpCm15ZWZmZDEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMSwgYWJzRGlmZlgsIGludGVyYWN0aW9uMSA9ICJraSIpCm15ZWZmZDEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMSwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJkdXRjaCIpCm15ZWZmZDEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMSwgYWJzRGlmZlgsIGludGVyYWN0aW9uMSA9ICJwdWJfZmlyc3QiKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAidHdpdHRlcl9kdW0iKQpteWVmZmQxIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDEsIHNhbWVYLCBpbnRlcmFjdGlvbjEgPSAiZ2VuZGVyIikKKGFuc2QxIDwtIHNpZW5hMDcobXlBbGdvcml0aG0sIGRhdGEgPSBteWRhdGEsIGVmZmVjdHMgPSBteWVmZmQxLCBwcmV2QW5zID0gYW5zKSkKYGBgCgoKYGBge3IsIGV2YWw9RkFMU0V9CiNTYXZlIHRoZSBsYXN0IG1vZGVsIHNpbmNlIGl0IGhhcyB0aGUgbG93ZXN0IG1heGltdW0gY29udmVyZ2VuY2UgcmF0aW8uIApzYXZlKGFuc2QxLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjEiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjEiKQpzdW1tYXJ5KGFuc2QxKQpgYGAKCkFzIGV4cGVjdGVkLCB0aGUgay1pbmRleCByZW1haW5zIGluc2lnbmlmaWNhbnQgKGI9LTAuMTE4OyBzZT0wLjA5Mykgd2hlbiBhZGRpbmcgdGhlIGNvbnRyb2wgdmFyaWFibGVzIHRvIHRoZSBtb2RlbC4gQ29tcGFyYWJsZSB0byB0aGUgU29jaW9sb2d5IGRlcGFydG1lbnQsIHRoZSBlZmZlY3RzIG9mIGFnZSAoYj0tMC4wMTQ7IHNlPTAuMDEzKSwgZ2VuZGVyIChiPS0wLjA2Mzsgc2U9MC4yMjEpIGFuZCBldGhuaWNpdHkgKGI9LTAuMDEyOyBzZT0wLjIwNSkgYXJlIG5vdCBzaWduaWZpY2FudC4gU2ltaWxhcml0eSBpbiBhZ2UsIGdlbmRlciBhbmQgZXRobmljaXR5IHRodXMgZG9lcyBub3QgcGxheSBhIHJvbGUgaW4gdGhlIHNlbGVjdGlvbiBvZiBzdWl0YWJsZSBjby1hdXRob3JzLiAoTm90KSBoYXZpbmcgVHdpdHRlciBpcyBzaWduaWZpY2FudCAoYj0wLjQyNzsgc2U9MC4yMDgpLCB0aHVzIHRoZSBEYXRhIHNjaWVudGlzdHMgZG8gc2VsZWN0IHNjaWVudGlzdHMgdG8gY28tcHVibGlzaCB3aXRoIHdobyBoYXZlIGEgc2ltaWxhciBUd2l0dGVyIHN0YXR1cyBhcyB0aGVtc2VsdmVzLiAKCmBgYHtyLCBldmFsPUZBTFNFfQpteWVmZmQyYSA8LSBnZXRFZmZlY3RzKG15ZGF0YSkKbXllZmZkMmEgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMmEsIGRlZ1BsdXMpIApteWVmZmQyYSA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQyYSwgdHJhbnNUcmlhZHMpCm15ZWZmZDJhIDwtIGluY2x1ZGVFZmZlY3RzKG15ZWZmZDJhLCBhbHRYLCBpbnRlcmFjdGlvbjEgPSAia2kiKQooYW5zZDIgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmZDJhLCBwcmV2QW5zID0gYW5zZDEpKQpgYGAKSW4gdGhlIGFib3ZlIG1vZGVsLCBpdCB0dXJucyBvdXQgdGhhdCB0aGUgZWZmZWN0IG9mIHRoZSBrLWluZGV4IG9mIHRoZSBhbHRlciAocmVnYXJkbGVzcyBvZiB0aGUgay1pbmRleCBvZiBlZ28pIGlzIGFsc28gbm90IHNpZ25pZmljYW50IChiPS0wLjEwOTsgc2U9MC4xNzcpLCB3aGljaCBpcyB0aGUgc2FtZSBhdCBib3RoIGRlcGFydG1lbnRzLiAKCmBgYHtyLGV2YWw9RkFMU0V9Cm15ZWZmZDIgPC0gZ2V0RWZmZWN0cyhteWRhdGEpCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgZGVnUGx1cykgCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgdHJhbnNUcmlhZHMpCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgYWx0WCwgaW50ZXJhY3Rpb24xID0gImtpIikKbXllZmZkMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQyLCBzYW1lWCwgaW50ZXJhY3Rpb24xID0gImR1dGNoIikKbXllZmZkMiA8LSBpbmNsdWRlRWZmZWN0cyhteWVmZmQyLCBhYnNEaWZmWCwgaW50ZXJhY3Rpb24xID0gInB1Yl9maXJzdCIpCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJ0d2l0dGVyX2R1bSIpCm15ZWZmZDIgPC0gaW5jbHVkZUVmZmVjdHMobXllZmZkMiwgc2FtZVgsIGludGVyYWN0aW9uMSA9ICJnZW5kZXIiKQooYW5zZDIgPC0gc2llbmEwNyhteUFsZ29yaXRobSwgZGF0YSA9IG15ZGF0YSwgZWZmZWN0cyA9IG15ZWZmZDIsIHByZXZBbnMgPSBhbnNkMSkpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CiNTYXZlIHRoZSBsYXN0IG1vZGVsIHNpbmNlIGl0IGhhcyB0aGUgbG93ZXN0IG1heGltdW0gY29udmVyZ2VuY2UgcmF0aW8uIApzYXZlKGFuc2QyLCBmaWxlPSIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjIiKQpgYGAKCmBgYHtyLCBlY2hvPUZBTFNFfQpsb2FkKCIvVXNlcnMvYW51c2Noa2EvRG9jdW1lbnRzL2xhYmpvdXJuYWwvcmVzdWx0cy9kYXRhX21vZGVsX2NvdjIiKQpzdW1tYXJ5KGFuc2QyKQpgYGAKCkluIHRoZSBtb2RlbCB3aXRoIHRoZSBjb250cm9sIHZhcmlhYmxlcyBhZGRlZCwgdGhlIGVmZmVjdCBvZiBhbHRlcidzIGstaW5kZXggcmVtYWlucyBpbnNpZ25pZmljYW50IChiPS0wLjE4Mzsgc2U9MC4xOTUpLiBUaGUgaHlwb3RoZXNlcyBvbiBjby1wdWJsaWNhdGlvbiB3aXRoIHNjaWVudGlzdHMgd2l0aCBhIGxvd2VyIG9yIGhpZ2hlciBrLWluZGV4IGFyZSB0aHVzIGFsc28gbm90IGNvbmZpcm1lZCBmb3IgRGF0YSBTY2llbnRpc3RzLiBKdXN0IGxpa2UgaW4gdGhlIG90aGVyIG1vZGVscyBmb3IgRGF0YSBTY2llbmNlLCBhZ2UgKGI9LTAuMDE2OyBzZT0wLjAxMiksIGdlbmRlciAoYj0tMC4xMjU7IHNlPTAuMjIzKSwgYW5kIGV0aG5pY2l0eSAoYj0tMC4wMjY7IHNlPTAuMjEzKSBhcmUgbm90IG9mIHNpZ25pZmljYW50IGltcG9ydGFuY2UgZm9yIHNlbGVjdGluZyBzY2llbnRpc3RzIHRvIGNvLXB1Ymxpc2ggd2l0aC4gKE5vdCkgaGF2aW5nIGEgVHdpdHRlciBhY2NvdW50IGlzIHNvbWV0aGluZyB0aGF0IHJlbWFpbnMgb2YgaW1wb3J0YW5jZSAoYj0wLjQ0NTsgc2U9MC4yMTYpOiBhbHNvIGluIHRoaXMgbW9kZWwgaXQgc2hvd3MgdGhhdCBEYXRhIHNjaWVudGlzdHMgcHJlZmVyIHRvIGNvLXB1Ymxpc2ggd2l0aCBhbm90aGVyIHNjaWVudGlzdHMgdGhhdCBpcyBzaW1pbGFyIHdpdGggcmVnYXJkIHRvIHRoZWlyIFR3aXR0ZXIgcHJvZmlsZS4gCgojIFJvYnVzdG5lc3MgY2hlY2tzCkl0IGlzIHBvc3NpYmxlIHRoYXQgdGhlIGstaW5kZXggaXMgbm90IHNpZ25pZmljYW50IHRocm91Z2hvdXQgbW9zdCBtb2RlbHMsIGJlY2F1c2Ugc2NpZW50aXN0cyBkbyBub3QgcmVnYXJkIHRoZSByYXRpbyBiZXR3ZWVuIFR3aXR0ZXIgYWN0aXZpdHkgYW5kIHNjaWVudGlmaWMgcHVibGljYXRpb25zLCBidXQgZXNwZWNpYWxseSBjYXJlIGFib3V0IFR3aXR0ZXIgYWN0aXZpdHkuIEluIEFwcGVuZGl4IEEsIHRoZSBzYW1lIG1vZGVscyBhcmUgcnVuIGFzIGFib3ZlLCBidXQgdGhlbiB3aXRob3V0IHRoZSBrLWluZGV4IGFuZCB3aXRoIHRoZSBudW1iZXIgb2YgVHdpdHRlciBmb2xsb3dlcnMgaW5jbHVkZWQuIEZvciBib3RoIFNvY2lvbG9neSBhbmQgRGF0YSBTY2llbmNlLCB0aGUgZWZmZWN0cyBvZiB0aGUgbnVtYmVyIG9mIFR3aXR0ZXIgZm9sbG93ZXJzIGFyZSBpbnNpZ25pZmljYW50LiBUaGlzIGFwcGxpZXMgdG8gdGhlIGVmZmVjdHMgb2YgYWJzb2x1dGUgZGlmZmVyZW5jZSBhcyB3ZWxsIGFzIHRoZSBhbHRlcidzIG51bWJlciBvZiBmb2xsb3dlcnMuIFRoZXNlIGVmZmVjdHMgYXJlIHRodXMgcmF0aGVyIHNpbWlsYXIgYXMgdGhlIHJlc3VsdHMgb2YgdGhlIGstaW5kZXguIE9uZSBkaWZmZXJlbmNlIG5vdGVkIGlzIHRoYXQgdGhlIGZpcnN0IG1vZGVsIGZvciBTb2Npb2xvZ3kgaW4gQXBwZW5kaXggQSBpcyBpbnNpZ25pZmljYW50LCB3aGlsZSB0aGUgYWJzb2x1dGUgZGlmZmVyZW5jZSBiZXR3ZWVuIHRoZSBrLWluZGV4IHdhcyBzaWduaWZpY2FudCBmb3IgU29jaW9sb2d5IHdoZW4gY29udHJvbCB2YXJpYWJsZXMgd2VyZSBub3QgaW5jbHVkZWQuIEhvd2V2ZXIsIGFsc28gdGhlIGVmZmVjdCBvZiB0aGUgay1pbmRleCBiZWNhbWUgaW5zaWduaWZpY2FudCB3aGVuIGluY2x1ZGluZyB0aGUgY29udHJvbCB2YXJpYWJsZXMsIGFuZCB0aHVzIGVxdWFsIGNvbmNsdXNpb25zIHdvdWxkIGJlIGRyYXduIGZyb20gdGhlIG1vZGVscyB3aXRoIHRoZSBrLWluZGV4IGFuZCB0aGF0IHdpdGggdGhlIG51bWJlciBvZiB0d2l0dGVyIGZvbGxvd2Vycy4gICAKCkluIEFwcGVuZGl4IEIsIHRoZSBzYW1lIG1vZGVscyBhcmUgcnVuIHdpdGhvdXQgdGhlIGR1bW15IGZvciBoYXZpbmcgYSBUd2l0dGVyIGFjY291bnQuIFRoaXMgYWdhaW4gcmVzdWx0cyBpbiBzaW1pbGFyIG91dGNvbWVzLCBtZWFuaW5nIHRoYXQgdGhlIGVmZmVjdCBvZiBoYXZpbmcgVHdpdHRlciB3aGVuIGluY2x1ZGVkIGluIHRoZSBtb2RlbCBkb2VzIG5vdCB0YWtlIGF3YXkgdGhlIHBvc3NpYmxlIGVmZmVjdCBvZiB0aGUgay1pbmRleC4gSW4gdGhlc2UgbW9kZWxzIHdpdGhvdXQgdGhlIFR3aXR0ZXIgZHVtbXksIHRoZSBrLWluZGV4IHJlbWFpbnMgaW5zaWduaWZpY2FudC4gQWdhaW4sIHRoZSBzYW1lIGNvbmNsdXNpb25zIHdvdWxkIGJlIGRyYXduLiBUaGVyZWZvcmUsIHRoZSByZXN1bHRzIGFyZSByYXRoZXIgcm9idXN0LiAKCiNSZWZlcmVuY2VzIAo=</div>
 
 
 </div>
@@ -986,7 +1270,7 @@ $(document).ready(function () {
 <script>
 $(document).ready(function () {
   window.initializeSourceEmbed("rsiena_results.Rmd");
-  window.initializeCodeFolding("show" === "show");
+  window.initializeCodeFolding("hide" === "show");
 });
 </script>
 

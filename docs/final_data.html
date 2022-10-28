@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Anuschka Peelen" />
+
+<meta name="date" content="2022-10-28" />
+
+<title>introduction</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="tweaks.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    My journal
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab1.html">Week 1</a>
+    </li>
+    <li>
+      <a href="lab2.html">Week 2</a>
+    </li>
+    <li>
+      <a href="webscraping_sociology.html">Week 3 - Scraping Sociology</a>
+    </li>
+    <li>
+      <a href="webscraping_datascience.html">Week 3 - Scraping Data Science</a>
+    </li>
+    <li>
+      <a href="scrapingtwitter.html">Week 3 - Twitter scraping</a>
+    </li>
+    <li>
+      <a href="Rsienatutorial.html">Week 4 - RSiena</a>
+    </li>
+    <li>
+      <a href="rsiena_mymovez.html">Week 4 - MyMovez tutorial</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Report
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="introduction.html">Introduction</a>
+    </li>
+    <li>
+      <a href="datach.html">Data &amp; Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Final Report
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="final_introduction.html">Introduction</a>
+    </li>
+    <li>
+      <a href="final_theory.html">Theory</a>
+    </li>
+    <li>
+      <a href="final_data.html">Data</a>
+    </li>
+    <li>
+      <a href="descriptives.html">Descriptives</a>
+    </li>
+    <li>
+      <a href="rsiena_results.html">RSiena results</a>
+    </li>
+    <li>
+      <a href="conclusion.html">Conclusion</a>
+    </li>
+    <li>
+      <a href="rsiena_results_twit.html">Appendix A</a>
+    </li>
+    <li>
+      <a href="appendixb.html">Appendix B</a>
+    </li>
+    <li>
+      <a></a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JochemTolsma/labjournal">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">introduction</h1>
+<h4 class="author">Anuschka Peelen</h4>
+<h4 class="date">2022-10-28</h4>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="data-methods" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Data &amp; Methods</h1>
+<div id="dependent-variable" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Dependent
+variable</h2>
+<p>In the present study, I webscraped data from the internet in order to
+answer the research questions. The study focuses on scientists working
+at the Sociology department (N=33) and scientists working at the Data
+Science department (N=46) of Radboud University. The starting point of
+the webscraping was collecting the full names of these scientists from
+the staff-webpage of the Radboud University. In order to do so, I used
+the package rvest was, and in case of JavaScript data, the package V8 to
+gather this information.</p>
+<p>In the next step, these full names were used by the Scholar package
+in R to find information on publications, co-authorship and citations. I
+deleted scientists with an extremely high number of citations, which
+resulted in deleting three scientists at the Sociology department and
+two at the Data Science department. With this data, I created the
+dependent variable co-publications. For each scientist, I searched
+whether this scientist had published an article with someone else from
+the same department. This was done using the names of the scientists.
+Although this data was collected at one moment in time, with the
+publication network I had the opportunity to distinguish different
+moments in time. Per department, there are three waves of co-publication
+networks: for the years 2016-2017, 2018-2019 and 2020-2022. These waves
+thus express the co-publication ties of articles published in these
+years. I then turned these three waves into an adjacency matrix, in
+which scientists score a 1 when they have published an article together.
+Since the network is based on co-publications, it is undirected.</p>
+</div>
+<div id="independent-variable" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Independent
+variable</h2>
+<p>The independent variable consists of the Kardashian Index. The
+Kardashian Index compares the Twitter followers with number of citations
+of academics <span class="citation">(Hall 2014)</span>. In order to
+calculate these, the twitteR package in R is used to extract Twitter
+user information of scholars of the departments from the Twitter REST
+API. For each full name, the first user that the twitteR package
+scraped, is saved. By eyeballing, twitter users with a high number of
+followers were checked. In some cases, the match between full name and
+Twitter username was not made correctly. In those instances, this was
+corrected by hand. Using the number of followers and the citations
+scraped from Google Scholar, the Kardashian Index is calculated. Hall’s
+<span class="citation">(2014)</span> formula to calculate the k-index
+exists of two equations. The first equation calculates a typical number
+of twitter followers and is expressed as follows: $F = 43.3Cˆ{0.32} $
+Then, the k-index is calculated with the following equation: $K-index =
+{F_{c}} $</p>
+<p><br></p>
+</div>
+<div id="control-variables" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Control
+variables</h2>
+<p>I added the control variable Twitter Dummy to indicate whether the
+scientist has Twitter or not. A scientist scores 1 in case of a Twitter
+handle found by the twitteR package. Furthermore, the variable Dutch
+shows the ethnicity of the scientist. This variable is included as a
+selection to collaborate with a scientist may also be based on their
+ethnicity. Ethnicity was scraped using the Familienamenbank <span
+class="citation">(n.d.)</span>, which has data on last names used in the
+Netherlands. In case of a typical Dutch last name, the scientist got a
+score 1 on the dummy Dutch. In other cases, the scholar scores a 0. This
+means that all last names that are not Dutch are taken together as one
+category, not distinguishing between (Non-)Western ethnic
+backgrounds.</p>
+<p>As gender may influence the k-index as well as collaborations between
+scientists, I included a dummy for gender. With a procedure similar to
+that of determining ethnicity, the Meertens namenbank <span
+class="citation">(<span>“Databanken,”</span> n.d.)</span> was used to
+determine the gender of the respondent. This databank has information on
+all the first names used in the Netherlands and their frequency. In case
+of a first name that is more often used for women than for men, a
+scientist scores a 0 on the dummy gender. In case of a first name that
+is more often used for men, the scientist scores a 1 on the dummy.
+Lastly, as age can have an influence on opportunities for
+(co)publishing, a proxy for age is included based on the year of the
+first publication of the scholar. The descriptives of these variables
+can be found at the bottom of this page.</p>
+<p>Interested readers may have a further look into the scraping of all
+the variables used during this study, which can be done with the
+replication package that can be found on this website in week 3 of the
+“My Journal” page.</p>
+<p><br></p>
+</div>
+</div>
+<div id="analytical-strategy" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Analytical
+strategy</h1>
+<p>To answer the research questions that are descriptive in nature,
+descriptive statistics are shown for the different waves and different
+study departments. These statistics are then used to compare within and
+between departments and to answer the research questions. Important
+descriptive network characteristics that I show are transitivity, degree
+and the dyad census.</p>
+<p>To provide an answer to the explanatory research question on network
+effects, the RSiena package is used. SIENA – which stands for Simulation
+Investigation for Empirical Network Analysis – is able to analyze
+longitudinal data simulating network outcomes based on the perspective
+of the nodes <span class="citation">(Ripley et al. 2022)</span>.
+Importantly, the Stochastic Actor Oriented Model (SOAM) entails that
+actors perform ‘ministeps’, which means that a random actor gets
+assigned at the time, who is able to make one tie change. After making
+this tie change, the next actor gets the turn to make a change. For
+these actors, it is also a possibility to make no change. The decision
+of the actor depends on the evaluation of possible options, which is
+determined with the evaluation function. The actor then bases the
+decision on the most attractive network outcome. After this decision,
+the next actor gets a turn to decide. Based on many simulations of these
+actor-decisions, estimates for evaluation are provided by the model.</p>
+<div id="estimation-of-models" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Estimation of
+models</h2>
+<p>Three models are estimated per department. In the first model, only
+structural network effects on the dependent variable of co-publication
+are included. First, the <em>degree</em> effect estimates the number of
+outdegrees, which are in this case the number of copublications. This
+effect can be interpreted as an intercept. Then, the <em>transitive
+triads</em> effect shows whether individuals prefer to close a triad
+(and thus prefer a transitive relation) than to not close a transitive
+triad. In the case of co-publication networks, it means whether a
+scientist prefers to co-publish with a co-author of a co-author.
+Furthermore, the activity and popularity effect reveals whether
+individuals prefer to form a tie with individuals that already have a
+lot of ties. Thus, do scientists co-publish with scientists that have
+already co-published a lot?</p>
+<p>In the second model, the k-index is added. In this model, the
+<em>absDiffX</em> effect was included, estimating whether scientists
+prefer to co-publish with a scientist with a low absolute discrepancy in
+their k-index. I thus used this effect to test the homophily based on
+the k-index. Then another model is run with the control variables
+included. For the control variables ethnicity, gender and the Twitter
+dummy, I included the <em>sameX</em> effect. This shows whether
+scientists prefer to co-publish with another scientist of the same
+gender, ethnicity and twitter status. As age is the only control
+variable of ratio measurement level, I included this variable with the
+<em>absDiffX</em> effect as well, as I would like to see whether
+scientists prefer to collaborate with someone similar in age, not of
+exactly the same age.</p>
+<p>In the fourth model, the <em>altX</em> effect was included for the
+k-index, to test the hypotheses on co-publishing with scientists with a
+lower or higher k-index. This effect shows whether scientists prefer to
+co-publish based on the value of the k-index of the other scientist. The
+last model tests these <em>altX</em> effects with control variables
+included. All of the control variables included in the model remain the
+same as in the third model.</p>
+<p>As robustness checks, the same models as described above were
+estimated without the twitter dummy, and with the number of twitter
+followers as independent variable instead of the k-index. This could
+show whether it may mostly be social media that matters without its
+relation to the citations of a scientist. These robustness checks are
+visible in the Appendix.</p>
+<pre class="r test"><code>load(&quot;/Users/anuschka/Documents/labjournal/data/socdef_df.RData&quot;)
+summary(socdef_df$ki)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;  0.0000  0.0000  0.0157  1.1729  1.3315 11.1303</code></pre>
+<pre class="r test"><code>summary(socdef_df$dutch)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;  0.0000  1.0000  1.0000  0.8485  1.0000  1.0000</code></pre>
+<pre class="r test"><code>summary(socdef_df$pub_first)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;    1991    2008    2013    2012    2018    2023</code></pre>
+<pre class="r test"><code>summary(socdef_df$twitter_dum)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;  0.0000  0.0000  1.0000  0.5758  1.0000  1.0000</code></pre>
+<pre class="r test"><code>table(socdef_df$gender)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; female   male 
+#&gt;     17     16</code></pre>
+<pre class="r test"><code>load(&quot;/Users/anuschka/Documents/labjournal/data/datadef_df.RData&quot;)
+summary(datadef_df$ki)</code></pre>
+<pre class="test2"><code>#&gt;     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+#&gt;  0.00000  0.00000  0.03819  0.73867  0.47841 13.16667</code></pre>
+<pre class="r test"><code>summary(datadef_df$dutch)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;  0.0000  0.2500  1.0000  0.7391  1.0000  1.0000</code></pre>
+<pre class="r test"><code>summary(datadef_df$pub_first)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;    1983    2000    2014    2009    2017    2023</code></pre>
+<pre class="r test"><code>summary(datadef_df$twitter_dum)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;  0.0000  0.0000  1.0000  0.6522  1.0000  1.0000</code></pre>
+<pre class="r test"><code>table(datadef_df$gender)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; female   male 
+#&gt;     13     33</code></pre>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-nederlandse_familienamenbank" class="csl-entry">
+n.d. <em>Nederlandse Familienamenbank</em>. <a
+href="https://www.cbgfamilienamen.nl/nfb/">https://www.cbgfamilienamen.nl/nfb/</a>.
+</div>
+<div id="ref-databanken_meertens_instituut" class="csl-entry">
+<span>“Databanken.”</span> n.d. <em>Databanken Meertens Instituut</em>.
+<a
+href="https://meertens.knaw.nl/collecties/databanken/">https://meertens.knaw.nl/collecties/databanken/</a>.
+</div>
+<div id="ref-hall_kardashian_2014" class="csl-entry">
+Hall, Neil. 2014. <span>“The <span>Kardashian</span> Index: A Measure of
+Discrepant Social Media Profile for Scientists.”</span> <em>Genome
+Biology</em> 15 (7): 424. <a
+href="https://doi.org/10.1186/s13059-014-0424-0">https://doi.org/10.1186/s13059-014-0424-0</a>.
+</div>
+<div id="ref-manual" class="csl-entry">
+Ripley, Ruth M., Tom A. B. Snijders, Zsofia B’oda, Andr’as V"or"os, and
+Paulina Preciado. 2022. <span>“Manual for <span>Siena</span> Version
+4.0.”</span> Oxford: University of Oxford, Department of Statistics;
+Nuffield College.
+</div>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiaW50cm9kdWN0aW9uIgphdXRob3I6ICJBbnVzY2hrYSBQZWVsZW4iCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OiBodG1sX2RvY3VtZW50CmJpYmxpb2dyYXBoeTogcmVmZXJlbmNlcy5iaWIKZWRpdG9yX29wdGlvbnM6IAogIG1hcmtkb3duOiAKICAgIHdyYXA6IDcyCi0tLQoKYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9CmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKYGBgCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgpjb2xvcml6ZSA8LSBmdW5jdGlvbih4LCBjb2xvcikge3NwcmludGYoIjxzcGFuIHN0eWxlPSdjb2xvcjogJXM7Jz4lczwvc3Bhbj4iLCBjb2xvciwgeCkgfQpgYGAKCmBgYHtyIGtsaXBweSwgZWNobz1GQUxTRSwgaW5jbHVkZT1UUlVFfQprbGlwcHk6OmtsaXBweShwb3NpdGlvbiA9IGMoJ3RvcCcsICdyaWdodCcpKQoja2xpcHB5OjprbGlwcHkoY29sb3IgPSAnZGFya3JlZCcpCiNrbGlwcHk6OmtsaXBweSh0b29sdGlwX21lc3NhZ2UgPSAnQ2xpY2sgdG8gY29weScsIHRvb2x0aXBfc3VjY2VzcyA9ICdEb25lJykKYGBgCgojIERhdGEgJiBNZXRob2RzCgojIyBEZXBlbmRlbnQgdmFyaWFibGUKCkluIHRoZSBwcmVzZW50IHN0dWR5LCBJIHdlYnNjcmFwZWQgZGF0YSBmcm9tIHRoZSBpbnRlcm5ldCBpbiBvcmRlciB0bwphbnN3ZXIgdGhlIHJlc2VhcmNoIHF1ZXN0aW9ucy4gVGhlIHN0dWR5IGZvY3VzZXMgb24gc2NpZW50aXN0cyB3b3JraW5nCmF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudCAoTj0zMykgYW5kIHNjaWVudGlzdHMgd29ya2luZyBhdCB0aGUgRGF0YQpTY2llbmNlIGRlcGFydG1lbnQgKE49NDYpIG9mIFJhZGJvdWQgVW5pdmVyc2l0eS4gVGhlIHN0YXJ0aW5nIHBvaW50IG9mCnRoZSB3ZWJzY3JhcGluZyB3YXMgY29sbGVjdGluZyB0aGUgZnVsbCBuYW1lcyBvZiB0aGVzZSBzY2llbnRpc3RzIGZyb20KdGhlIHN0YWZmLXdlYnBhZ2Ugb2YgdGhlIFJhZGJvdWQgVW5pdmVyc2l0eS4gSW4gb3JkZXIgdG8gZG8gc28sIEkgdXNlZAp0aGUgcGFja2FnZSBydmVzdCB3YXMsIGFuZCBpbiBjYXNlIG9mIEphdmFTY3JpcHQgZGF0YSwgdGhlIHBhY2thZ2UgVjggdG8KZ2F0aGVyIHRoaXMgaW5mb3JtYXRpb24uCgpJbiB0aGUgbmV4dCBzdGVwLCB0aGVzZSBmdWxsIG5hbWVzIHdlcmUgdXNlZCBieSB0aGUgU2Nob2xhciBwYWNrYWdlIGluIFIKdG8gZmluZCBpbmZvcm1hdGlvbiBvbiBwdWJsaWNhdGlvbnMsIGNvLWF1dGhvcnNoaXAgYW5kIGNpdGF0aW9ucy4gSQpkZWxldGVkIHNjaWVudGlzdHMgd2l0aCBhbiBleHRyZW1lbHkgaGlnaCBudW1iZXIgb2YgY2l0YXRpb25zLCB3aGljaApyZXN1bHRlZCBpbiBkZWxldGluZyB0aHJlZSBzY2llbnRpc3RzIGF0IHRoZSBTb2Npb2xvZ3kgZGVwYXJ0bWVudCBhbmQKdHdvIGF0IHRoZSBEYXRhIFNjaWVuY2UgZGVwYXJ0bWVudC4gV2l0aCB0aGlzIGRhdGEsIEkgY3JlYXRlZCB0aGUKZGVwZW5kZW50IHZhcmlhYmxlIGNvLXB1YmxpY2F0aW9ucy4gRm9yIGVhY2ggc2NpZW50aXN0LCBJIHNlYXJjaGVkCndoZXRoZXIgdGhpcyBzY2llbnRpc3QgaGFkIHB1Ymxpc2hlZCBhbiBhcnRpY2xlIHdpdGggc29tZW9uZSBlbHNlIGZyb20KdGhlIHNhbWUgZGVwYXJ0bWVudC4gVGhpcyB3YXMgZG9uZSB1c2luZyB0aGUgbmFtZXMgb2YgdGhlIHNjaWVudGlzdHMuCkFsdGhvdWdoIHRoaXMgZGF0YSB3YXMgY29sbGVjdGVkIGF0IG9uZSBtb21lbnQgaW4gdGltZSwgd2l0aCB0aGUKcHVibGljYXRpb24gbmV0d29yayBJIGhhZCB0aGUgb3Bwb3J0dW5pdHkgdG8gZGlzdGluZ3Vpc2ggZGlmZmVyZW50Cm1vbWVudHMgaW4gdGltZS4gUGVyIGRlcGFydG1lbnQsIHRoZXJlIGFyZSB0aHJlZSB3YXZlcyBvZiBjby1wdWJsaWNhdGlvbgpuZXR3b3JrczogZm9yIHRoZSB5ZWFycyAyMDE2LTIwMTcsIDIwMTgtMjAxOSBhbmQgMjAyMC0yMDIyLiBUaGVzZSB3YXZlcwp0aHVzIGV4cHJlc3MgdGhlIGNvLXB1YmxpY2F0aW9uIHRpZXMgb2YgYXJ0aWNsZXMgcHVibGlzaGVkIGluIHRoZXNlCnllYXJzLiBJIHRoZW4gdHVybmVkIHRoZXNlIHRocmVlIHdhdmVzIGludG8gYW4gYWRqYWNlbmN5IG1hdHJpeCwgaW4Kd2hpY2ggc2NpZW50aXN0cyBzY29yZSBhIDEgd2hlbiB0aGV5IGhhdmUgcHVibGlzaGVkIGFuIGFydGljbGUgdG9nZXRoZXIuClNpbmNlIHRoZSBuZXR3b3JrIGlzIGJhc2VkIG9uIGNvLXB1YmxpY2F0aW9ucywgaXQgaXMgdW5kaXJlY3RlZC4KCiMjIEluZGVwZW5kZW50IHZhcmlhYmxlCgpUaGUgaW5kZXBlbmRlbnQgdmFyaWFibGUgY29uc2lzdHMgb2YgdGhlIEthcmRhc2hpYW4gSW5kZXguIFRoZQpLYXJkYXNoaWFuIEluZGV4IGNvbXBhcmVzIHRoZSBUd2l0dGVyIGZvbGxvd2VycyB3aXRoIG51bWJlciBvZiBjaXRhdGlvbnMKb2YgYWNhZGVtaWNzIFtAaGFsbF9rYXJkYXNoaWFuXzIwMTRdLiBJbiBvcmRlciB0byBjYWxjdWxhdGUgdGhlc2UsIHRoZQp0d2l0dGVSIHBhY2thZ2UgaW4gUiBpcyB1c2VkIHRvIGV4dHJhY3QgVHdpdHRlciB1c2VyIGluZm9ybWF0aW9uIG9mCnNjaG9sYXJzIG9mIHRoZSBkZXBhcnRtZW50cyBmcm9tIHRoZSBUd2l0dGVyIFJFU1QgQVBJLiBGb3IgZWFjaCBmdWxsCm5hbWUsIHRoZSBmaXJzdCB1c2VyIHRoYXQgdGhlIHR3aXR0ZVIgcGFja2FnZSBzY3JhcGVkLCBpcyBzYXZlZC4gQnkKZXllYmFsbGluZywgdHdpdHRlciB1c2VycyB3aXRoIGEgaGlnaCBudW1iZXIgb2YgZm9sbG93ZXJzIHdlcmUgY2hlY2tlZC4KSW4gc29tZSBjYXNlcywgdGhlIG1hdGNoIGJldHdlZW4gZnVsbCBuYW1lIGFuZCBUd2l0dGVyIHVzZXJuYW1lIHdhcyBub3QKbWFkZSBjb3JyZWN0bHkuIEluIHRob3NlIGluc3RhbmNlcywgdGhpcyB3YXMgY29ycmVjdGVkIGJ5IGhhbmQuIFVzaW5nCnRoZSBudW1iZXIgb2YgZm9sbG93ZXJzIGFuZCB0aGUgY2l0YXRpb25zIHNjcmFwZWQgZnJvbSBHb29nbGUgU2Nob2xhciwKdGhlIEthcmRhc2hpYW4gSW5kZXggaXMgY2FsY3VsYXRlZC4gSGFsbCdzIFstQGhhbGxfa2FyZGFzaGlhbl8yMDE0XQpmb3JtdWxhIHRvIGNhbGN1bGF0ZSB0aGUgay1pbmRleCBleGlzdHMgb2YgdHdvIGVxdWF0aW9ucy4gVGhlIGZpcnN0CmVxdWF0aW9uIGNhbGN1bGF0ZXMgYSB0eXBpY2FsIG51bWJlciBvZiB0d2l0dGVyIGZvbGxvd2VycyBhbmQgaXMKZXhwcmVzc2VkIGFzIGZvbGxvd3M6IFwkRiA9IDQzLjNDy4Z7MC4zMn0gXCQgVGhlbiwgdGhlIGstaW5kZXggaXMKY2FsY3VsYXRlZCB3aXRoIHRoZSBmb2xsb3dpbmcgZXF1YXRpb246IFwkSy1pbmRleCA9IFxmcmFje0Zfe2F9fQp7Rlxfe2N9fSBcJAoKPGJyPgoKIyMgQ29udHJvbCB2YXJpYWJsZXMKCkkgYWRkZWQgdGhlIGNvbnRyb2wgdmFyaWFibGUgVHdpdHRlciBEdW1teSB0byBpbmRpY2F0ZSB3aGV0aGVyIHRoZQpzY2llbnRpc3QgaGFzIFR3aXR0ZXIgb3Igbm90LiBBIHNjaWVudGlzdCBzY29yZXMgMSBpbiBjYXNlIG9mIGEgVHdpdHRlcgpoYW5kbGUgZm91bmQgYnkgdGhlIHR3aXR0ZVIgcGFja2FnZS4gRnVydGhlcm1vcmUsIHRoZSB2YXJpYWJsZSBEdXRjaApzaG93cyB0aGUgZXRobmljaXR5IG9mIHRoZSBzY2llbnRpc3QuIFRoaXMgdmFyaWFibGUgaXMgaW5jbHVkZWQgYXMgYQpzZWxlY3Rpb24gdG8gY29sbGFib3JhdGUgd2l0aCBhIHNjaWVudGlzdCBtYXkgYWxzbyBiZSBiYXNlZCBvbiB0aGVpcgpldGhuaWNpdHkuIEV0aG5pY2l0eSB3YXMgc2NyYXBlZCB1c2luZyB0aGUgRmFtaWxpZW5hbWVuYmFuawpbQG5lZGVybGFuZHNlX2ZhbWlsaWVuYW1lbmJhbmtdLCB3aGljaCBoYXMgZGF0YSBvbiBsYXN0IG5hbWVzIHVzZWQgaW4KdGhlIE5ldGhlcmxhbmRzLiBJbiBjYXNlIG9mIGEgdHlwaWNhbCBEdXRjaCBsYXN0IG5hbWUsIHRoZSBzY2llbnRpc3QgZ290CmEgc2NvcmUgMSBvbiB0aGUgZHVtbXkgRHV0Y2guIEluIG90aGVyIGNhc2VzLCB0aGUgc2Nob2xhciBzY29yZXMgYSAwLgpUaGlzIG1lYW5zIHRoYXQgYWxsIGxhc3QgbmFtZXMgdGhhdCBhcmUgbm90IER1dGNoIGFyZSB0YWtlbiB0b2dldGhlciBhcwpvbmUgY2F0ZWdvcnksIG5vdCBkaXN0aW5ndWlzaGluZyBiZXR3ZWVuIChOb24tKVdlc3Rlcm4gZXRobmljCmJhY2tncm91bmRzLgoKQXMgZ2VuZGVyIG1heSBpbmZsdWVuY2UgdGhlIGstaW5kZXggYXMgd2VsbCBhcyBjb2xsYWJvcmF0aW9ucyBiZXR3ZWVuCnNjaWVudGlzdHMsIEkgaW5jbHVkZWQgYSBkdW1teSBmb3IgZ2VuZGVyLiBXaXRoIGEgcHJvY2VkdXJlIHNpbWlsYXIgdG8KdGhhdCBvZiBkZXRlcm1pbmluZyBldGhuaWNpdHksIHRoZSBNZWVydGVucyBuYW1lbmJhbmsKW0BkYXRhYmFua2VuX21lZXJ0ZW5zX2luc3RpdHV1dF0gd2FzIHVzZWQgdG8gZGV0ZXJtaW5lIHRoZSBnZW5kZXIgb2YgdGhlCnJlc3BvbmRlbnQuIFRoaXMgZGF0YWJhbmsgaGFzIGluZm9ybWF0aW9uIG9uIGFsbCB0aGUgZmlyc3QgbmFtZXMgdXNlZCBpbgp0aGUgTmV0aGVybGFuZHMgYW5kIHRoZWlyIGZyZXF1ZW5jeS4gSW4gY2FzZSBvZiBhIGZpcnN0IG5hbWUgdGhhdCBpcwptb3JlIG9mdGVuIHVzZWQgZm9yIHdvbWVuIHRoYW4gZm9yIG1lbiwgYSBzY2llbnRpc3Qgc2NvcmVzIGEgMCBvbiB0aGUKZHVtbXkgZ2VuZGVyLiBJbiBjYXNlIG9mIGEgZmlyc3QgbmFtZSB0aGF0IGlzIG1vcmUgb2Z0ZW4gdXNlZCBmb3IgbWVuLAp0aGUgc2NpZW50aXN0IHNjb3JlcyBhIDEgb24gdGhlIGR1bW15LiBMYXN0bHksIGFzIGFnZSBjYW4gaGF2ZSBhbgppbmZsdWVuY2Ugb24gb3Bwb3J0dW5pdGllcyBmb3IgKGNvKXB1Ymxpc2hpbmcsIGEgcHJveHkgZm9yIGFnZSBpcwppbmNsdWRlZCBiYXNlZCBvbiB0aGUgeWVhciBvZiB0aGUgZmlyc3QgcHVibGljYXRpb24gb2YgdGhlIHNjaG9sYXIuIFRoZQpkZXNjcmlwdGl2ZXMgb2YgdGhlc2UgdmFyaWFibGVzIGNhbiBiZSBmb3VuZCBhdCB0aGUgYm90dG9tIG9mIHRoaXMgcGFnZS4KCkludGVyZXN0ZWQgcmVhZGVycyBtYXkgaGF2ZSBhIGZ1cnRoZXIgbG9vayBpbnRvIHRoZSBzY3JhcGluZyBvZiBhbGwgdGhlCnZhcmlhYmxlcyB1c2VkIGR1cmluZyB0aGlzIHN0dWR5LCB3aGljaCBjYW4gYmUgZG9uZSB3aXRoIHRoZSByZXBsaWNhdGlvbgpwYWNrYWdlIHRoYXQgY2FuIGJlIGZvdW5kIG9uIHRoaXMgd2Vic2l0ZSBpbiB3ZWVrIDMgb2YgdGhlICJNeSBKb3VybmFsIgpwYWdlLgoKPGJyPgoKIyBBbmFseXRpY2FsIHN0cmF0ZWd5CgpUbyBhbnN3ZXIgdGhlIHJlc2VhcmNoIHF1ZXN0aW9ucyB0aGF0IGFyZSBkZXNjcmlwdGl2ZSBpbiBuYXR1cmUsCmRlc2NyaXB0aXZlIHN0YXRpc3RpY3MgYXJlIHNob3duIGZvciB0aGUgZGlmZmVyZW50IHdhdmVzIGFuZCBkaWZmZXJlbnQKc3R1ZHkgZGVwYXJ0bWVudHMuIFRoZXNlIHN0YXRpc3RpY3MgYXJlIHRoZW4gdXNlZCB0byBjb21wYXJlIHdpdGhpbiBhbmQKYmV0d2VlbiBkZXBhcnRtZW50cyBhbmQgdG8gYW5zd2VyIHRoZSByZXNlYXJjaCBxdWVzdGlvbnMuIEltcG9ydGFudApkZXNjcmlwdGl2ZSBuZXR3b3JrIGNoYXJhY3RlcmlzdGljcyB0aGF0IEkgc2hvdyBhcmUgdHJhbnNpdGl2aXR5LCBkZWdyZWUKYW5kIHRoZSBkeWFkIGNlbnN1cy4KClRvIHByb3ZpZGUgYW4gYW5zd2VyIHRvIHRoZSBleHBsYW5hdG9yeSByZXNlYXJjaCBxdWVzdGlvbiBvbiBuZXR3b3JrCmVmZmVjdHMsIHRoZSBSU2llbmEgcGFja2FnZSBpcyB1c2VkLiBTSUVOQSAtLSB3aGljaCBzdGFuZHMgZm9yClNpbXVsYXRpb24gSW52ZXN0aWdhdGlvbiBmb3IgRW1waXJpY2FsIE5ldHdvcmsgQW5hbHlzaXMgLS0gaXMgYWJsZSB0bwphbmFseXplIGxvbmdpdHVkaW5hbCBkYXRhIHNpbXVsYXRpbmcgbmV0d29yayBvdXRjb21lcyBiYXNlZCBvbiB0aGUKcGVyc3BlY3RpdmUgb2YgdGhlIG5vZGVzIFtAbWFudWFsXS4gSW1wb3J0YW50bHksIHRoZSBTdG9jaGFzdGljIEFjdG9yCk9yaWVudGVkIE1vZGVsIChTT0FNKSBlbnRhaWxzIHRoYXQgYWN0b3JzIHBlcmZvcm0gJ21pbmlzdGVwcycsIHdoaWNoCm1lYW5zIHRoYXQgYSByYW5kb20gYWN0b3IgZ2V0cyBhc3NpZ25lZCBhdCB0aGUgdGltZSwgd2hvIGlzIGFibGUgdG8gbWFrZQpvbmUgdGllIGNoYW5nZS4gQWZ0ZXIgbWFraW5nIHRoaXMgdGllIGNoYW5nZSwgdGhlIG5leHQgYWN0b3IgZ2V0cyB0aGUKdHVybiB0byBtYWtlIGEgY2hhbmdlLiBGb3IgdGhlc2UgYWN0b3JzLCBpdCBpcyBhbHNvIGEgcG9zc2liaWxpdHkgdG8KbWFrZSBubyBjaGFuZ2UuIFRoZSBkZWNpc2lvbiBvZiB0aGUgYWN0b3IgZGVwZW5kcyBvbiB0aGUgZXZhbHVhdGlvbiBvZgpwb3NzaWJsZSBvcHRpb25zLCB3aGljaCBpcyBkZXRlcm1pbmVkIHdpdGggdGhlIGV2YWx1YXRpb24gZnVuY3Rpb24uIFRoZQphY3RvciB0aGVuIGJhc2VzIHRoZSBkZWNpc2lvbiBvbiB0aGUgbW9zdCBhdHRyYWN0aXZlIG5ldHdvcmsgb3V0Y29tZS4KQWZ0ZXIgdGhpcyBkZWNpc2lvbiwgdGhlIG5leHQgYWN0b3IgZ2V0cyBhIHR1cm4gdG8gZGVjaWRlLiBCYXNlZCBvbiBtYW55CnNpbXVsYXRpb25zIG9mIHRoZXNlIGFjdG9yLWRlY2lzaW9ucywgZXN0aW1hdGVzIGZvciBldmFsdWF0aW9uIGFyZQpwcm92aWRlZCBieSB0aGUgbW9kZWwuCgojIyBFc3RpbWF0aW9uIG9mIG1vZGVscwoKVGhyZWUgbW9kZWxzIGFyZSBlc3RpbWF0ZWQgcGVyIGRlcGFydG1lbnQuIEluIHRoZSBmaXJzdCBtb2RlbCwgb25seQpzdHJ1Y3R1cmFsIG5ldHdvcmsgZWZmZWN0cyBvbiB0aGUgZGVwZW5kZW50IHZhcmlhYmxlIG9mIGNvLXB1YmxpY2F0aW9uCmFyZSBpbmNsdWRlZC4gRmlyc3QsIHRoZSAqZGVncmVlKiBlZmZlY3QgZXN0aW1hdGVzIHRoZSBudW1iZXIgb2YKb3V0ZGVncmVlcywgd2hpY2ggYXJlIGluIHRoaXMgY2FzZSB0aGUgbnVtYmVyIG9mIGNvcHVibGljYXRpb25zLiBUaGlzCmVmZmVjdCBjYW4gYmUgaW50ZXJwcmV0ZWQgYXMgYW4gaW50ZXJjZXB0LiBUaGVuLCB0aGUgKnRyYW5zaXRpdmUgdHJpYWRzKgplZmZlY3Qgc2hvd3Mgd2hldGhlciBpbmRpdmlkdWFscyBwcmVmZXIgdG8gY2xvc2UgYSB0cmlhZCAoYW5kIHRodXMKcHJlZmVyIGEgdHJhbnNpdGl2ZSByZWxhdGlvbikgdGhhbiB0byBub3QgY2xvc2UgYSB0cmFuc2l0aXZlIHRyaWFkLiBJbgp0aGUgY2FzZSBvZiBjby1wdWJsaWNhdGlvbiBuZXR3b3JrcywgaXQgbWVhbnMgd2hldGhlciBhIHNjaWVudGlzdApwcmVmZXJzIHRvIGNvLXB1Ymxpc2ggd2l0aCBhIGNvLWF1dGhvciBvZiBhIGNvLWF1dGhvci4gRnVydGhlcm1vcmUsIHRoZQphY3Rpdml0eSBhbmQgcG9wdWxhcml0eSBlZmZlY3QgcmV2ZWFscyB3aGV0aGVyIGluZGl2aWR1YWxzIHByZWZlciB0bwpmb3JtIGEgdGllIHdpdGggaW5kaXZpZHVhbHMgdGhhdCBhbHJlYWR5IGhhdmUgYSBsb3Qgb2YgdGllcy4gVGh1cywgZG8Kc2NpZW50aXN0cyBjby1wdWJsaXNoIHdpdGggc2NpZW50aXN0cyB0aGF0IGhhdmUgYWxyZWFkeSBjby1wdWJsaXNoZWQgYQpsb3Q/CgpJbiB0aGUgc2Vjb25kIG1vZGVsLCB0aGUgay1pbmRleCBpcyBhZGRlZC4gSW4gdGhpcyBtb2RlbCwgdGhlICphYnNEaWZmWCoKZWZmZWN0IHdhcyBpbmNsdWRlZCwgZXN0aW1hdGluZyB3aGV0aGVyIHNjaWVudGlzdHMgcHJlZmVyIHRvIGNvLXB1Ymxpc2gKd2l0aCBhIHNjaWVudGlzdCB3aXRoIGEgbG93IGFic29sdXRlIGRpc2NyZXBhbmN5IGluIHRoZWlyIGstaW5kZXguIEkKdGh1cyB1c2VkIHRoaXMgZWZmZWN0IHRvIHRlc3QgdGhlIGhvbW9waGlseSBiYXNlZCBvbiB0aGUgay1pbmRleC4gVGhlbgphbm90aGVyIG1vZGVsIGlzIHJ1biB3aXRoIHRoZSBjb250cm9sIHZhcmlhYmxlcyBpbmNsdWRlZC4gRm9yIHRoZQpjb250cm9sIHZhcmlhYmxlcyBldGhuaWNpdHksIGdlbmRlciBhbmQgdGhlIFR3aXR0ZXIgZHVtbXksIEkgaW5jbHVkZWQKdGhlICpzYW1lWCogZWZmZWN0LiBUaGlzIHNob3dzIHdoZXRoZXIgc2NpZW50aXN0cyBwcmVmZXIgdG8gY28tcHVibGlzaAp3aXRoIGFub3RoZXIgc2NpZW50aXN0IG9mIHRoZSBzYW1lIGdlbmRlciwgZXRobmljaXR5IGFuZCB0d2l0dGVyIHN0YXR1cy4KQXMgYWdlIGlzIHRoZSBvbmx5IGNvbnRyb2wgdmFyaWFibGUgb2YgcmF0aW8gbWVhc3VyZW1lbnQgbGV2ZWwsIEkKaW5jbHVkZWQgdGhpcyB2YXJpYWJsZSB3aXRoIHRoZSAqYWJzRGlmZlgqIGVmZmVjdCBhcyB3ZWxsLCBhcyBJIHdvdWxkCmxpa2UgdG8gc2VlIHdoZXRoZXIgc2NpZW50aXN0cyBwcmVmZXIgdG8gY29sbGFib3JhdGUgd2l0aCBzb21lb25lCnNpbWlsYXIgaW4gYWdlLCBub3Qgb2YgZXhhY3RseSB0aGUgc2FtZSBhZ2UuCgpJbiB0aGUgZm91cnRoIG1vZGVsLCB0aGUgKmFsdFgqIGVmZmVjdCB3YXMgaW5jbHVkZWQgZm9yIHRoZSBrLWluZGV4LCB0bwp0ZXN0IHRoZSBoeXBvdGhlc2VzIG9uIGNvLXB1Ymxpc2hpbmcgd2l0aCBzY2llbnRpc3RzIHdpdGggYSBsb3dlciBvcgpoaWdoZXIgay1pbmRleC4gVGhpcyBlZmZlY3Qgc2hvd3Mgd2hldGhlciBzY2llbnRpc3RzIHByZWZlciB0bwpjby1wdWJsaXNoIGJhc2VkIG9uIHRoZSB2YWx1ZSBvZiB0aGUgay1pbmRleCBvZiB0aGUgb3RoZXIgc2NpZW50aXN0LiBUaGUKbGFzdCBtb2RlbCB0ZXN0cyB0aGVzZSAqYWx0WCogZWZmZWN0cyB3aXRoIGNvbnRyb2wgdmFyaWFibGVzIGluY2x1ZGVkLgpBbGwgb2YgdGhlIGNvbnRyb2wgdmFyaWFibGVzIGluY2x1ZGVkIGluIHRoZSBtb2RlbCByZW1haW4gdGhlIHNhbWUgYXMgaW4KdGhlIHRoaXJkIG1vZGVsLgoKQXMgcm9idXN0bmVzcyBjaGVja3MsIHRoZSBzYW1lIG1vZGVscyBhcyBkZXNjcmliZWQgYWJvdmUgd2VyZSBlc3RpbWF0ZWQKd2l0aG91dCB0aGUgdHdpdHRlciBkdW1teSwgYW5kIHdpdGggdGhlIG51bWJlciBvZiB0d2l0dGVyIGZvbGxvd2VycyBhcwppbmRlcGVuZGVudCB2YXJpYWJsZSBpbnN0ZWFkIG9mIHRoZSBrLWluZGV4LiBUaGlzIGNvdWxkIHNob3cgd2hldGhlciBpdAptYXkgbW9zdGx5IGJlIHNvY2lhbCBtZWRpYSB0aGF0IG1hdHRlcnMgd2l0aG91dCBpdHMgcmVsYXRpb24gdG8gdGhlCmNpdGF0aW9ucyBvZiBhIHNjaWVudGlzdC4gVGhlc2Ugcm9idXN0bmVzcyBjaGVja3MgYXJlIHZpc2libGUgaW4gdGhlCkFwcGVuZGl4LgoKYGBge3J9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL3NvY2RlZl9kZi5SRGF0YSIpCnN1bW1hcnkoc29jZGVmX2RmJGtpKQpzdW1tYXJ5KHNvY2RlZl9kZiRkdXRjaCkKc3VtbWFyeShzb2NkZWZfZGYkcHViX2ZpcnN0KQpzdW1tYXJ5KHNvY2RlZl9kZiR0d2l0dGVyX2R1bSkKdGFibGUoc29jZGVmX2RmJGdlbmRlcikKCmBgYAoKYGBge3J9CmxvYWQoIi9Vc2Vycy9hbnVzY2hrYS9Eb2N1bWVudHMvbGFiam91cm5hbC9kYXRhL2RhdGFkZWZfZGYuUkRhdGEiKQpzdW1tYXJ5KGRhdGFkZWZfZGYka2kpCnN1bW1hcnkoZGF0YWRlZl9kZiRkdXRjaCkKc3VtbWFyeShkYXRhZGVmX2RmJHB1Yl9maXJzdCkKc3VtbWFyeShkYXRhZGVmX2RmJHR3aXR0ZXJfZHVtKQp0YWJsZShkYXRhZGVmX2RmJGdlbmRlcikKCmBgYAoKIyBSZWZlcmVuY2VzCg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("final_data.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

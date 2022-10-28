@@ -1,0 +1,209 @@
+---
+title: "introduction"
+author: "Anuschka Peelen"
+date: "`r Sys.Date()`"
+output: html_document
+bibliography: references.bib
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+# Data & Methods
+
+## Dependent variable
+
+In the present study, I webscraped data from the internet in order to
+answer the research questions. The study focuses on scientists working
+at the Sociology department (N=33) and scientists working at the Data
+Science department (N=46) of Radboud University. The starting point of
+the webscraping was collecting the full names of these scientists from
+the staff-webpage of the Radboud University. In order to do so, I used
+the package rvest was, and in case of JavaScript data, the package V8 to
+gather this information.
+
+In the next step, these full names were used by the Scholar package in R
+to find information on publications, co-authorship and citations. I
+deleted scientists with an extremely high number of citations, which
+resulted in deleting three scientists at the Sociology department and
+two at the Data Science department. With this data, I created the
+dependent variable co-publications. For each scientist, I searched
+whether this scientist had published an article with someone else from
+the same department. This was done using the names of the scientists.
+Although this data was collected at one moment in time, with the
+publication network I had the opportunity to distinguish different
+moments in time. Per department, there are three waves of co-publication
+networks: for the years 2016-2017, 2018-2019 and 2020-2022. These waves
+thus express the co-publication ties of articles published in these
+years. I then turned these three waves into an adjacency matrix, in
+which scientists score a 1 when they have published an article together.
+Since the network is based on co-publications, it is undirected.
+
+## Independent variable
+
+The independent variable consists of the Kardashian Index. The
+Kardashian Index compares the Twitter followers with number of citations
+of academics [@hall_kardashian_2014]. In order to calculate these, the
+twitteR package in R is used to extract Twitter user information of
+scholars of the departments from the Twitter REST API. For each full
+name, the first user that the twitteR package scraped, is saved. By
+eyeballing, twitter users with a high number of followers were checked.
+In some cases, the match between full name and Twitter username was not
+made correctly. In those instances, this was corrected by hand. Using
+the number of followers and the citations scraped from Google Scholar,
+the Kardashian Index is calculated. Hall's [-@hall_kardashian_2014]
+formula to calculate the k-index exists of two equations. The first
+equation calculates a typical number of twitter followers and is
+expressed as follows: \$F = 43.3Cˆ{0.32} \$ Then, the k-index is
+calculated with the following equation: \$K-index = \frac{F_{a}}
+{F\_{c}} \$
+
+<br>
+
+## Control variables
+
+I added the control variable Twitter Dummy to indicate whether the
+scientist has Twitter or not. A scientist scores 1 in case of a Twitter
+handle found by the twitteR package. Furthermore, the variable Dutch
+shows the ethnicity of the scientist. This variable is included as a
+selection to collaborate with a scientist may also be based on their
+ethnicity. Ethnicity was scraped using the Familienamenbank
+[@nederlandse_familienamenbank], which has data on last names used in
+the Netherlands. In case of a typical Dutch last name, the scientist got
+a score 1 on the dummy Dutch. In other cases, the scholar scores a 0.
+This means that all last names that are not Dutch are taken together as
+one category, not distinguishing between (Non-)Western ethnic
+backgrounds.
+
+As gender may influence the k-index as well as collaborations between
+scientists, I included a dummy for gender. With a procedure similar to
+that of determining ethnicity, the Meertens namenbank
+[@databanken_meertens_instituut] was used to determine the gender of the
+respondent. This databank has information on all the first names used in
+the Netherlands and their frequency. In case of a first name that is
+more often used for women than for men, a scientist scores a 0 on the
+dummy gender. In case of a first name that is more often used for men,
+the scientist scores a 1 on the dummy. Lastly, as age can have an
+influence on opportunities for (co)publishing, a proxy for age is
+included based on the year of the first publication of the scholar. The
+descriptives of these variables can be found at the bottom of this page.
+
+Interested readers may have a further look into the scraping of all the
+variables used during this study, which can be done with the replication
+package that can be found on this website in week 3 of the "My Journal"
+page.
+
+<br>
+
+# Analytical strategy
+
+To answer the research questions that are descriptive in nature,
+descriptive statistics are shown for the different waves and different
+study departments. These statistics are then used to compare within and
+between departments and to answer the research questions. Important
+descriptive network characteristics that I show are transitivity, degree
+and the dyad census.
+
+To provide an answer to the explanatory research question on network
+effects, the RSiena package is used. SIENA -- which stands for
+Simulation Investigation for Empirical Network Analysis -- is able to
+analyze longitudinal data simulating network outcomes based on the
+perspective of the nodes [@manual]. Importantly, the Stochastic Actor
+Oriented Model (SOAM) entails that actors perform 'ministeps', which
+means that a random actor gets assigned at the time, who is able to make
+one tie change. After making this tie change, the next actor gets the
+turn to make a change. For these actors, it is also a possibility to
+make no change. The decision of the actor depends on the evaluation of
+possible options, which is determined with the evaluation function. The
+actor then bases the decision on the most attractive network outcome.
+After this decision, the next actor gets a turn to decide. Based on many
+simulations of these actor-decisions, estimates for evaluation are
+provided by the model.
+
+## Estimation of models
+
+Three models are estimated per department. In the first model, only
+structural network effects on the dependent variable of co-publication
+are included. First, the *degree* effect estimates the number of
+outdegrees, which are in this case the number of copublications. This
+effect can be interpreted as an intercept. Then, the *transitive triads*
+effect shows whether individuals prefer to close a triad (and thus
+prefer a transitive relation) than to not close a transitive triad. In
+the case of co-publication networks, it means whether a scientist
+prefers to co-publish with a co-author of a co-author. Furthermore, the
+activity and popularity effect reveals whether individuals prefer to
+form a tie with individuals that already have a lot of ties. Thus, do
+scientists co-publish with scientists that have already co-published a
+lot?
+
+In the second model, the k-index is added. In this model, the *absDiffX*
+effect was included, estimating whether scientists prefer to co-publish
+with a scientist with a low absolute discrepancy in their k-index. I
+thus used this effect to test the homophily based on the k-index. Then
+another model is run with the control variables included. For the
+control variables ethnicity, gender and the Twitter dummy, I included
+the *sameX* effect. This shows whether scientists prefer to co-publish
+with another scientist of the same gender, ethnicity and twitter status.
+As age is the only control variable of ratio measurement level, I
+included this variable with the *absDiffX* effect as well, as I would
+like to see whether scientists prefer to collaborate with someone
+similar in age, not of exactly the same age.
+
+In the fourth model, the *altX* effect was included for the k-index, to
+test the hypotheses on co-publishing with scientists with a lower or
+higher k-index. This effect shows whether scientists prefer to
+co-publish based on the value of the k-index of the other scientist. The
+last model tests these *altX* effects with control variables included.
+All of the control variables included in the model remain the same as in
+the third model.
+
+As robustness checks, the same models as described above were estimated
+without the twitter dummy, and with the number of twitter followers as
+independent variable instead of the k-index. This could show whether it
+may mostly be social media that matters without its relation to the
+citations of a scientist. These robustness checks are visible in the
+Appendix.
+
+```{r}
+load("/Users/anuschka/Documents/labjournal/data/socdef_df.RData")
+summary(socdef_df$ki)
+summary(socdef_df$dutch)
+summary(socdef_df$pub_first)
+summary(socdef_df$twitter_dum)
+table(socdef_df$gender)
+
+```
+
+```{r}
+load("/Users/anuschka/Documents/labjournal/data/datadef_df.RData")
+summary(datadef_df$ki)
+summary(datadef_df$dutch)
+summary(datadef_df$pub_first)
+summary(datadef_df$twitter_dum)
+table(datadef_df$gender)
+
+```
+
+# References
