@@ -140,8 +140,7 @@ igraph::edge_density(snet3_g)
 Regarding density and dyads in the network, there are 26 dyads in the first wave. The edge density is
 0.049, which means that the number of edges existing in the network is
 relatively low compared to the the maximum number of edges there could possibly be.
-In the second wave, there is an increase of 1 dyad, and the edge density also has increased slightly towards a number of 0.051. In the last wave, there are 38 dyads and the edge density has increased to 0.072. 
-All in all, the co-publications within the network of sociology have increased, and over the years, the scientists at the department have used more of their opportunities to collaborate with members within the network. 
+In the second wave, there is an increase of 1 dyad, and the edge density also has increased slightly towards a number of 0.051. In the last wave, there are 38 dyads and the edge density has increased to 0.072. Regarding the triad census [@davis1967structure], there are first 10 and then 11 complete triads, and first a decrease and then an increase of triads with one central node. Still, the triad 003 (with 3 null relations) occurs most. All in all, the co-publications within the network of sociology have increased, and over the years, the scientists at the department have used more of their opportunities to collaborate with members within the network. 
 
 ```{r}
 igraph::transitivity(snet1_g)
@@ -280,7 +279,7 @@ igraph::edge_density(dnet3_g)
 Looking at the dyad census and density, the number of dyads in 2016-2017 counts 22. The edge density is 0.0212. Both of these numbers are lower than at the Sociology department. 
 In 2018-2019, the number of dyads has increased to 38 and the edge
 density has increased to 0.037. This is still lower than
-the edge density within the sociology department in the same years. In the last years, there are 70 dyads and the edge density increased towards a number of 0.068. This remains a little lower than the edge density of the Sociology department at that time. 
+the edge density within the sociology department in the same years. In the last years, there are 70 dyads and the edge density increased towards a number of 0.068. This remains a little lower than the edge density of the Sociology department at that time. With regard to the triads, we see a similar pattern as at the Sociology department. However, there are more complete triads at Data Science, and this number has increased rather strongly over the years.
 
 ```{r}
 igraph::transitivity(dnet1_g)
@@ -296,7 +295,7 @@ Still, this is a higher number than observed at the Sociology
 department. Also, there is a linear decrease at the department of Data
 Science, while at the Sociology department no linear trend could be
 observed. In conclusion, staff members at Data Science are more likely
-to co-publish with co-authors of their co-authors than at Sociology. 
+to co-publish with co-authors of their co-authors than at Sociology, which is in line with the larger increase in triads. 
 
 ## K-index at the department of Data Science
 

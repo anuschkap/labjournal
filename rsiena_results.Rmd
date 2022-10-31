@@ -397,4 +397,4 @@ It is possible that the k-index is not significant throughout most models, becau
 
 In Appendix B, the same models are run without the dummy for having a Twitter account. This again results in similar outcomes, meaning that the effect of having Twitter when included in the model does not take away the possible effect of the k-index. In these models without the Twitter dummy, the k-index remains insignificant. Again, the same conclusions would be drawn. Therefore, the results are rather robust. 
 
-#References 
+# References 

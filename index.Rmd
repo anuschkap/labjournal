@@ -40,18 +40,17 @@ Last compiled on `r format(Sys.time(), '%B, %Y')`
 \*\* <br>
 
 ------------------------------------------------------------------------
-
-
-
 :::
 
 ::: {.column width="50%"}
-![](images/oefen.jpg)
+![](/Users/anuschka/Documents/labjournal/docs/images/oefen.jpg)
 :::
 :::
 
 ## How to use this website
-In the top menu, you can navigate through different parts of this project. In the journal, 
-weekly tutorials will be uploaded. Parts of the final research will be posted under report.
 
+In the top menu, you can navigate through different parts of this project. In the journal, weekly tutorials will be uploaded. These codes can be used to replicate the findings of the final report. While under "Report" there are draft versions of texts available, the "Final report" shows the final report from start to finish.
 
+## Final report
+
+For the final report, I studied the influence of the Kardashian Index on co-publication networks of scientists. I did this for two departments of the Radboud University: Sociology and Data Science. By using Rsiena, I tested the effect of the Kardashian Index on co-publishing together with structural network effects. I hope you enjoy reading it!

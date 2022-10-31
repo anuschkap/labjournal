@@ -76,9 +76,24 @@ the number of followers and the citations scraped from Google Scholar,
 the Kardashian Index is calculated. Hall's [-@hall_kardashian_2014]
 formula to calculate the k-index exists of two equations. The first
 equation calculates a typical number of twitter followers and is
-expressed as follows: \$F = 43.3Cˆ{0.32} \$ Then, the k-index is
-calculated with the following equation: \$K-index = \frac{F_{a}}
-{F\_{c}} \$
+expressed as follows:
+
+
+
+$$
+
+F = 43.3C^{0.32}
+
+$$
+
+Then, the k-index is calculated with the following equation, using the actual followercount and the expected followercount: 
+
+$$
+
+K-index =
+\frac{F_{a}} {F_{c}} 
+
+$$
 
 <br>
 
