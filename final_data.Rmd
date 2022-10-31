@@ -80,20 +80,11 @@ expressed as follows:
 
 
 
-$$
-
-F = 43.3C^{0.32}
-
-$$
+$$ F = 43.3C^{0.32} $$
 
 Then, the k-index is calculated with the following equation, using the actual followercount and the expected followercount: 
 
-$$
-
-K-index =
-\frac{F_{a}} {F_{c}} 
-
-$$
+$$ K-index = \frac{F_{a}} {F_{c}} $$
 
 <br>
 

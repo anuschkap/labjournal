@@ -43,7 +43,7 @@ Last compiled on `r format(Sys.time(), '%B, %Y')`
 :::
 
 ::: {.column width="50%"}
-![](/Users/anuschka/Documents/labjournal/docs/images/oefen.jpg)
+![](./images/oefen.jpg)
 :::
 :::
 
